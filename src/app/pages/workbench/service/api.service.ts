@@ -3,10 +3,10 @@
  */
 
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
 
 import {Jc} from '@core/jc';
 import {Action, Controller, PTypeModel} from './api';
+import {Observable} from "rxjs/index";
 
 @Injectable()
 export class ApiService {
