@@ -171,8 +171,23 @@ export class Jc {
     url = Jc.getRequestUrl(url);
     const paramsStr = Jc.transformRequest(params);
     Jc.http.post(url, paramsStr, {headers: headers})
-      .subscribe((robj) => {
-        Jc.observerNext(ajaxObserver, robj);
+      .subscribe((result: object) => {
+        let robj : Robj<any> =result as Robj<any>;
+        console.log(robj);
+        if (robj) {
+          if (robj.code === 2000) { // 登录超时
+            Jc.showErrorMessageBox(robj.message);
+          } else if (robj.code === 1000) {
+            Jc.observerNext(ajaxObserver, robj.result);
+          } else {
+            if (autoError) {
+              Jc.showErrorMessageBox(robj.message);
+            }
+            Jc.observerError(ajaxObserver, robj.message);
+          }
+        }else{
+          Jc.showErrorMessageBox('服务端返回数据格式无效.');
+        }
       }, err => {// 网络等异常 提示网络异常后,抛出完成
         if (autoError) {
           Jc.showErrorMessageBox('网络异常,请稍候重试...');
@@ -347,7 +362,7 @@ export class Jc {
    cancel:取消按钮文本
    使用:showConfirmMsgBox("您输入的信息有误!", fun,fun,"提示","确定");
    */
-  static showOkMessageBox (msg: string = '', title: string = '提示', okVal: string = '确定'){
+  static showOkMessageBox (msg: string = '', title: string = '提示', okVal: string = '确定') {
     if (msg) {
       Jc.msg.info(msg);
     }
@@ -380,7 +395,7 @@ export class Jc {
    cancel:取消按钮文本
    使用:showConfirmMsgBox("您输入的信息有误!", fun,fun,"提示","确定","取消");
    */
-  static showConfirmBox (msg: string = '', okSub: boolean = true, cancelSub: boolean = false, title: string = '提示', okVal: string = '确定', cancelVal: string = '取消'){
+  static showConfirmBox (msg: string = '', okSub: boolean = true, cancelSub: boolean = false, title: string = '提示', okVal: string = '确定', cancelVal: string = '取消') {
     if (msg) {
       Jc.msg.info(msg);
     }
@@ -674,17 +689,18 @@ export class Jc {
   }
 
   /*首字母小写*/
-  static firstToLower(str:string):string{
+  static firstToLower (str: string): string {
     let result = str;
-    if(result){
+    if (result) {
       result = result[0].toLowerCase() + result.substring(1);
     }
     return result;
   }
+
   /*首字母大写*/
-  static firstToUpper(str:string):string{
+  static firstToUpper (str: string): string {
     let result = str;
-    if(result){
+    if (result) {
       result = result[0].toUpperCase() + result.substring(1);
     }
     return result;
