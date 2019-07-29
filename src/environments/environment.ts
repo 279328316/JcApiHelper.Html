@@ -3,10 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  //SERVER_URL: 'http://beipiaohome.cn:8003/ApiHelper/',
+  SERVER_URL: 'http://jccore.cn:8003/ApiHelper/',
   //SERVER_URL: '',
   //SERVER_URL: 'http://127.0.0.1:5000/ApiHelper/',
-  SERVER_URL: 'http://debugconsole.sinounion.com/Api/ApiHelper/',
   production: false
 };
 
