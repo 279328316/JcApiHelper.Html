@@ -1,0 +1,130 @@
+<div style="padding: 20px 80px;">
+  <div *ngIf="itemId">
+    <div>
+      <div nz-row>
+        <div nz-col nzSpan="20">
+          <div class="lh40">
+            <label class="f-size26">
+              Ts For {{itemType|titlecase}}
+              <span class="color-lightblue">{{tsResult?.name}}</span>
+            </label>
+          </div>
+          <div *ngIf="tsResult?.summary" class="mt10">
+            <label class="f-size16">{{tsResult.summary}}</label>
+          </div>
+        </div>
+        <div nz-col nzSpan="4" class="h60 lh60 valign-bottom">
+          <a nz-button nzType="primary" nzSize="small" nzGhost
+             class="ml50 w80" (click)="goback()">Return</a>
+        </div>
+      </div>
+      <div>
+        <nz-card class="mt10 minh500">
+          <nz-tabset nzSize="large" nzAnimated='false'>
+            <nz-tab nzTitle="Models" *ngIf="tsResult?.tsModelList && tsResult.tsModelList.length>0">
+              <div>
+                <div class="lh40">
+                  <label class="f-size18">Ts Models</label>
+                  <div class="lineblock ml80">
+                    <nz-radio-group [(ngModel)]="tsModelViewType" (ngModelChange)="modelViewTypeChanged()">
+                      <label nz-radio nzValue="1">TableView</label>
+                      <label nz-radio nzValue="2">CodeView</label>
+                    </nz-radio-group>
+                    <label class="ml50" *ngIf="tsModelViewType=='2'" nz-checkbox [(ngModel)]="isShowPageQueryModel"
+                           (ngModelChange)="isShowPageQueryModelChanged()">
+                      Show PageQueryModels</label>
+                  </div>
+                </div>
+                <div>
+                  <div *ngIf="tsModelViewType=='1'">
+                    <nz-card nzSize="small">
+                      <div class="mt10 mb20 pr56" *ngFor="let tsModel of tsResult.tsModelList">
+                        <div>
+                          <div class="pl5">
+                            <label class="f-size16" style="color:#1890ff;">
+                              {{tsModel.name}}
+                            </label>
+                            <label class="ml10" style="max-width: 60%;" title="{{tsModel.summary}}">
+                              {{tsModel.summary}}
+                            </label>
+                            <div class="pull-right mr80">
+                              <a nz-button nzType="primary" nzSize="small" nzGhost
+                                 (click)="viewLambda(tsModel)"
+                                 class="w100">快捷Lambda</a>
+                              <a nz-button nzType="primary" nzSize="small" nzGhost
+                                 (click)="viewModelCode(tsModel)"
+                                 class="ml20 w80">Code</a>
+                            </div>
+                          </div>
+                        </div>
+                        <div tabindex="1" (keyup)="onKeyUpHandler($event)" (keydown)="onKeyDownHandler($event)">
+                          <nz-table #tsModelTable [nzBordered]="true"
+                                    class="mt5 modelTable"
+                                    [nzShowPagination]='false'
+                                    nzSize="small"
+                                    [nzData]="tsModel.piList">
+                            <thead>
+                            <tr>
+                              <th class="wp25">Name</th>
+                              <th class="wp15">Type</th>
+                              <th>Summary</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let pi of tsModelTable.data;let i = index;" (click)="selectPi(tsModel,pi,i)"
+                                class="{{pi.isSelected ? 'selected':''}}">
+                              <td>{{pi.name}}</td>
+                              <td>{{pi.tsType}}</td>
+                              <td>{{pi.summary}}</td>
+                            </tr>
+                            </tbody>
+                          </nz-table>
+                        </div>
+                      </div>
+                    </nz-card>
+                  </div>
+                  <div *ngIf="tsModelViewType=='2'">
+                    <nz-card nzSize="small" class="bgcolor-code">
+                      <pre>{{ isShowPageQueryModel ? tsModelCodeWithPgQuery : tsModelCode}}</pre>
+                    </nz-card>
+                  </div>
+                </div>
+              </div>
+            </nz-tab>
+            <nz-tab nzTitle="Services" *ngIf="tsResult?.tsService">
+              <div>
+                <div class="lh40">
+                  <label class="f-size18">Ts Services</label>
+                  <div class="lineblock ml80">
+                    <nz-radio-group [(ngModel)]="tsServiceType" (ngModelChange)="tsServiceTypeChanged()">
+                      <label nz-radio nzValue="1">Jc</label>
+                      <label nz-radio nzValue="2">Common</label>
+                    </nz-radio-group>
+                  </div>
+                </div>
+                <div>
+                  <nz-card nzSize="small" class="bgcolor-code">
+                    <pre>{{tsServiceType == "1" ? tsResult.tsService.jcCode : tsResult.tsService.commonCode}}</pre>
+                  </nz-card>
+                </div>
+              </div>
+            </nz-tab>
+          </nz-tabset>
+          <div>
+            <label class="mt20 ml16 f-size12">Not all code is useful, the generated code is for reference only</label>
+          </div>
+        </nz-card>
+      </div>
+    </div>
+  </div>
+  <nz-modal [(nzVisible)]="showCode" [nzTitle]="codeTitle"
+            [nzCancelText]="null" nzWidth="900"
+            (nzOnCancel)="closeModal()"
+            (nzOnOk)="closeModal()">
+    <textarea nz-input class="wp100 bgcolor-code scrolly" spellcheck="false"
+              style="height: calc( 100vh - 320px);border:none;box-shadow: none;">{{tsCode}}</textarea>
+    <div>
+      <label class="mt10 ml10 f-size12">Not all code is useful, the generated code is for reference only</label>
+    </div>
+  </nz-modal>
+</div>

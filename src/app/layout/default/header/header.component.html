@@ -1,0 +1,35 @@
+<div nz-row nzGutter="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 }">
+  <div nz-col class="gutter-row" nzSpan="8">
+    <div class="gutter-box">
+      <app-logo></app-logo>
+    </div>
+  </div>
+  <div nz-col class="gutter-row" nzSpan="12">
+    <div class="gutter-box">
+      <ul nz-menu [nzMode]="'horizontal'" style="line-height: 64px;">
+        <li nz-menu-item>
+          <a routerLink="/workbench">ApiHelper</a>
+        </li>
+        <li nz-submenu>
+          <span title>
+            <span class="nav-text f-size16">Online Tools</span>
+          </span>
+          <ul>
+            <li nz-menu-item>
+              <a routerLink="/jsontool">Json格式化</a>
+            </li>
+            <li nz-menu-item>
+              <a>Api接口测试</a>
+            </li>
+            <li nz-menu-item>
+              <a>WebSocket测试</a>
+            </li>
+          </ul>
+        </li>
+        <li nz-menu-item>
+          <a routerLink="/aboutjc">About Jc</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

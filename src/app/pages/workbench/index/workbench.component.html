@@ -1,0 +1,139 @@
+<div>
+  <div nz-row>
+    <div nz-col nzSpan="2" style="width:280px;" class="p5">
+      <div class="main-menu">
+        <nz-affix *ngIf="showControllerList">
+          <div class="mt5">
+            <div nz-row>
+              <div nz-col nzSpan="20">
+                <nz-input-group nzSize="small" [nzSuffix]="suffixIcon">
+                  <input placeholder="Search" nz-input
+                         [(ngModel)]="searchText"/>
+                </nz-input-group>
+                <ng-template #suffixIcon>
+                  <i nz-icon nzType="search"></i>
+                </ng-template>
+              </div>
+              <div nz-col nzSpan="4" class="lh24">
+                <a class="ml5" title="Area Filter" (click)="showAreaFilter = !showAreaFilter">
+                  <i nz-icon nzType="appstore" nzTheme="outline"></i>
+                </a>
+                <a class="ml5" title="Refresh" (click)="refreshControllerList()">
+                  <i nz-icon nzType="sync" nzTheme="outline"></i>
+                </a>
+              </div>
+            </div>
+            <div *ngIf="showAreaFilter">
+              <div class="mt3">
+                <div class="mt3 p10 border-lightgray border-radius">
+                  <div nz-row class="border-bottom pb10">
+                    <div nz-col nzSpan="12">
+                      <label class="fw600 f-size16">Areas</label>
+                    </div>
+                    <div nz-col nzSpan="12" class="lh24">
+                      <label nz-checkbox [(ngModel)]="isAllAreaSelected"
+                             [nzIndeterminate]="isAreaSelectIndeterminate"
+                             (ngModelChange)="allSelectAreaChange()">All</label>
+                    </div>
+                  </div>
+                  <div nz-row class="mt5">
+                    <div nz-col nzSpan="12" *ngFor="let area of areaList;let i=index;">
+                      <label class="{{ i>1 ? 'mt5':''}} cursor-Hand" nz-checkbox [(ngModel)]="area.isSelected"
+                             (ngModelChange)="areaSelectChange(area)">
+                        {{area.displayName}}</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <section class="main-menu-inner">
+            <ul nz-menu nzMode="inline">
+              <li nz-menu-item [nzSelected] = "isDisplayAllMenuSelected"
+                  *ngIf="controllerList?.length>0 && !searchText && !isAreaSelectIndeterminate"
+                  (click)="displayAll()">Display All
+              </li>
+              <li nz-menu-item [nzSelected] = "controller.isSelected" *ngFor="let controller of controllerList|controllerFilter:searchText:selectedArea">
+                <a class="overxhiden" (click)="onSelectController(controller)">
+                  {{controller.controllerName}}
+                  <span class="ml8 f-size12" style="color: #a5a5a5">{{controller.summary}}</span>
+                </a>
+              </li>
+            </ul>
+          </section>
+        </nz-affix>
+      </div>
+    </div>
+    <div nz-col style="width:calc(100% - 280px);" nzSpan="20">
+      <div style="min-height: calc( 100vh - 100px );" class="p20">
+        <div class="pull-right mrp18">
+          <nz-radio-group [(ngModel)]="actionTableSize" (ngModelChange)="actionTableSizeChanged()">
+            <label nz-radio nzValue="large">Large</label>
+            <label nz-radio nzValue="small">Small</label>
+          </nz-radio-group>
+        </div>
+        <div *ngFor="let controller of selectedController">
+          <div class="p10 mt10">
+            <div class="pl10">
+              <div class="vcenter">
+                <h2 class="lineblock" style="font-size: 26px;">{{controller.controllerName}}</h2>
+                <label class="ml40" style="vertical-align: text-bottom;">
+                  <span *ngFor="let attr of controller.customerAttrList;let i = index;">
+                    <nz-tag [nzColor]="i<tagcolor.length-1 ? tagcolor[i]:tagcolor[0]">
+                      {{attr.name|lowercase}}
+                    </nz-tag>
+                  </span>
+                </label>
+              </div>
+              <div class="wp90 lh24">
+                <label *ngIf="controller.summary" class="f-size12" style="max-width: 80%;">
+                  {{controller.summary}}</label>
+                <a nz-button nzType="primary" nzSize="small" nzGhost
+                   routerLink="/workbench/tsviewer/controller/{{controller.id}}"
+                   class="pull-right mr20 w80">View Ts</a>
+              </div>
+            </div>
+            <div class="wp90 mt5">
+              <nz-table #actionTable
+                        [nzShowPagination]='false'
+                        [nzSize]="actionTableSize"
+                        [nzData]="controller.actionList">
+                <thead>
+                <tr>
+                  <th class="wp33">API</th>
+                  <th class="wp15">Attr</th>
+                  <th>Summary</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let action of actionTable.data">
+                  <td>
+                    <a routerLink="/workbench/action/{{action.id}}">
+                      {{(action.areaName ? action.areaName + '/':'') + action.controllerName + '/' + action.actionName}}
+                    </a>
+                    <!--<a>
+                      {{(action.areaName ? action.areaName + '/':'') + action.controllerName + '/' + action.actionName}}
+                    </a>-->
+                  </td>
+                  <td>
+                    <div class="mt5" *ngFor="let attr of action.customerAttrList;let i = index;">
+                      <nz-tag [nzColor]="i<tagcolor.length-1 ? tagcolor[i]:tagcolor[0]">
+                        {{attr.name|lowercase}}
+                      </nz-tag>
+                    </div>
+                  </td>
+                  <td>{{action.summary}}</td>
+                </tr>
+                </tbody>
+              </nz-table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pb20">
+        <layout-footer></layout-footer>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,35 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "downlevelIteration": true,
+    "module": "esnext",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2017",
+      "dom"
+    ],
+    "baseUrl": "src/",
+    "paths": {
+        "@shared": [ "app/shared" ],
+        "@shared/*": [ "app/shared/*" ],
+        "@core": [ "app/core/" ],
+        "@core/*": [ "app/core/*" ],
+        "@layout": [ "app/layout/" ],
+        "@layout/*": [ "app/layout/*" ],
+        "@pages": [ "app/pages/" ],
+        "@pages/*": [ "app/pages/*" ],
+        "@env": [ "environments/" ],
+        "@env/*": [ "environments/*" ]
+    }
+  }
+}

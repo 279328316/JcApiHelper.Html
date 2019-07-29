@@ -1,0 +1,57 @@
+<div style="padding: 20px 80px;">
+  <div *ngIf="ptype">
+    <div>
+      <div nz-row>
+        <div class="p10" nz-col nzSpan="20">
+          <div class="lh40">
+            <label class="f-size30">
+              {{ptype.typeName}}
+            </label>
+            <a nz-button nzType="primary" nzSize="small" nzGhost
+               routerLink="/workbench/tsviewer/ptype/{{ptype.isIEnumerable ? ptype.enumItemId : ptype.id}}"
+               class="ml50 w80">View Ts</a>
+          </div>
+          <div *ngIf="ptype.summary" class="mt10">
+            <label class="f-size16">{{ptype.summary}}</label>
+          </div>
+        </div>
+        <div nz-col nzSpan="4" class="h60 lh60 valign-bottom">
+          <a nz-button nzType="primary" nzSize="small" nzGhost
+             class="ml50 w80" (click)="goback()">Return</a>
+        </div>
+      </div>
+    </div>
+    <div class="mt30">
+      <nz-table #piListTable
+                [nzShowPagination]='false'
+                nzSize="small"
+                [nzData]="ptype.piList">
+        <thead>
+        <tr>
+          <th class="w240">Name</th>
+          <th class="w240" *ngIf="ptype.isEnum">Value</th>
+          <th class="wp30">Summary</th>
+          <th class="w240" *ngIf="!ptype.isEnum">Type</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let param of piListTable.data">
+          <td>
+            <span>{{param.name}}</span>
+          </td>
+          <td *ngIf="ptype.isEnum" class="pl20">{{param.paramValue}}</td>
+          <td>
+            <span>{{param.summary}}</span>
+          </td>
+          <td *ngIf="!ptype.isEnum">
+            <span *ngIf="!param.hasPiList">{{param.typeName}}</span>
+            <a *ngIf="param.hasPiList" (click)="viewPType(param)">{{param.typeName}}</a>
+          </td>
+          <td></td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+</div>

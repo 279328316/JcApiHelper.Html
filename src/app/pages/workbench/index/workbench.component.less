@@ -1,0 +1,22 @@
+
+::ng-deep .ant-menu-vertical > .ant-menu-item, .ant-menu-vertical-left > .ant-menu-item,
+.ant-menu-vertical-right > .ant-menu-item, .ant-menu-inline > .ant-menu-item,
+.ant-menu-vertical > .ant-menu-submenu > .ant-menu-submenu-title,
+.ant-menu-vertical-left > .ant-menu-submenu > .ant-menu-submenu-title,
+.ant-menu-vertical-right > .ant-menu-submenu > .ant-menu-submenu-title,
+.ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title {
+  height: 35px;
+  line-height: 35px;
+  min-height: 35px;
+  padding: 0 10px !important;
+}
+
+.main-menu-inner {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  //max-height:calc( 100vh - 165px );
+  max-height:calc( 100vh - 100px );
+}
+.main-menu:hover .main-menu-inner {
+  overflow-y: auto;
+}
