@@ -23,24 +23,28 @@
           </textarea>
         </div>
         <div nz-col [nzSpan]="2" class="p20 center">
-          <button class="mt30 w100" nz-button nzSize="small" nzGhost
+          <button class="mt10 w100" nz-button nzSize="small" nzGhost
                   (click)="formatJson()" nzType="primary">Format
           </button>
-          <button class="mt30 w100" nz-button nzSize="small" nzGhost
+          <button class="mt20 w100" nz-button nzSize="small" nzGhost
                   (click)="viewStr()" nzType="primary">ViewString
           </button>
 
-          <button class="mt30 w100" nz-button nzSize="small" nzGhost
+          <button class="mt20 w100" nz-button nzSize="small" nzGhost
                   (click)="viewTs()" nzType="primary">View Ts
           </button>
 
-          <button class="mt30 w100" nz-button nzSize="small" nzGhost
+          <button class="mt20 w100" nz-button nzSize="small" nzGhost
                   ngxClipboard [cbContent]="jsonStr"
                   (cbOnSuccess)="copySuccess()" nzType="primary">Copy
           </button>
 
-          <button class="mt30 w100" nz-button nzSize="small" nzGhost
+          <button class="mt20 w100" nz-button nzSize="small" nzGhost
                   (click)="viewSample()" nzType="primary">Json Sample
+          </button>
+
+          <button class="mt20 w100" nz-button nzSize="small" nzGhost
+                  (click)="clear()" nzType="primary">Clear
           </button>
 
           <div class="mt40 center w100">
