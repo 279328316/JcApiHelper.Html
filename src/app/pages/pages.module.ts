@@ -15,6 +15,7 @@ import { AboutJcComponent } from './aboutjc/aboutjc.component';
 import {Exception403Component} from './exception/403.component';
 import {Exception404Component} from './exception/404.component';
 import {Exception500Component} from './exception/500.component';
+import { WebsockettoolComponent } from './websockettool/websockettool.component';
 
 @NgModule({
   imports: [SharedModule, NgZorroAntdModule, PagesRoutingModule],
@@ -26,7 +27,8 @@ import {Exception500Component} from './exception/500.component';
     Exception403Component,
     Exception404Component,
     Exception500Component,
-    AboutJcComponent],
+    AboutJcComponent,
+    WebsockettoolComponent],
   providers: []
 })
 
