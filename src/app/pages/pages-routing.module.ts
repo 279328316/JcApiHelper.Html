@@ -6,6 +6,7 @@ import { LayoutDefaultComponent } from '../layout/default/default.component';
 
 import { IndexComponent } from './index/index.component';
 import {JsonToolComponent} from "@pages/jsontool/jsontool.component";
+import {WebSocketToolComponent} from '@pages/websockettool/websockettool.component';
 import {AboutJcComponent} from "@pages/aboutjc/aboutjc.component";
 
 // single pages
@@ -21,6 +22,7 @@ const routes: Routes = [
             { path: '',redirectTo:'index', pathMatch:'full'},
             { path: 'index',component:IndexComponent,data:{title:'Home'}},
             { path: 'jsontool',component:JsonToolComponent,data:{title:'JsonFormat'}},
+            { path: 'websocket',component:WebSocketToolComponent,data:{title:'WebSocket'}},
             { path: 'aboutjc',component:AboutJcComponent,data:{title:'AboutJc'}}
         ]
     },
