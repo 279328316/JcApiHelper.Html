@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { JsonToolComponent } from './jsontool.component';
+import { HttpToolComponent } from './httptool.component';
 
-describe('JsontoolComponent', () => {
-  let component: JsonToolComponent;
-  let fixture: ComponentFixture<JsonToolComponent>;
+describe('HttptoolComponent', () => {
+  let component: HttpToolComponent;
+  let fixture: ComponentFixture<HttpToolComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ JsonToolComponent ]
+      declarations: [ HttpToolComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(JsonToolComponent);
+    fixture = TestBed.createComponent(HttpToolComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
