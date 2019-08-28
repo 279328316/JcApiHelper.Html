@@ -6,7 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./httptool.component.less']
 })
 export class HttpToolComponent implements OnInit {
-
+  method:string = 'Get';
+  ecode:string = 'UTF-8';
+  contentType:string = 'application/json';
   constructor() { }
 
   ngOnInit() {

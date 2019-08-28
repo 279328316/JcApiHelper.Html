@@ -7,26 +7,60 @@
     </div>
     <div class="p10" style="height:calc(100vh - 200px);">
       <div nz-row>
-        <div nz-col nzSpan="18" class="pl5">
+        <div nz-col nzSpan="18">
           <div nz-row>
-            <div nz-col nzSpan="3" class="tar">
+            <div nz-col nzSpan="4" class="tar">
               <label class="mr20 lh32">接口</label>
             </div>
-            <div nz-col nzSpan="21">
-              <input nz-input placeholder="https://jccore.cn/Account/Login"/>
+            <div nz-col nzSpan="20">
+              <input nz-input placeholder="https://jccore.cn/Account/Login?rnd=0.12345798"/>
             </div>
           </div>
-          <div nz-row class="mt5">
-            <div nz-col nzSpan="3" class="tar">
+          <div nz-row class="mt10">
+            <div nz-col nzSpan="4" class="tar">
               <label class="mr20 lh32">参数</label>
             </div>
-            <div nz-col nzSpan="21">
-              <textarea nz-input placeholder="参数：a=val1&b=val2&c=val3"></textarea>
+            <div nz-col nzSpan="20">
+              <textarea nz-input placeholder="参数：a=val1&b=val2&c=val3" spellcheck="false"></textarea>
+              <label class="f-size12 color-gray">说明：Get参数可以加在参数框里,也可直接加在Url后面，Post参数请放在参数框中。格式：a=val1&b=val2&c=val3</label>
+            </div>
+          </div>
+          <div nz-row class="mt10">
+            <div nz-col nzSpan="4" class="tar">
+              <label class="mr20 lh32">请求方式</label>
+            </div>
+            <div nz-col nzSpan="16">
+              <nz-select class="w150" [(ngModel)]="method" nzPlaceHolder="Choose">
+                <nz-option nzValue="Get" nzLabel="Get"></nz-option>
+                <nz-option nzValue="Post" nzLabel="Post">Post</nz-option>
+              </nz-select>
+              <nz-select class="ml20 w150" [(ngModel)]="ecode" nzPlaceHolder="Choose">
+                <nz-option nzValue="UTF-8" nzLabel="UTF-8"></nz-option>
+                <nz-option nzValue="gbk" nzLabel="GBK">Post</nz-option>
+              </nz-select>
+            </div>
+          </div>
+          <div nz-row class="mt10">
+            <div nz-col nzSpan="4" class="tar">
+              <label class="mr20 lh32">Content-Type</label>
+            </div>
+            <div nz-col nzSpan="16">
+              <nz-select class="w320" [(ngModel)]="contentType" nzPlaceHolder="Choose">
+                <nz-option nzValue="application/json" nzLabel="application/json"></nz-option>
+                <nz-option nzValue="application/x-www-form-urlencoded" nzLabel="application/x-www-form-urlencoded"></nz-option>
+                <nz-option nzValue="multipart/form-data" nzLabel="multipart/form-data"></nz-option>
+              </nz-select>
+            </div>
+          </div>
+          <div nz-row class="mt20">
+            <div nz-col nzSpan="20" nzOffset="4">
+              <button nz-button nzType="primary" class="w320">提交</button>
+              <button nz-button nzType="primary" class="ml40 w100">清空</button>
             </div>
           </div>
         </div>
-        <div nz-col nzSpan="6" class="pl5">
-              <input nz-input />
+        <div nz-col nzSpan="6" class="pl20">
+          <a>高级设置</a>
         </div>
       </div>
     </div>
