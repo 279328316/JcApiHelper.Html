@@ -45,7 +45,7 @@ export class WebSocketToolComponent implements OnInit {
       };
       // 接收消息事件
       this.ws.onmessage = function (msg) {
-        _this.showMsg('Server:' + msg.data);
+        _this.showMsg('Server:  ' + msg.data);
       };
       // 发生了错误事件
       this.ws.onerror = function (error) {
@@ -71,7 +71,7 @@ export class WebSocketToolComponent implements OnInit {
 
   // 显示Msg
   showMsg(msg: string) {
-    this.displayMsg += Jc.formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss') + ': ' + msg + '\n';
+    this.displayMsg += Jc.formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss') + ' ' + msg + '\n';
   }
 
   // 发送Msg
@@ -83,7 +83,7 @@ export class WebSocketToolComponent implements OnInit {
     if (this.wsStatus) {
       try {
         this.ws.send(this.msg);
-        this.showMsg('Client:' + this.msg);
+        this.showMsg('Client :  ' + this.msg);
         if (this.autoClear) {
           this.msg = '';
         }

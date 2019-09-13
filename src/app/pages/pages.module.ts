@@ -16,6 +16,7 @@ import {Exception403Component} from './exception/403.component';
 import {Exception404Component} from './exception/404.component';
 import {Exception500Component} from './exception/500.component';
 import { WebSocketToolComponent } from './websockettool/websockettool.component';
+import { HttpToolComponent } from './httptool/httptool.component';
 
 @NgModule({
   imports: [SharedModule, NgZorroAntdModule, PagesRoutingModule],
@@ -28,7 +29,8 @@ import { WebSocketToolComponent } from './websockettool/websockettool.component'
     Exception404Component,
     Exception500Component,
     AboutJcComponent,
-    WebSocketToolComponent],
+    WebSocketToolComponent,
+    HttpToolComponent],
   providers: []
 })
 

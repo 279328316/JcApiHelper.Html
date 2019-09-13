@@ -13,6 +13,7 @@ import {AboutJcComponent} from "@pages/aboutjc/aboutjc.component";
 import { Exception403Component } from './exception/403.component';
 import { Exception404Component } from './exception/404.component';
 import { Exception500Component } from './exception/500.component';
+import {HttpToolComponent} from "@pages/httptool/httptool.component";
 
 const routes: Routes = [
     {
@@ -22,6 +23,7 @@ const routes: Routes = [
             { path: '',redirectTo:'index', pathMatch:'full'},
             { path: 'index',component:IndexComponent,data:{title:'Home'}},
             { path: 'jsontool',component:JsonToolComponent,data:{title:'JsonFormat'}},
+            { path: 'httptool',component:HttpToolComponent,data:{title:'HttpTool'}},
             { path: 'websocket',component:WebSocketToolComponent,data:{title:'WebSocket'}},
             { path: 'aboutjc',component:AboutJcComponent,data:{title:'AboutJc'}}
         ]
