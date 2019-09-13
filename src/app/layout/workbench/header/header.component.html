@@ -32,4 +32,9 @@
       </ul>
     </div>
   </div>
+  <div nz-col [nzSpan]="8" class="tar">
+    <label class="mr10" *ngIf="apiSvc.apiVersion">
+      Api Version:<a class="ml10">{{apiSvc.apiVersion}}</a>
+    </label>
+  </div>
 </div>

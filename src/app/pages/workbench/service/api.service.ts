@@ -11,6 +11,20 @@ import {Observable} from "rxjs/index";
 @Injectable()
 export class ApiService {
 
+  public apiVersion:string = '';
+
+  /*获取apiVersion*/
+  public getApiVersion (): Observable<string> {
+    let observable;
+    if(!this.apiVersion) {
+      observable = Jc.ajax('ApiHelper/getApiVersion', {}, false);
+      observable.subscribe((apiVersion: string) => {
+        this.apiVersion = apiVersion;
+      });
+    }
+    return observable;
+  }
+
   /*获取ControllerList*/
   public getControllerList (): Observable<Controller[]> {
     return Jc.ajax('ApiHelper/GetControllerList');

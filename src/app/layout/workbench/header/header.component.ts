@@ -1,11 +1,17 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {ApiService} from '@pages/workbench/service/api.service';
 
 @Component({
   selector: 'layout-workbenchheader',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.less']
 })
-export class WorkbenchHeaderComponent {
-  constructor() {
+export class WorkbenchHeaderComponent implements OnInit{
+  //apiVersion:string;
+  constructor(private apiSvc: ApiService) {
+  }
+
+  ngOnInit() {
+    this.apiSvc.getApiVersion();
   }
 }

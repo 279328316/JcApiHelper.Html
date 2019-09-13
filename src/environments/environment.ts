@@ -4,6 +4,7 @@
 
 export const environment = {
   SERVER_URL: 'http://jccore.cn:8003/',
+  //SERVER_URL: 'http://debugconsole.sinounion.com/api/',
   //SERVER_URL: '',
   //SERVER_URL: 'http://127.0.0.1:5000/',
   production: false
