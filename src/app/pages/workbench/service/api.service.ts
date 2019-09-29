@@ -17,7 +17,7 @@ export class ApiService {
   public getApiVersion (): Observable<string> {
     let observable;
     if(!this.apiVersion) {
-      observable = Jc.ajax('ApiHelper/getApiVersion', {}, false);
+      observable = Jc.ajax('getApiVersion', {}, false);
       observable.subscribe((apiVersion: string) => {
         this.apiVersion = apiVersion;
       });
