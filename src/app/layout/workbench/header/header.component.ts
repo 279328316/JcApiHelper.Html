@@ -8,7 +8,7 @@ import {ApiService} from '@pages/workbench/service/api.service';
 })
 export class WorkbenchHeaderComponent implements OnInit{
   //apiVersion:string;
-  constructor(private apiSvc: ApiService) {
+  constructor(public apiSvc: ApiService) {
   }
 
   ngOnInit() {
