@@ -97,6 +97,7 @@
               <nz-table #actionTable
                         [nzShowPagination]='false'
                         [nzSize]="actionTableSize"
+                        nzPageSize="1000"
                         [nzData]="controller.actionList">
                 <thead>
                 <tr>
@@ -111,9 +112,6 @@
                     <a routerLink="/workbench/action/{{action.id}}">
                       {{(action.areaName ? action.areaName + '/':'') + action.controllerName + '/' + action.actionName}}
                     </a>
-                    <!--<a>
-                      {{(action.areaName ? action.areaName + '/':'') + action.controllerName + '/' + action.actionName}}
-                    </a>-->
                   </td>
                   <td>
                     <div class="mt5" *ngFor="let attr of action.customerAttrList;let i = index;">
