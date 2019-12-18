@@ -48,6 +48,7 @@
           <div *ngIf="inputParams.length>0">
             <nz-table #inputParamsTable
                       [nzShowPagination]='false'
+                      nzPageSize="1000"
                       nzSize="small"
                       [nzData]="inputParams">
               <thead>
@@ -91,6 +92,7 @@
           <div>
             <nz-table #returnParamsTable
                       [nzShowPagination]='false'
+                      nzPageSize="1000"
                       nzSize="small"
                       [nzData]="returnParams">
               <thead>
