@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ApiService} from '@pages/workbench/service/api.service';
 import {ActivatedRoute} from '@angular/router';
 import {TsModel, TsPi, TsResult} from '@pages/workbench/service/tsmodel';
-import {Jc} from "@core/jc";
+import {Util} from "@core/util";
 
 @Component({
   selector: 'app-tsviewer', templateUrl: './tsviewer.component.html', styleUrls: ['./tsviewer.component.less']
@@ -125,6 +125,21 @@ export class TsViewerComponent implements OnInit {
     }
   }
 
+  /* name参数排序 */
+  nameSortFn(a: any, b: any, sortOrder: string) {
+    return a['name'].localeCompare(b['name']);
+  }
+
+  /* value参数排序 */
+  valueSortFn(a: any, b: any, sortOrder: string) {
+    return a['paramValue'] - b['paramValue'];
+  }
+
+  /* type参数排序 */
+  typeSortFn(a: any, b: any, sortOrder: string) {
+    return a['typeName'].localeCompare(b['typeName']);
+  }
+
   /*查看ModelCode*/
   viewModelCode (tsModel: TsModel) {
     this.tsCode = tsModel.tsModelCode + tsModel.pgQueryModelCode;
@@ -135,7 +150,7 @@ export class TsViewerComponent implements OnInit {
   /*查看Lambda Code*/
   viewLambda (tsModel: TsModel) {
     if (tsModel.piList.filter(a => a.isSelected).length <= 0) {
-      Jc.showInfoBox('No record is selected.');
+      Util.showInfoBox('No record is selected.');
       return;
     }
     let selectedPiList = tsModel.piList.filter(a => a.isSelected);
@@ -143,11 +158,11 @@ export class TsViewerComponent implements OnInit {
 
     // SetValue Lambda
     let setValueLambda = "//1 SetValue \r\n";
-    setValueLambda += tsModel.name + ' ' + Jc.firstToLower(tsModel.name)
+    setValueLambda += tsModel.name + ' ' + Util.firstToLower(tsModel.name)
                         + ' = new ' + tsModel.name + '();\r\n';
     selectedPiList.forEach((a, index) => {
-      setValueLambda += Jc.firstToLower(tsModel.name) + '.' + Jc.firstToLower(a.name)
-                          + ' = source.' + Jc.firstToLower(a.name) + ';\r\n';
+      setValueLambda += Util.firstToLower(tsModel.name) + '.' + Util.firstToLower(a.name)
+                          + ' = source.' + Util.firstToLower(a.name) + ';\r\n';
     });
 
     // Expression Lambda
@@ -168,7 +183,7 @@ export class TsViewerComponent implements OnInit {
 
     // Ctor Lambda
     let ctorLambda = "//3 C# Ctor \r\n";
-    ctorLambda += tsModel.name + ' ' + Jc.firstToLower(tsModel.name)
+    ctorLambda += tsModel.name + ' ' + Util.firstToLower(tsModel.name)
                         + ' = new ' + tsModel.name + '(){\r\n';
     selectedPiList.forEach((a, index) => {
       ctorLambda += '  ' + a.name + ' = source.' + a.name;
@@ -205,7 +220,7 @@ export class TsViewerComponent implements OnInit {
   }
 
   /*keyDownHandler*/
-  onKeyDownHandler (event): void {
+  onKeyDownHandler (event:any): void {
     switch (event.keyCode) {
       case 16:  //Shift  暂时不支持Shift
         this.isShiftDown = true;
@@ -240,7 +255,7 @@ export class TsViewerComponent implements OnInit {
   }
 
   /*keyUpHandler*/
-  onKeyUpHandler (event): void {
+  onKeyUpHandler (event:any): void {
     switch (event.keyCode) {
       case 16:  //Shift
         this.isShiftDown = false;

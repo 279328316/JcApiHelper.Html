@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {ApiService} from '@pages/workbench/service/api.service';
+import {ApiService} from "@pages/workbench/service/api.service";
 
 @Component({
   selector: 'layout-workbenchheader',

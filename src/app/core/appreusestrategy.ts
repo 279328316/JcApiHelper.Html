@@ -1,6 +1,5 @@
-import {ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy} from '@angular/router';
+import {ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy, RouterStateSnapshot} from '@angular/router';
 import {Injectable} from '@angular/core';
-import {isFunction} from 'util';
 
 interface IRouteConfigData {
   reuse: boolean;
@@ -14,7 +13,7 @@ interface ICachedRoute {
 @Injectable()
 export class AppReuseStrategy implements RouteReuseStrategy {
   private static routeCache = new Map<string, ICachedRoute>();
-  private static waitDelete: string; // 当前页未进行存储时需要删除
+  private static waitDelete: string|null; // 当前页未进行存储时需要删除
   private static currentDelete: string;  // 当前页存储过时需要删除
 
   /** 进入路由触发，判断是否是同一路由 */
@@ -43,12 +42,12 @@ export class AppReuseStrategy implements RouteReuseStrategy {
     if (AppReuseStrategy.waitDelete && AppReuseStrategy.waitDelete === url) {
       // 如果待删除是当前路由，且未存储过则不存储快照
       AppReuseStrategy.waitDelete = null;
-      return null;
+      return;
     } else {
       // 如果待删除是当前路由，且存储过则不存储快照
       if (AppReuseStrategy.currentDelete && AppReuseStrategy.currentDelete === url) {
-        AppReuseStrategy.currentDelete = null;
-        return null;
+        AppReuseStrategy.currentDelete = '';
+        return;
       } else {
         AppReuseStrategy.routeCache.set(url, {handle, data});
         // console.log('Store:', url, handle);
@@ -63,7 +62,7 @@ export class AppReuseStrategy implements RouteReuseStrategy {
   /** 若 path 在缓存中有的都认为允许还原路由 */
   shouldAttach(route: ActivatedRouteSnapshot): boolean {
     // 在路由是login的时候清空缓存
-    if (route.routeConfig['path'].indexOf('login') >= 0) {
+    if (route.routeConfig!.path!.indexOf('login') >= 0) {
       AppReuseStrategy.routeCache.clear();
       return false;
     }
@@ -77,7 +76,7 @@ export class AppReuseStrategy implements RouteReuseStrategy {
     const url = this.getRouteUrl(route);
     const data = this.getRouteData(route);
     let handle: any = data && data.reuse && AppReuseStrategy.routeCache.has(url)
-      ? AppReuseStrategy.routeCache.get(url).handle
+      ? AppReuseStrategy.routeCache.get(url)!.handle
       : null;
 
     //console.log('retrieve:', url, route);
@@ -91,7 +90,7 @@ export class AppReuseStrategy implements RouteReuseStrategy {
   private runHook(method: string, url: string, comp: any) {
     // console.log('runHook:',comp.instance);
     if (comp.instance && comp.instance[method]
-      && isFunction(comp.instance[method])) {
+      && typeof (comp.instance[method]) == 'function') {
       comp.instance[method]();
     }
   }
@@ -117,8 +116,9 @@ export class AppReuseStrategy implements RouteReuseStrategy {
 
   /*获取完整路由Url*/
   private getRouteUrl(route: ActivatedRouteSnapshot): string {
-    return route['_routerState'].url.replace(/\//g, '_')
+    let routeUrl = ((route as any)['_routerState'] as RouterStateSnapshot).url.replace(/\//g, '_')
       + '_' + (route.routeConfig.loadChildren || route.routeConfig.component.toString().split('(')[0].split(' ')[1]);
+    return routeUrl;
   }
 
   private getRouteUrlPaths(route: ActivatedRouteSnapshot): string[] {
@@ -128,7 +128,7 @@ export class AppReuseStrategy implements RouteReuseStrategy {
   }
 
   private getRouteData(route: ActivatedRouteSnapshot): IRouteConfigData {
-    return route.routeConfig && route.routeConfig.data as IRouteConfigData;
+    return (route.routeConfig && route.routeConfig.data) as IRouteConfigData;
   }
 
   /** 用于删除路由快照*/

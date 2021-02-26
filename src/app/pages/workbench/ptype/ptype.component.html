@@ -24,15 +24,15 @@
     <div class="mt30">
       <nz-table #piListTable
                 [nzShowPagination]='false'
-                nzPageSize="1000"
+                [nzPageSize]="1000"
                 nzSize="small"
                 [nzData]="ptype.piList">
         <thead>
         <tr>
-          <th class="w240">Name</th>
-          <th class="w240" *ngIf="ptype.isEnum">Value</th>
+          <th class="w240" [nzShowSort] = "true" [nzSortFn]="nameSortFn">Name</th>
+          <th class="w240" *ngIf="ptype.isEnum" [nzShowSort] = "true" [nzSortFn]="valueSortFn">Value</th>
           <th class="wp30">Summary</th>
-          <th class="w240" *ngIf="!ptype.isEnum">Type</th>
+          <th class="w240" *ngIf="!ptype.isEnum" [nzShowSort] = "true" [nzSortFn]="typeSortFn">Type</th>
           <th></th>
         </tr>
         </thead>

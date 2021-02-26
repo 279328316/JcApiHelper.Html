@@ -56,7 +56,7 @@
   </div>
   <div>
     <nz-modal [(nzVisible)]="showCode" nzTitle="TsCode"
-              [nzCancelText]="null" nzWidth="900"
+              [nzCancelText]="null" [nzWidth]="600"
               (nzOnCancel)="closeModal()"
               (nzOnOk)="closeModal()">
       <textarea nz-input class="wp100 bgcolor-code scrolly" spellcheck="false"

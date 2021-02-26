@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Area, Controller} from "@pages/workbench/service/api";
 import {ApiService} from "@pages/workbench/service/api.service";
+import {NzTableSize} from "ng-zorro-antd/table";
 
 @Component({
   selector: 'app-workbench', templateUrl: './workbench.component.html', styleUrls: ['./workbench.component.less']
@@ -11,7 +12,7 @@ export class WorkbenchComponent implements OnInit {
 
   isDisplayAllMenuSelected: boolean = true;
   tagcolor: string[] = ['cyan', 'geekblue', 'blue', 'purple'];
-  actionTableSize: string = 'large';
+  actionTableSize: NzTableSize = 'middle';
   searchText: string = ''; //Controller 过滤条件
   controllerList: Controller[] = [];    //实际显示ControllerList
   selectedController: Controller[] = [];
@@ -24,7 +25,7 @@ export class WorkbenchComponent implements OnInit {
 
   constructor (private apiSvc: ApiService) {
     let actionTableSize = localStorage.getItem('actionTableSize');
-    this.actionTableSize = actionTableSize ? actionTableSize : 'large';
+    this.actionTableSize = (actionTableSize ? actionTableSize : 'middle') as NzTableSize;
   }
 
   ngOnInit () {

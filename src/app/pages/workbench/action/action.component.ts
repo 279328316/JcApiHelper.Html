@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ApiService} from '@pages/workbench/service/api.service';
 import {Action, ParamModel, PTypeModel} from '@pages/workbench/service/api';
-import {Jc} from '@core/jc';
+import {Util} from '@core/util';
 
 @Component({
   selector: 'app-action', templateUrl: './action.component.html', styleUrls: ['./action.component.less']
@@ -15,20 +15,20 @@ export class ActionComponent implements OnInit {
   inputParams: ParamModel[] = [];
   returnParams: ParamModel[] = [];
 
-  constructor (private routerParams: ActivatedRoute, private apiSvc: ApiService) {
+  constructor(private routerParams: ActivatedRoute, private apiSvc: ApiService) {
   }
 
-  ngOnInit () {
+  ngOnInit() {
     this.actionId = this.routerParams.snapshot.paramMap.get('actionId');
     this.getAction();
   }
 
   /*获取Action*/
-  getAction () {
+  getAction() {
     this.apiSvc.getAction(this.actionId).subscribe((action: Action) => {
       this.action = action;
       let title = action.controllerName + '/' + action.actionName + " - Api Helper";
-      Jc.setTitle(title);
+      Util.setTitle(title);
       if (action && action.inputParameters) { //处理输入参数
         action.inputParameters.forEach((param) => {
           if (param.hasPiList && !param.isEnum) {
@@ -54,5 +54,15 @@ export class ActionComponent implements OnInit {
         }
       }
     });
+  }
+
+  /* name参数排序 */
+  nameSortFn(a: any, b: any, sortOrder: string) {
+    return a['name'].localeCompare(b['name']);
+  }
+
+  /* type参数排序 */
+  typeSortFn(a: any, b: any, sortOrder: string) {
+    return a['typeName'].localeCompare(b['typeName']);
   }
 }

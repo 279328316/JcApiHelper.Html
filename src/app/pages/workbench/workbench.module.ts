@@ -8,9 +8,9 @@ import {LayoutModule} from '@layout/layout.module';
 import {WorkbenchComponent} from "./index/workbench.component";
 import {ApiService} from "./service/api.service";
 import {ControllerFilterPipe} from "./service/controllerfilter.pipe";
-import { ActionComponent } from './action/action.component';
-import { PTypeComponent } from './ptype/ptype.component';
-import { TsViewerComponent } from './tsviewer/tsviewer.component';
+import {ActionComponent} from './action/action.component';
+import {PTypeComponent} from './ptype/ptype.component';
+import {TsViewerComponent} from './tsviewer/tsviewer.component';
 
 @NgModule({
   imports: [

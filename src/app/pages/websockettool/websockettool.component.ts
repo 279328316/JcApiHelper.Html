@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Jc} from '@core/jc';
+import {Util} from '@core/util';
 
 @Component({
   selector: 'app-websockettool',
@@ -30,7 +30,7 @@ export class WebSocketToolComponent implements OnInit {
     }
     this.displayMsg = '';
     if (!this.serverUrl) {
-      Jc.showInfoBox('WebSocket Address 不能为空.');
+      Util.showInfoBox('WebSocket Address 不能为空.');
       return;
     }
     try {
@@ -71,13 +71,13 @@ export class WebSocketToolComponent implements OnInit {
 
   // 显示Msg
   showMsg(msg: string) {
-    this.displayMsg += Jc.formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss') + ' ' + msg + '\n';
+    this.displayMsg += Util.formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss') + ' ' + msg + '\n';
   }
 
   // 发送Msg
   sendMsg() {
     if (!this.msg) {
-      Jc.showInfoBox('发送消息不能为空');
+      Util.showInfoBox('发送消息不能为空');
       return;
     }
     if (this.wsStatus) {
@@ -89,10 +89,10 @@ export class WebSocketToolComponent implements OnInit {
         }
       }
       catch (e) {
-        Jc.showInfoBox('消息发送失败:' + e);
+        Util.showInfoBox('消息发送失败:' + e);
       }
     } else {
-      Jc.showInfoBox('WebSocket尚未连接');
+      Util.showInfoBox('WebSocket尚未连接');
     }
   }
 

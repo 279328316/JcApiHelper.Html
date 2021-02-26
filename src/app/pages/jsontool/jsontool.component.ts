@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {Jc} from '@core/jc';
+import {Util} from '@core/util';
 import {TsModel, TsPi} from '@pages/workbench/service/tsmodel';
 
 @Component({
@@ -30,7 +30,7 @@ export class JsonToolComponent implements OnInit, AfterViewInit {
   }
 
   /*text Area 滚动*/
-  scroll(e) {
+  scroll(e:any) {
     this.line.scrollTop = e.target.scrollTop;
   }
 
@@ -68,7 +68,7 @@ export class JsonToolComponent implements OnInit, AfterViewInit {
 
   /*复制成功*/
   copySuccess() {
-    Jc.showInfoBox('内容已复制');
+    Util.showInfoBox('内容已复制');
   }
 
   /*查看样例*/
@@ -78,9 +78,9 @@ export class JsonToolComponent implements OnInit, AfterViewInit {
       age: 19, sex: '男',
       birthday: new Date(),
       isChildren: true,
-      alias: ['东子', '小屁孩'],
-      friends: [{name: '小燕子', age: 17, sex: '女'},
-        {name: '小郭子', age: 18, sex: '男'}]
+      alias: ['东子'],
+      friends: [{name: '张三', age: 17, sex: '男'},
+        {name: '李四', age: 18, sex: '男'}]
     };
     this.jsonStr = JSON.stringify(obj);
     this.formatJson();
@@ -113,13 +113,13 @@ export class JsonToolComponent implements OnInit, AfterViewInit {
         });
         this.showCode = true;
       } else {
-        Jc.showInfoBox('No objects that can be generated.');
+        Util.showInfoBox('No objects that can be generated.');
       }
     }
   }
 
   /*根据Object获取其Ts类型*/
-  getTsClass(obj: Object, pname: string = ''): string {
+  getTsClass(obj: any, pname: string = ''): string {
     const classStr = '';
     if (typeof (obj) === 'object') {
       if (obj instanceof Array) { // 数组类型
@@ -139,7 +139,7 @@ export class JsonToolComponent implements OnInit, AfterViewInit {
             if (pval instanceof Array) { // 数组对象
               if (pval.length > 0) {
                 if (typeof(pval[0]) === 'object') {  // 对象数组
-                  pi.tsType = Jc.firstToUpper(p) + '[]';
+                  pi.tsType = Util.firstToUpper(p) + '[]';
                 } else {  // 普通数组
                   pi.tsType = typeof(pval[0]) + '[]';
                 }
@@ -147,9 +147,9 @@ export class JsonToolComponent implements OnInit, AfterViewInit {
                 pi.tsType = 'any';
               }
             } else {   // 普通对象属性 以首字母大写属性名为类型
-              pi.tsType = Jc.firstToUpper(p);
+              pi.tsType = Util.firstToUpper(p);
             }
-            this.getTsClass(pval, Jc.firstToUpper(p));
+            this.getTsClass(pval, Util.firstToUpper(p));
           } else {  // 普通属性
             pi.tsType = typeof(pval);
           }

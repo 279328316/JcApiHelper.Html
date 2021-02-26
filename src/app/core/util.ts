@@ -3,13 +3,15 @@
  * Created by Myself
  */
 
-import {ActivatedRoute, Router} from '@angular/router';
+import { Router} from '@angular/router';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Title} from "@angular/platform-browser";
 
-import {NzMessageService, NzModalService, NzNotificationService} from 'ng-zorro-antd';
 import {Observer, Observable} from 'rxjs';
-import {environment} from '../../environments/environment';
+import {NzModalService} from "ng-zorro-antd/modal";
+import {NzMessageService} from "ng-zorro-antd/message";
+import {NzNotificationService} from "ng-zorro-antd/notification";
+import {environment} from "@env/environment";
 
 /*
     把公用的提示信息放到Service里面,用起来很舒服,
@@ -83,24 +85,22 @@ export class SelectItem {
 }
 
 //
-/*SnHelper类
- Helper:内容
+/*Util类
  ajax
  * */
-export class Jc {
+export class Util {
 
   /*--------Http ajax----------------------------------------------------------------------------*/
   private static heplerIsInit = false; // SnHelper是否已初始化
   static router: Router;
   static modal: NzModalService;
   static msg: NzMessageService;
-  static msgDuration = 3; // 提示消息显示时间
   static ntf: NzNotificationService;
   static ntfDuration = 5; // 通知消息显示时间
   static http: HttpClient; // @param {Http} http - The injected Http.
   static titleService: Title;
   static currentUser: {};
-  static token = '';
+  static token: string|null = '';
 
   /*初始化方法
    @param {Http} http
@@ -108,30 +108,30 @@ export class Jc {
    @param {loginService} http
    * */
   static onInit (http: HttpClient, router: Router, modal: NzModalService, msg: NzMessageService, ntf: NzNotificationService, titleService: Title) {
-    Jc.http = http;
-    Jc.router = router;
-    Jc.modal = modal;
-    Jc.msg = msg;
-    Jc.ntf = ntf;
-    Jc.titleService = titleService;
-    Jc.heplerIsInit = true;
-    Jc.token = localStorage.getItem('JcCoreToken');
+    Util.http = http;
+    Util.router = router;
+    Util.modal = modal;
+    Util.msg = msg;
+    Util.ntf = ntf;
+    Util.titleService = titleService;
+    Util.heplerIsInit = true;
+    Util.token = localStorage.getItem('JcCoreToken');
   }
 
   /*跳转
   * */
   static goTo (url: string, params: {} = {}) {
-    Jc.router.navigateByUrl(url, params);
+    Util.router.navigateByUrl(url, params);
   }
 
   /*设置页面标题
   * */
-  static setTitle (title: string) {
-    Jc.titleService.setTitle(title);
+  static setTitle (title: string):void {
+    Util.titleService.setTitle(title);
   }
 
   /*获取完整请求Url*/
-  static getRequestUrl (url) {
+  static getRequestUrl (url: string):string {
     if (!url.startsWith('https://') && !url.startsWith('http://')) {
       url = environment.SERVER_URL + url;
     } else {
@@ -154,47 +154,48 @@ export class Jc {
     waitingTipTitle:string 请求等待提示标题
   * */
   static ajax (url: string, params: any = {}, autoError: boolean = true, autoRedirectLogin: boolean = true, waitingTipMsg = '', waitingTipTitle = ''): Observable<any> {
-    if (!Jc.heplerIsInit) {
-      Jc.modal.info({
-        nzTitle: '提示', nzContent: 'SnHelper未初始化.无法使用ajax服务.'
-      });
-      return;
-    }
     let ajaxObserver: Observer<any>;
     const ajaxObservable = new Observable<any>(observer => ajaxObserver = observer);
+    if (!Util.heplerIsInit) {
+      Util.modal.info({
+        nzTitle: '提示', nzContent: 'SnHelper未初始化.无法使用ajax服务.'
+      });
+      return ajaxObservable;
+    }
     /*if (waitingTipMsg !== '') {
-      Jc.showWaitingBox(waitingTipMsg, waitingTipTitle);
+      Util.showWaitingBox(waitingTipMsg, waitingTipTitle);
     }*/
     const headers = new HttpHeaders()
-      .set('token', Jc.token ? Jc.token : '')
+      .set('token', Util.token ? Util.token : '')
       .set('Content-Type', 'application/x-www-form-urlencoded;charset=utf-8;');
-    url = Jc.getRequestUrl(url);
-    const paramsStr = Jc.transformRequest(params);
-    Jc.http.post(url, paramsStr, {headers: headers})
+    url = Util.getRequestUrl(url);
+    const paramsStr = Util.transformRequest(params);
+    let obj1:any = Util.http.post(url, paramsStr, {headers: headers})
       .subscribe((result: object) => {
-        let robj : Robj<any> =result as Robj<any>;
+        let robj : Robj<any> = result as Robj<any>;
         console.log(robj);
         if (robj) {
           if (robj.code === 2000) { // 登录超时
-            Jc.showErrorMessageBox(robj.message);
+            Util.showErrorMessageBox(robj.message);
           } else if (robj.code === 1000) {
-            Jc.observerNext(ajaxObserver, robj.result);
+            Util.observerNext(ajaxObserver, robj.result);
           } else {
             if (autoError) {
-              Jc.showErrorMessageBox(robj.message);
+              Util.showErrorMessageBox(robj.message);
             }
-            Jc.observerError(ajaxObserver, robj.message);
+            Util.observerError(ajaxObserver, robj.message);
           }
         }else{
-          Jc.showErrorMessageBox('服务端返回数据格式无效.');
+          Util.showErrorMessageBox('服务端返回数据格式无效.');
         }
       }, err => {// 网络等异常 提示网络异常后,抛出完成
         if (autoError) {
-          Jc.showErrorMessageBox('网络异常,请稍候重试...');
+          Util.showErrorMessageBox('网络异常,请稍候重试...');
         }
-        Jc.observerError(ajaxObserver, '网络异常,请稍候重试...');
+        Util.observerError(ajaxObserver, '网络异常,请稍候重试...');
       }, () => {// 请求完成
-        Jc.observerComplete(ajaxObserver);
+        console.log(Util.http,obj1);
+        Util.observerComplete(ajaxObserver);
       });
     return ajaxObservable;
   }
@@ -209,23 +210,23 @@ export class Jc {
     waitingTipTitle:string 请求等待提示标题
   * */
   static download (url: string, params: any = {}, fileName: string = 'fileName', autoError: boolean = true, waitingTipMsg = '', waitingTipTitle = ''): Observable<any> {
-    if (!Jc.heplerIsInit) {
-      Jc.modal.info({
-        nzTitle: '提示', nzContent: 'SnHelper未初始化.无法使用ajax服务.'
-      });
-      return;
-    }
     let ajaxObserver: Observer<any>;
     const ajaxObservable = new Observable<any>(observer => ajaxObserver = observer);
+    if (!Util.heplerIsInit) {
+      Util.modal.info({
+        nzTitle: '提示', nzContent: 'SnHelper未初始化.无法使用ajax服务.'
+      });
+      return ajaxObservable;
+    }
     if (waitingTipMsg !== '') {
-      Jc.showWaitingBox(waitingTipMsg, waitingTipTitle);
+      Util.showWaitingBox(waitingTipMsg, waitingTipTitle);
     }
     const headers = new HttpHeaders()
-      .set('token', Jc.token ? Jc.token : '')
+      .set('token', Util.token ? Util.token : '')
       .set('Content-Type', 'application/x-www-form-urlencoded;charset=utf-8;');
-    url = Jc.getRequestUrl(url);
-    const paramsStr = Jc.transformRequest(params);
-    Jc.http.post(url, paramsStr, {headers: headers, responseType: 'blob'})
+    url = Util.getRequestUrl(url);
+    const paramsStr = Util.transformRequest(params);
+    Util.http.post(url, paramsStr, {headers: headers, responseType: 'blob'})
       .subscribe((blob: Blob) => {
         let objectUrl = URL.createObjectURL(blob);
         let a = document.createElement('a');
@@ -239,14 +240,14 @@ export class Jc {
         URL.revokeObjectURL(objectUrl);
       }, err => {// 网络等异常 提示网络异常后,抛出完成
         if (autoError) {
-          Jc.showErrorMessageBox('网络异常,请稍候重试...');
+          Util.showErrorMessageBox('网络异常,请稍候重试...');
         }
-        Jc.observerError(ajaxObserver, '网络异常,请稍候重试...');
+        Util.observerError(ajaxObserver, '网络异常,请稍候重试...');
         if (waitingTipMsg !== '') {
           // 等待提示对话框 关闭
         }
       }, () => {// 请求完成
-        Jc.observerComplete(ajaxObserver);
+        Util.observerComplete(ajaxObserver);
         if (waitingTipMsg !== '') {
           // 等待提示对话框 关闭
         }
@@ -259,42 +260,42 @@ export class Jc {
   FormData 上传文件
   * */
   static formajax (url: string, params: any = {}, autoError: boolean = true, waitingTipMsg = '', waitingTipTitle = ''): Observable<any> {
-    if (!Jc.heplerIsInit) {
-      Jc.modal.info({
-        nzTitle: '提示', nzContent: 'SnHelper未初始化.无法使用ajax服务.'
-      });
-      return;
-    }
-    if (waitingTipMsg !== '') {
-      Jc.showWaitingBox(waitingTipMsg, waitingTipTitle);
-    }
     let ajaxObserver: Observer<any>;
     const ajaxObservable = new Observable<any>(observer => ajaxObserver = observer);
-    const headers = new HttpHeaders().set('token', Jc.token ? Jc.token : '');
-    url = Jc.getRequestUrl(url);
+    if (!Util.heplerIsInit) {
+      Util.modal.info({
+        nzTitle: '提示', nzContent: 'SnHelper未初始化.无法使用ajax服务.'
+      });
+      return ajaxObservable;
+    }
+    if (waitingTipMsg !== '') {
+      Util.showWaitingBox(waitingTipMsg, waitingTipTitle);
+    }
+    const headers = new HttpHeaders().set('token', Util.token ? Util.token : '');
+    url = Util.getRequestUrl(url);
     try {
-      Jc.http.post<Object>(url, params, {headers: headers}).subscribe((robj: Robj<Object>) => {
+      Util.http.post<Object>(url, params, {headers: headers}).subscribe((robj: any) => {
         if (robj.code === 2000) { // 登录超时
-          Jc.router.navigateByUrl('passport/login');
-          Jc.observerError(ajaxObserver, robj.message);
+          Util.router.navigateByUrl('passport/login');
+          Util.observerError(ajaxObserver, robj.message);
         } else if (robj.code === 1000) {
-          Jc.observerNext(ajaxObserver, robj.result);
+          Util.observerNext(ajaxObserver, robj.result);
         } else {
           if (autoError) {
-            Jc.showErrorMessageBox(robj.message);
+            Util.showErrorMessageBox(robj.message);
           }
-          Jc.observerError(ajaxObserver, robj.message);
+          Util.observerError(ajaxObserver, robj.message);
         }
-      }, err => {// 网络等异常 提示网络异常后,抛出完成
+      }, (err:any) => {// 网络等异常 提示网络异常后,抛出完成
         if (autoError) {
-          Jc.showErrorMessageBox('网络异常,请稍候重试...');
+          Util.showErrorMessageBox('网络异常,请稍候重试...');
         }
-        Jc.observerError(ajaxObserver, '网络异常,请稍候重试...');
+        Util.observerError(ajaxObserver, '网络异常,请稍候重试...');
         if (waitingTipMsg !== '') {
           // 等待提示对话框 关闭
         }
       }, () => {// 请求完成
-        Jc.observerComplete(ajaxObserver);
+        Util.observerComplete(ajaxObserver);
         if (waitingTipMsg !== '') {
           // 等待提示对话框 关闭
         }
@@ -306,7 +307,7 @@ export class Jc {
   }
 
   /*将Object属性转换为字符串*/
-  static transformRequest (obj): string {
+  static transformRequest (obj:any): string {
     const str = [];
     for (const p in obj) {
       const pval = obj[p];
@@ -364,7 +365,7 @@ export class Jc {
    */
   static showOkMessageBox (msg: string = '', title: string = '提示', okVal: string = '确定') {
     if (msg) {
-      Jc.msg.info(msg);
+      Util.msg.info(msg);
     }
   }
 
@@ -381,7 +382,7 @@ export class Jc {
    */
   static showErrorMessageBox (msg: string = '', title: string = '提示', okVal: string = '确定', cancelVal: string = '取消'): void {
     if (msg) {
-      Jc.msg.info(msg);
+      Util.msg.info(msg);
     }
   }
 
@@ -397,7 +398,7 @@ export class Jc {
    */
   static showConfirmBox (msg: string = '', okSub: boolean = true, cancelSub: boolean = false, title: string = '提示', okVal: string = '确定', cancelVal: string = '取消') {
     if (msg) {
-      Jc.msg.info(msg);
+      Util.msg.info(msg);
     }
   }
 
@@ -408,7 +409,7 @@ export class Jc {
    */
   static showModalBox (content: string = '', title: string = '', dlgwidth: number = 0): void {
     if (content) {
-      Jc.msg.info(content);
+      Util.msg.info(content);
     }
   }
 
@@ -420,7 +421,7 @@ export class Jc {
    */
   static showInfoBox (msg: string = '', title: string = '', time: number = 0): void {
     if (msg) {
-      Jc.msg.info(msg);
+      Util.msg.info(msg);
     }
   }
 
@@ -432,28 +433,28 @@ export class Jc {
    */
   static showWaitingBox (msg: string = '', title: string = '', time: number = 0): void {
     if (msg) {
-      Jc.msg.info(msg);
+      Util.msg.info(msg);
     }
   }
 
   /*日期处理相关*/
   /*休息ms*/
-  static sleep = async (duration) => {
+  static sleep = async (duration : number) => {
     return new Promise((resolve, reject) => {
       setTimeout(resolve, duration);
     });
   };
 
   // 日期格式化
-  static formatDate (date, fmt = 'yyyy-MM-dd'): string {
+  static formatDate (date : any, fmt = 'yyyy-MM-dd'): string {
     if (!date) {
-      return;
+      return date.toString();
     }
     try {
       if (typeof(date) == 'string') { // 处理传入格式为字符串
         date = new Date(date);
       }
-      const o = {
+      const o:any = {
         'M+': date.getMonth() + 1,                 // 月份
         'd+': date.getDate(),                    // 日
         'h+': date.getHours(),                   // 小时
@@ -481,9 +482,9 @@ export class Jc {
     const isNum = this.regexValidate('^[0-9]*$', dateStr); // 校验是否为数字
     let isValid = false;
     if (isNum && (dateStr.length === 4 || dateStr.length === 6 || dateStr.length === 8)) {
-      let intYear;
-      let intMonth;
-      let intDay;
+      let intYear: number = 0;
+      let intMonth : number = 0;
+      let intDay: number = 0;
       if (dateStr.length === 4) {
         intYear = parseInt(dateStr, 10);
       } else if (dateStr.length === 6) {
@@ -565,7 +566,7 @@ export class Jc {
   }
 
   // 判断闰年
-  static leapyear (year): boolean {
+  static leapyear (year : number): boolean {
     if (((year % 400 === 0) || (year % 100 !== 0)) && (year % 4 === 0)) {
       return true;
     } else {

@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
 
-import {NgZorroAntdModule} from 'ng-zorro-antd';
 import {SharedModule} from '@shared/shared.module';
 
 import {KeywordHighlightPipe} from '@core/keyworkhl.pipe';
@@ -19,7 +18,7 @@ import { WebSocketToolComponent } from './websockettool/websockettool.component'
 import { HttpToolComponent } from './httptool/httptool.component';
 
 @NgModule({
-  imports: [SharedModule, NgZorroAntdModule, PagesRoutingModule],
+  imports: [SharedModule, PagesRoutingModule],
   declarations: [
     KeywordHighlightPipe,
     IndexComponent,

@@ -1,11 +1,11 @@
 <div>
   <div nz-row>
-    <div nz-col nzSpan="2" style="width:280px;" class="p5">
+    <div nz-col nzSpan="5" class="p5">
       <div class="main-menu">
         <nz-affix *ngIf="showControllerList">
           <div class="mt5">
             <div nz-row>
-              <div nz-col nzSpan="20">
+              <div nz-col nzSpan="18">
                 <nz-input-group nzSize="small" [nzSuffix]="suffixIcon">
                   <input placeholder="Search" nz-input
                          [(ngModel)]="searchText"/>
@@ -64,11 +64,11 @@
         </nz-affix>
       </div>
     </div>
-    <div nz-col style="width:calc(100% - 280px);" nzSpan="20">
+    <div nz-col style="width:calc(100% - 280px);" nzSpan="19">
       <div style="min-height: calc( 100vh - 100px );" class="p20">
         <div class="pull-right mrp18">
           <nz-radio-group [(ngModel)]="actionTableSize" (ngModelChange)="actionTableSizeChanged()">
-            <label nz-radio nzValue="large">Large</label>
+            <label nz-radio nzValue="middle">Large</label>
             <label nz-radio nzValue="small">Small</label>
           </nz-radio-group>
         </div>
@@ -97,7 +97,7 @@
               <nz-table #actionTable
                         [nzShowPagination]='false'
                         [nzSize]="actionTableSize"
-                        nzPageSize="1000"
+                        [nzPageSize]="1000"
                         [nzData]="controller.actionList">
                 <thead>
                 <tr>

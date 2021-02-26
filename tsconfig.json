@@ -1,35 +1,53 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "downlevelIteration": true,
-    "module": "esnext",
+    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "checkJs":false,
+    "strict": true,
+    "strictPropertyInitialization": false,  /* Enable strict checking of property initialization in classes. */
+    "strictNullChecks": false,              /* strictNullChecks为true时，null和undefined值不能赋给非这两种类型的值，别的类型也不能赋给他们，除了any类型。还有个例外就是undefined可以赋值给void类型 */
+    "strictFunctionTypes": true,           /* strictFunctionTypes的值为true或false，用于指定是否使用函数参数双向协变检查 */
+    "strictBindCallApply": true,           /* 设为true后会对bind、call和apply绑定的方法的参数的检测是严格检测的 */
+    "noImplicitAny": true,                 /* noImplicitAny的值为true或false，如果我们没有为一些值设置明确的类型，编译器会默认认为这个值为any，如果noImplicitAny的值为true的话。则没有明确的类型会报错。默认值为false */
+    "noImplicitReturns": true,             /* 用于检查函数是否有返回值，设为true后，如果函数没有返回值则会提示，默认为false */
+    "noImplicitThis": true,                /* 当this表达式的值为any类型的时候，生成一个错误 */
+    "noFallthroughCasesInSwitch": true,    /* 用于检查switch中是否有case没有使用break跳出switch，默认为false */
     "sourceMap": true,
     "declaration": false,
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
+    "downlevelIteration": true,
     "experimentalDecorators": true,
+    "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2015",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
+    "module": "es2020",
     "lib": [
-      "es2017",
+      "es2018",
       "dom"
     ],
-    "baseUrl": "src/",
     "paths": {
-        "@shared": [ "app/shared" ],
-        "@shared/*": [ "app/shared/*" ],
-        "@core": [ "app/core/" ],
-        "@core/*": [ "app/core/*" ],
-        "@layout": [ "app/layout/" ],
-        "@layout/*": [ "app/layout/*" ],
-        "@pages": [ "app/pages/" ],
-        "@pages/*": [ "app/pages/*" ],
-        "@env": [ "environments/" ],
-        "@env/*": [ "environments/*" ]
-    }
+        "@shared": [ "src/app/shared" ],
+        "@shared/*": [ "src/app/shared/*" ],
+        "@core": [ "src/app/core/" ],
+        "@core/*": [ "src/app/core/*" ],
+        "@layout": [ "src/app/layout/" ],
+        "@layout/*": [ "src/app/layout/*" ],
+        "@pages": [ "src/app/pages/" ],
+        "@pages/*": [ "src/app/pages/*" ],
+        "@env": [ "src/environments/" ],
+        "@env/*": [ "src/environments/*" ]
+    },
+    "typeRoots": [
+        "../node_modules/@types",
+        "../@types"
+    ]
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
   }
 }

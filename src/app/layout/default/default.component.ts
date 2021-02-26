@@ -5,7 +5,7 @@ import {
   RouteConfigLoadStart,
   NavigationError
 } from "@angular/router";
-import { NzMessageService } from 'ng-zorro-antd';
+import {NzMessageService} from "ng-zorro-antd/message";
 
 @Component({
   selector: "layout-default",

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 // layout
-import { LayoutDefaultComponent } from '../layout/default/default.component';
+import { LayoutDefaultComponent } from '@layout/default/default.component';
 
 import { IndexComponent } from './index/index.component';
 import {JsonToolComponent} from "@pages/jsontool/jsontool.component";

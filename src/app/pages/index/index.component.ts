@@ -1,9 +1,8 @@
 
-import {Component, OnInit, OnDestroy, Inject, Optional} from '@angular/core';
-import {Router} from '@angular/router';
-import {NzMessageService} from 'ng-zorro-antd';
+import {Component, OnInit} from '@angular/core';
 
-import {Jc} from '@core/jc';
+import {Util} from '@core/util';
+import {NzMessageService} from "ng-zorro-antd/message";
 
 @Component({
   selector: 'app-index',
@@ -19,6 +18,6 @@ export class IndexComponent implements OnInit{
   }
 
   startWork():void{
-    Jc.goTo("workbench",{queryParams:{a:1,b:2,c:new Date()}});
+    Util.goTo("workbench",{queryParams:{a:1,b:2,c:new Date()}});
   }
 }

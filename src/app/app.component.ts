@@ -2,13 +2,16 @@ import {Component, OnInit} from '@angular/core';
 import {Title} from '@angular/platform-browser';
 
 import {
-  Router, NavigationEnd, ActivatedRoute, ActivatedRouteSnapshot, RouterState, RouterStateSnapshot
+  Router, ActivatedRoute
 } from '@angular/router';
 
-import {HttpClient, HttpResponse} from '@angular/common/http';
-import {NzModalService, NzMessageService, NzNotificationService} from 'ng-zorro-antd';
+import {HttpClient} from '@angular/common/http';
 
-import {Jc} from '@core/jc';
+import {Util} from '@core/util';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {NzMessageService} from "ng-zorro-antd/message";
+import {NzNotificationService} from "ng-zorro-antd/notification";
+
 
 @Component({
   selector: 'app-root', templateUrl: './app.component.html', styleUrls: ['./app.component.less']
@@ -20,7 +23,7 @@ export class AppComponent implements OnInit {
                public activatedRoute: ActivatedRoute,
                private titleService: Title, private modal: NzModalService, private msg: NzMessageService, private ntf: NzNotificationService) {
     //初始化Sn
-    Jc.onInit(this.http, this.router, this.modal, this.msg, this.ntf, this.titleService);
+    Util.onInit(this.http, this.router, this.modal, this.msg, this.ntf, this.titleService);
     //this.checkLogin();
   }
 
@@ -29,7 +32,7 @@ export class AppComponent implements OnInit {
 
   /*检查用户是否已登录*/
   checkLogin () {
-    if (Jc.token) {
+    if (Util.token) {
     }
   }
 }
