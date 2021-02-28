@@ -4,7 +4,7 @@
 
 import {Injectable} from '@angular/core';
 
-import {Util} from '@core/util';
+import {ContentType, Util} from '@core/util';
 import {Action, Controller, PTypeModel} from './api';
 import {Observable} from "rxjs/index";
 
@@ -16,7 +16,7 @@ export class ApiService {
   /*获取apiVersion*/
   public getApiVersion () :void {
     if (!this.apiVersion) {
-      Util.ajax('getApiVersion', {}, false)
+      Util.ajax('getApiVersion', {},'form', false)
         .subscribe((apiVersion: string) => {
           this.apiVersion = apiVersion;
         });
@@ -26,6 +26,11 @@ export class ApiService {
   /*获取ControllerList*/
   public getControllerList (): Observable<Controller[]> {
     return Util.ajax('GetControllerList');
+  }
+
+  /*获取ControllerListByIds*/
+  public getControllerListByIds (ids: string[]): Observable<Controller[]> {
+    return Util.ajax('GetControllerListByIds', ids,ContentType.json);
   }
 
   /*获取Controller*/

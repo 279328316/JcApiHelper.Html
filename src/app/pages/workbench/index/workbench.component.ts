@@ -16,6 +16,7 @@ export class WorkbenchComponent implements OnInit {
   searchText: string = ''; //Controller 过滤条件
   controllerList: Controller[] = [];    //实际显示ControllerList
   selectedController: Controller[] = [];
+  queryAmount: number = 5;
 
   areaList: Area[] = [];
   selectedArea: Area[] = [];
@@ -23,20 +24,21 @@ export class WorkbenchComponent implements OnInit {
   isAllAreaSelected: boolean = false;
   isAreaSelectIndeterminate: boolean = false;
 
-  constructor (private apiSvc: ApiService) {
+  constructor(private apiSvc: ApiService) {
     let actionTableSize = localStorage.getItem('actionTableSize');
     this.actionTableSize = (actionTableSize ? actionTableSize : 'middle') as NzTableSize;
   }
 
-  ngOnInit () {
+  ngOnInit() {
     this.initControllerList();
   }
 
   //用于修复 onReuseInit执行两次bug
   //路由复用 retrieve方法会执行两次,暂时无法解决.
-  onReuseFlag:boolean = false;
-  _onReuseInit () {
-    if(this.onReuseFlag) {
+  onReuseFlag: boolean = false;
+
+  _onReuseInit() {
+    if (this.onReuseFlag) {
       //修复 nz-affix控件 reusetab情况下,返回后宽度为0 bug
       this.showControllerList = false;
       setTimeout(() => {
@@ -45,29 +47,57 @@ export class WorkbenchComponent implements OnInit {
       }, 1);
       //console.log('_onReuseInit');
       this.onReuseFlag = false;
-    }else{
+    } else {
       this.onReuseFlag = true;
     }
   }
 
-  _onReuseDestroy () {
+  _onReuseDestroy() {
     //console.log('_onReuseDestroy');
   }
 
   /*初始化ControllerList*/
-  initControllerList () {
+  initControllerList() {
     this.searchText = "";
     this.isDisplayAllMenuSelected = false;
     this.controllerList = [];
     this.apiSvc.getControllerList().subscribe((controllerList: Controller[]) => {
       this.controllerList = controllerList;
       this.initAreaList();
+      this.initControllerDetail(0);
       this.displayAll();
     });
   }
 
+  /*初始化initControllerDetail*/
+  initControllerDetail(curIndex: number) {
+    let ids: string[] = [];
+    let i = 0;
+    for (i = 0; curIndex + i < this.controllerList.length; i++) {
+      ids.push(this.controllerList[curIndex + i].id);
+      if (i == this.queryAmount - 1) {
+        break;
+      }
+    }
+    this.apiSvc.getControllerListByIds(ids).subscribe((result: Controller[]) => {
+      result.forEach(rc => {
+        let filterControllers = this.controllerList.filter(fc => fc.id == rc.id);
+        if (filterControllers && filterControllers.length > 0) {
+          filterControllers[0].summary = rc.summary;
+          filterControllers[0].actionList = rc.actionList;
+        }
+      });
+    }, null, () => {
+      curIndex += i + 1;
+      console.log('curIndex:', curIndex);
+      if (curIndex < this.controllerList.length) {
+        this.initControllerDetail(curIndex);
+      }
+    });
+  }
+
   /*初始化AreaList*/
-  initAreaList () {
+  initAreaList() {
     this.areaList = [];
     this.selectedArea = [];
     if (this.controllerList) {
@@ -92,7 +122,7 @@ export class WorkbenchComponent implements OnInit {
   }
 
   /*全选*/
-  allSelectAreaChange () {
+  allSelectAreaChange() {
     this.areaList.forEach(area => {
       area.isSelected = this.isAllAreaSelected;
     });
@@ -100,7 +130,7 @@ export class WorkbenchComponent implements OnInit {
   }
 
   /*selecteArea*/
-  areaSelectChange (area: Area): void {
+  areaSelectChange(area: Area): void {
     if (this.areaList.filter(a => !a.isSelected).length <= 0) {
       this.isAllAreaSelected = true;
       this.isAreaSelectIndeterminate = false;
@@ -114,12 +144,12 @@ export class WorkbenchComponent implements OnInit {
   }
 
   /*刷新Controller列表*/
-  refreshControllerList () {
+  refreshControllerList() {
     this.initControllerList();
   }
 
   /*选中Controller*/
-  onSelectController (controller: Controller) {
+  onSelectController(controller: Controller) {
     this.selectedController = [];
     this.selectedController.push(controller);
     console.log(controller);
@@ -134,7 +164,7 @@ export class WorkbenchComponent implements OnInit {
   }
 
   /*显示所有Controller*/
-  displayAll () {
+  displayAll() {
     this.selectedController = this.controllerList;
     this.isDisplayAllMenuSelected = true;
     this.controllerList.forEach(controller => {
@@ -143,7 +173,7 @@ export class WorkbenchComponent implements OnInit {
   }
 
   /*actionTableSize改变*/
-  actionTableSizeChanged () {
+  actionTableSizeChanged() {
     localStorage.setItem('actionTableSize', this.actionTableSize);
   }
 }

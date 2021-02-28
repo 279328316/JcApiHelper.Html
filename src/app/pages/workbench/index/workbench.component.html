@@ -78,9 +78,9 @@
               <div class="vcenter">
                 <h2 class="lineblock" style="font-size: 26px;">{{controller.controllerName}}</h2>
                 <label class="ml40" style="vertical-align: text-bottom;">
-                  <span *ngFor="let attr of controller.customerAttrList;let i = index;">
+                  <span *ngFor="let attr of controller.customAttrList;let i = index;">
                     <nz-tag [nzColor]="i<tagcolor.length-1 ? tagcolor[i]:tagcolor[0]">
-                      {{attr.name|lowercase}}
+                      {{attr.name}}
                     </nz-tag>
                   </span>
                 </label>
@@ -114,9 +114,9 @@
                     </a>
                   </td>
                   <td>
-                    <div class="mt5" *ngFor="let attr of action.customerAttrList;let i = index;">
+                    <div class="mt5" *ngFor="let attr of action.customAttrList;let i = index;">
                       <nz-tag [nzColor]="i<tagcolor.length-1 ? tagcolor[i]:tagcolor[0]">
-                        {{attr.name|lowercase}}
+                        {{attr.name}}
                       </nz-tag>
                     </div>
                   </td>

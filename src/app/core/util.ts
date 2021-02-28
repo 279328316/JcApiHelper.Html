@@ -3,11 +3,11 @@
  * Created by Myself
  */
 
-import { Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Title} from "@angular/platform-browser";
 
-import {Observer, Observable} from 'rxjs';
+import {Observable, Observer} from 'rxjs';
 import {NzModalService} from "ng-zorro-antd/modal";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {NzNotificationService} from "ng-zorro-antd/notification";
@@ -29,6 +29,15 @@ export class RCode {
   static reLogin: number = 2000;
   static error: number = 3000;
   static systemError: number = 4000;
+}
+
+/*Api请求ContentType
+ @param json Json格式
+ @param form Form格式
+ * */
+export class ContentType {
+  static json: string = 'json';
+  static form: string = 'form';
 }
 
 export interface IPage {
@@ -58,7 +67,7 @@ export class KeyValueObj {
   Key: any;
   Value: any;
 
-  constructor (key: any, value: any) {
+  constructor(key: any, value: any) {
     this.Key = key;
     this.Value = value;
   }
@@ -78,7 +87,7 @@ export class Page<T> {
 export class SelectItem {
   text: string;   // Item显示文本
   value: string;   // Item值
-  constructor (text: string, value: string = '') {
+  constructor(text: string, value: string = '') {
     this.text = text;
     this.value = value;
   }
@@ -100,14 +109,14 @@ export class Util {
   static http: HttpClient; // @param {Http} http - The injected Http.
   static titleService: Title;
   static currentUser: {};
-  static token: string|null = '';
+  static token: string | null = '';
 
   /*初始化方法
    @param {Http} http
    @param {router} http
    @param {loginService} http
    * */
-  static onInit (http: HttpClient, router: Router, modal: NzModalService, msg: NzMessageService, ntf: NzNotificationService, titleService: Title) {
+  static onInit(http: HttpClient, router: Router, modal: NzModalService, msg: NzMessageService, ntf: NzNotificationService, titleService: Title) {
     Util.http = http;
     Util.router = router;
     Util.modal = modal;
@@ -120,18 +129,18 @@ export class Util {
 
   /*跳转
   * */
-  static goTo (url: string, params: {} = {}) {
+  static goTo(url: string, params: {} = {}) {
     Util.router.navigateByUrl(url, params);
   }
 
   /*设置页面标题
   * */
-  static setTitle (title: string):void {
+  static setTitle(title: string): void {
     Util.titleService.setTitle(title);
   }
 
   /*获取完整请求Url*/
-  static getRequestUrl (url: string):string {
+  static getRequestUrl(url: string): string {
     if (!url.startsWith('https://') && !url.startsWith('http://')) {
       url = environment.SERVER_URL + url;
     } else {
@@ -153,7 +162,7 @@ export class Util {
     waitingTipMsg:string 请求等待提示消息
     waitingTipTitle:string 请求等待提示标题
   * */
-  static ajax (url: string, params: any = {}, autoError: boolean = true, autoRedirectLogin: boolean = true, waitingTipMsg = '', waitingTipTitle = ''): Observable<any> {
+  static ajax(url: string, params: any = {}, contentType: ContentType = ContentType.form, autoError: boolean = true, autoRedirectLogin: boolean = true, waitingTipMsg = '', waitingTipTitle = ''): Observable<any> {
     let ajaxObserver: Observer<any>;
     const ajaxObservable = new Observable<any>(observer => ajaxObserver = observer);
     if (!Util.heplerIsInit) {
@@ -165,15 +174,21 @@ export class Util {
     /*if (waitingTipMsg !== '') {
       Util.showWaitingBox(waitingTipMsg, waitingTipTitle);
     }*/
-    const headers = new HttpHeaders()
-      .set('token', Util.token ? Util.token : '')
-      .set('Content-Type', 'application/x-www-form-urlencoded;charset=utf-8;');
+    let headers = new HttpHeaders()
+      .set('token', Util.token ? Util.token : '');
+
+    let ajaxParams = params;
+    if (contentType == ContentType.json) {
+      headers = headers.set('Content-Type', 'application/json;charset=utf-8;');
+    }
+    else {
+      headers = headers.set('Content-Type', 'application/x-www-form-urlencoded;charset=utf-8;');
+      ajaxParams = Util.transformRequest(params);
+    }
     url = Util.getRequestUrl(url);
-    const paramsStr = Util.transformRequest(params);
-    let obj1:any = Util.http.post(url, paramsStr, {headers: headers})
+    let obj1: any = Util.http.post(url, ajaxParams, {headers: headers})
       .subscribe((result: object) => {
-        let robj : Robj<any> = result as Robj<any>;
-        console.log(robj);
+        let robj: Robj<any> = result as Robj<any>;
         if (robj) {
           if (robj.code === 2000) { // 登录超时
             Util.showErrorMessageBox(robj.message);
@@ -185,7 +200,7 @@ export class Util {
             }
             Util.observerError(ajaxObserver, robj.message);
           }
-        }else{
+        } else {
           Util.showErrorMessageBox('服务端返回数据格式无效.');
         }
       }, err => {// 网络等异常 提示网络异常后,抛出完成
@@ -194,7 +209,6 @@ export class Util {
         }
         Util.observerError(ajaxObserver, '网络异常,请稍候重试...');
       }, () => {// 请求完成
-        console.log(Util.http,obj1);
         Util.observerComplete(ajaxObserver);
       });
     return ajaxObservable;
@@ -209,7 +223,7 @@ export class Util {
     waitingTipMsg:string 请求等待提示消息
     waitingTipTitle:string 请求等待提示标题
   * */
-  static download (url: string, params: any = {}, fileName: string = 'fileName', autoError: boolean = true, waitingTipMsg = '', waitingTipTitle = ''): Observable<any> {
+  static download(url: string, params: any = {}, fileName: string = 'fileName', autoError: boolean = true, waitingTipMsg = '', waitingTipTitle = ''): Observable<any> {
     let ajaxObserver: Observer<any>;
     const ajaxObservable = new Observable<any>(observer => ajaxObserver = observer);
     if (!Util.heplerIsInit) {
@@ -259,7 +273,7 @@ export class Util {
   /*异步Post请求
   FormData 上传文件
   * */
-  static formajax (url: string, params: any = {}, autoError: boolean = true, waitingTipMsg = '', waitingTipTitle = ''): Observable<any> {
+  static formajax(url: string, params: any = {}, autoError: boolean = true, waitingTipMsg = '', waitingTipTitle = ''): Observable<any> {
     let ajaxObserver: Observer<any>;
     const ajaxObservable = new Observable<any>(observer => ajaxObserver = observer);
     if (!Util.heplerIsInit) {
@@ -286,7 +300,7 @@ export class Util {
           }
           Util.observerError(ajaxObserver, robj.message);
         }
-      }, (err:any) => {// 网络等异常 提示网络异常后,抛出完成
+      }, (err: any) => {// 网络等异常 提示网络异常后,抛出完成
         if (autoError) {
           Util.showErrorMessageBox('网络异常,请稍候重试...');
         }
@@ -301,14 +315,14 @@ export class Util {
         }
       });
     } catch (e) {
-      console.log(e);
     }
     return ajaxObservable;
   }
 
   /*将Object属性转换为字符串*/
-  static transformRequest (obj:any): string {
+  static transformRequest(obj: any): string {
     const str = [];
+    console.log('transformRequest:', obj, typeof (obj));
     for (const p in obj) {
       const pval = obj[p];
       if (typeof (pval) == 'function') {
@@ -325,7 +339,7 @@ export class Util {
   /*------------------Observer-----------------------------------------------------*/
 
   /*Obserable订阅推送*/
-  static observerNext (ob: Observer<any>, val: any) {
+  static observerNext(ob: Observer<any>, val: any) {
     if (ob) {
       try {
         ob.next(val);
@@ -334,7 +348,7 @@ export class Util {
     }
   }
 
-  static observerError (ob: Observer<any>, val: any) {
+  static observerError(ob: Observer<any>, val: any) {
     if (ob) {
       try {
         ob.error(val);
@@ -343,7 +357,7 @@ export class Util {
     }
   }
 
-  static observerComplete (ob: Observer<any>) {
+  static observerComplete(ob: Observer<any>) {
     if (ob) {
       try {
         ob.complete();
@@ -363,7 +377,7 @@ export class Util {
    cancel:取消按钮文本
    使用:showConfirmMsgBox("您输入的信息有误!", fun,fun,"提示","确定");
    */
-  static showOkMessageBox (msg: string = '', title: string = '提示', okVal: string = '确定') {
+  static showOkMessageBox(msg: string = '', title: string = '提示', okVal: string = '确定') {
     if (msg) {
       Util.msg.info(msg);
     }
@@ -380,7 +394,7 @@ export class Util {
    cancel:取消按钮文本
    使用:showConfirmMsgBox("您输入的信息有误!", fun,fun,"提示","确定");
    */
-  static showErrorMessageBox (msg: string = '', title: string = '提示', okVal: string = '确定', cancelVal: string = '取消'): void {
+  static showErrorMessageBox(msg: string = '', title: string = '提示', okVal: string = '确定', cancelVal: string = '取消'): void {
     if (msg) {
       Util.msg.info(msg);
     }
@@ -396,7 +410,7 @@ export class Util {
    cancel:取消按钮文本
    使用:showConfirmMsgBox("您输入的信息有误!", fun,fun,"提示","确定","取消");
    */
-  static showConfirmBox (msg: string = '', okSub: boolean = true, cancelSub: boolean = false, title: string = '提示', okVal: string = '确定', cancelVal: string = '取消') {
+  static showConfirmBox(msg: string = '', okSub: boolean = true, cancelSub: boolean = false, title: string = '提示', okVal: string = '确定', cancelVal: string = '取消') {
     if (msg) {
       Util.msg.info(msg);
     }
@@ -407,7 +421,7 @@ export class Util {
    content: dialog内容
    title:窗口标题
    */
-  static showModalBox (content: string = '', title: string = '', dlgwidth: number = 0): void {
+  static showModalBox(content: string = '', title: string = '', dlgwidth: number = 0): void {
     if (content) {
       Util.msg.info(content);
     }
@@ -419,7 +433,7 @@ export class Util {
    title:窗口标题
    time:定时关闭 毫秒
    */
-  static showInfoBox (msg: string = '', title: string = '', time: number = 0): void {
+  static showInfoBox(msg: string = '', title: string = '', time: number = 0): void {
     if (msg) {
       Util.msg.info(msg);
     }
@@ -431,7 +445,7 @@ export class Util {
    title:窗口标题
    time:定时关闭
    */
-  static showWaitingBox (msg: string = '', title: string = '', time: number = 0): void {
+  static showWaitingBox(msg: string = '', title: string = '', time: number = 0): void {
     if (msg) {
       Util.msg.info(msg);
     }
@@ -439,14 +453,14 @@ export class Util {
 
   /*日期处理相关*/
   /*休息ms*/
-  static sleep = async (duration : number) => {
+  static sleep = async (duration: number) => {
     return new Promise((resolve, reject) => {
       setTimeout(resolve, duration);
     });
   };
 
   // 日期格式化
-  static formatDate (date : any, fmt = 'yyyy-MM-dd'): string {
+  static formatDate(date: any, fmt = 'yyyy-MM-dd'): string {
     if (!date) {
       return date.toString();
     }
@@ -454,7 +468,7 @@ export class Util {
       if (typeof(date) == 'string') { // 处理传入格式为字符串
         date = new Date(date);
       }
-      const o:any = {
+      const o: any = {
         'M+': date.getMonth() + 1,                 // 月份
         'd+': date.getDate(),                    // 日
         'h+': date.getHours(),                   // 小时
@@ -478,12 +492,12 @@ export class Util {
   }
 
   // 日期 有效性校验
-  static validDateStr (dateStr: string): boolean {
+  static validDateStr(dateStr: string): boolean {
     const isNum = this.regexValidate('^[0-9]*$', dateStr); // 校验是否为数字
     let isValid = false;
     if (isNum && (dateStr.length === 4 || dateStr.length === 6 || dateStr.length === 8)) {
       let intYear: number = 0;
-      let intMonth : number = 0;
+      let intMonth: number = 0;
       let intDay: number = 0;
       if (dateStr.length === 4) {
         intYear = parseInt(dateStr, 10);
@@ -501,13 +515,13 @@ export class Util {
   }
 
   // 正则校验
-  static regexValidate (regex: any, validateString: string): boolean {
+  static regexValidate(regex: any, validateString: string): boolean {
     const re = new RegExp(regex);
     return re.test(validateString);
   }
 
   // 校验日期是否合法
-  static isdate (intYear: number, intMonth: number, intDay: number): boolean {
+  static isdate(intYear: number, intMonth: number, intDay: number): boolean {
     if (intMonth > 12 || intMonth < 1) {
       return false;
     }
@@ -529,7 +543,7 @@ export class Util {
   }
 
   // 填充开始日期
-  static setStartDate (startDateStr: string, queryObj: any, feild: string): void {
+  static setStartDate(startDateStr: string, queryObj: any, feild: string): void {
     if (startDateStr.length === 4) {
       queryObj[feild] = queryObj[feild] + '-' + '01-01';
     } else if (startDateStr.length === 6) {
@@ -540,7 +554,7 @@ export class Util {
   }
 
   // 填充结束日期
-  static setEndDate (endDateStr: any, queryObj: any, feild: string): void {
+  static setEndDate(endDateStr: any, queryObj: any, feild: string): void {
     if (endDateStr.length === 4) {
       queryObj[feild] = endDateStr + '-12-31';
     } else if (endDateStr.length === 6) {
@@ -566,7 +580,7 @@ export class Util {
   }
 
   // 判断闰年
-  static leapyear (year : number): boolean {
+  static leapyear(year: number): boolean {
     if (((year % 400 === 0) || (year % 100 !== 0)) && (year % 4 === 0)) {
       return true;
     } else {
@@ -575,7 +589,7 @@ export class Util {
   }
 
   /*只有两个都存在时进行比较*/
-  static compareObjDate (startDateStr: string, endDateStr: string, queryObj: any): boolean {
+  static compareObjDate(startDateStr: string, endDateStr: string, queryObj: any): boolean {
     if (!queryObj[startDateStr] || !queryObj[endDateStr]) {
       return true;
     }
@@ -593,7 +607,7 @@ export class Util {
   }
 
   /*只有两个都存在时进行比较*/
-  static compareDate (startDate: any, endDate: any): number {
+  static compareDate(startDate: any, endDate: any): number {
     let result = 0;
     if (typeof (startDate) == 'string') {
       startDate = new Date(startDate.replace(/-/g, '/'));
@@ -613,7 +627,7 @@ export class Util {
 
 
   /*获取日期 日期加减*/
-  static addDate (date: any, year: number = 0, month: number = 0, days: number = 0, hours: number = 0, minutes: number = 0, seconds: number = 0, msec: number = 0): Date {
+  static addDate(date: any, year: number = 0, month: number = 0, days: number = 0, hours: number = 0, minutes: number = 0, seconds: number = 0, msec: number = 0): Date {
     if (typeof (date) == "string") {
       date = new Date(date.replace(/-/g, "/"));
     }
@@ -631,7 +645,7 @@ export class Util {
   }
 
   /*获取文件上传Speed*/
-  static getFileUploadSpeed (fileSize: number, dtStart: number, dtEnd: number): string {
+  static getFileUploadSpeed(fileSize: number, dtStart: number, dtEnd: number): string {
     const totalSeconds = (dtEnd - dtStart) / 1000;
     let sizePreSecond = fileSize / totalSeconds;
     let speed;
@@ -650,7 +664,7 @@ export class Util {
   }
 
   /*获取文件大小描述*/
-  static getFileSizeStr (fileSize: number): string {
+  static getFileSizeStr(fileSize: number): string {
     let fileSizeStr = '';
     if (fileSize > 1024 * 1024) {
       fileSizeStr = Math.round(fileSize / (1024 * 1024) * 10) / 10 + 'MB';
@@ -662,7 +676,7 @@ export class Util {
   }
 
   /*toLocalString() IE11中的toLocalString会出错*/
-  arrayToString (tArray: Array<any>, splitChar: string): string {
+  arrayToString(tArray: Array<any>, splitChar: string): string {
     let str = '';
     splitChar = splitChar ? splitChar : ',';
     if (tArray) {
@@ -679,7 +693,7 @@ export class Util {
 
 
   /*生成Guid*/
-  static newGuid (): string {
+  static newGuid(): string {
     let guid = "";
     for (let i = 1; i <= 32; i++) {
       var n = Math.floor(Math.random() * 16.0).toString(16);
@@ -690,7 +704,7 @@ export class Util {
   }
 
   /*首字母小写*/
-  static firstToLower (str: string): string {
+  static firstToLower(str: string): string {
     let result = str;
     if (result) {
       result = result[0].toLowerCase() + result.substring(1);
@@ -699,7 +713,7 @@ export class Util {
   }
 
   /*首字母大写*/
-  static firstToUpper (str: string): string {
+  static firstToUpper(str: string): string {
     let result = str;
     if (result) {
       result = result[0].toUpperCase() + result.substring(1);

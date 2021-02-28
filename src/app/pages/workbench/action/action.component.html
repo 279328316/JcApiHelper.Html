@@ -8,9 +8,9 @@
               {{(action.areaName ? action.areaName + '/':'') + action.controllerName + '/' + action.actionName}}
             </label>
             <label class="ml40">
-                  <span *ngFor="let attr of action.customerAttrList;let i = index;">
+                  <span *ngFor="let attr of action.customAttrList;let i = index;">
                     <nz-tag [nzColor]="i<tagcolor.length-1 ? tagcolor[i]:tagcolor[0]">
-                      {{attr.name|lowercase}}
+                      {{attr.name}}
                     </nz-tag>
                   </span>
             </label>
@@ -38,6 +38,13 @@
               <label class="f-size14" *ngFor="let param of action.inputParameters">
                 <span *ngIf="param.hasPiList">
                   <span>{{param.name}}</span> : <a routerLink="/workbench/ptype/{{param.isIEnumerable ? param.enumItemId : param.typeId}}">{{param.typeName}}</a>
+                  <label class="ml40">
+                        <span *ngFor="let attr of param.customAttrList;let i = index;">
+                          <nz-tag [nzColor]="i<tagcolor.length-1 ? tagcolor[i]:tagcolor[0]">
+                            {{attr.name}}
+                          </nz-tag>
+                        </span>
+                  </label>
                   <span class="ml20">{{param.summary}}</span>
                 </span>
               </label>
@@ -56,6 +63,7 @@
                 <th class="w240" [nzShowSort] = "true" [nzSortFn]="nameSortFn">Name</th>
                 <th class="wp30">Summary</th>
                 <th class="w240" [nzShowSort] = "true" [nzSortFn]="typeSortFn">Type</th>
+                <th class="wp10">Attr</th>
                 <th class="w240">Default</th>
                 <th></th>
               </tr>
@@ -72,6 +80,13 @@
                   <span *ngIf="!param.hasPiList">{{param.typeName}}</span>
                   <a *ngIf="param.hasPiList" routerLink="/workbench/ptype/{{param.isIEnumerable ? param.enumItemId : param.typeId}}">{{param.typeName}}</a>
                 </td>
+                <td>
+                    <div class="mt5" *ngFor="let attr of param.customAttrList;let i = index;">
+                      <nz-tag [nzColor]="i<tagcolor.length-1 ? tagcolor[i]:tagcolor[0]">
+                        {{attr.name}}
+                      </nz-tag>
+                    </div>
+                  </td>
                 <td>{{param.defaultValue}}</td>
                 <td></td>
               </tr>

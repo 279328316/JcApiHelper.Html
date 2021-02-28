@@ -13,7 +13,7 @@ export class Controller {
   areaName: string;   // Area名称
   controllerName: string;   // Controller名称
   summary: string;   // 注释,说明
-  customerAttrList: CustomerAttr[];   // 特性
+  customAttrList: CustomAttr[];   // 特性
   actionList: Action[];   // ActionList
 }
 
@@ -24,13 +24,13 @@ export class Action {
   controllerName: string;   // Controller名称
   actionName: string;   // actionName名称
   summary: string;   // 注释,说明
-  customerAttrList: CustomerAttr[];   // 特性
+  customAttrList: CustomAttr[];   // 特性
   inputParameters: ParamModel[];   // 输入参数
   returnParameter: ParamModel;   // 返回参数
 }
 
-// CustomerAttr
-export class CustomerAttr {
+// CustomAttr
+export class CustomAttr {
   name: string;   // Name名称
   typeId: string;   // 类型Id
   typeName: string;   // 类型名称
@@ -58,6 +58,7 @@ export class ParamModel {
   position: number;   // 参数位置
   isOptional: boolean;   // 是否可选
   defaultValue: string;   // 默认值
+  customAttrList: CustomAttr[];   // 特性
 }
 
 // PTypeModel
