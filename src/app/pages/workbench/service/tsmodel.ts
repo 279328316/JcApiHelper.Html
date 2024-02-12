@@ -30,4 +30,5 @@ export class TsPi {
 export class TsService {
   jcCode: string;   // Jc Service Code
   commonCode: string;   // Common Service Code
+  apiCode: string;   // Common Service Code
 }

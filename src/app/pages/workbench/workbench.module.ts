@@ -10,7 +10,7 @@ import {ApiService} from "./service/api.service";
 import {ControllerFilterPipe} from "./service/controllerfilter.pipe";
 import {ActionComponent} from './action/action.component';
 import {PTypeComponent} from './ptype/ptype.component';
-import {TsViewerComponent} from './tsviewer/tsviewer.component';
+import {CodeViewerComponent} from './codeviewer/codeviewer.component';
 
 @NgModule({
   imports: [
@@ -23,7 +23,7 @@ import {TsViewerComponent} from './tsviewer/tsviewer.component';
     WorkbenchComponent,
     ActionComponent,
     PTypeComponent,
-    TsViewerComponent
+    CodeViewerComponent
   ],
   providers: [ApiService]
 })

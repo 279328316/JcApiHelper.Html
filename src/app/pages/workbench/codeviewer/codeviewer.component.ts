@@ -5,9 +5,9 @@ import {TsModel, TsPi, TsResult} from '@pages/workbench/service/tsmodel';
 import {Util} from "@core/util";
 
 @Component({
-  selector: 'app-tsviewer', templateUrl: './tsviewer.component.html', styleUrls: ['./tsviewer.component.less']
+  selector: 'app-codeviewer', templateUrl: './codeviewer.component.html', styleUrls: ['./codeviewer.component.less']
 })
-export class TsViewerComponent implements OnInit {
+export class CodeViewerComponent implements OnInit {
   itemId: string;
   itemType: string;
   tsServiceType = '1';

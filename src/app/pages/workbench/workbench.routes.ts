@@ -6,7 +6,7 @@ import {WorkbenchComponent} from "./index/workbench.component";
 import {LayoutWorkbenchIndexComponent} from "@layout/workbench/index/workbench.component";
 import {ActionComponent} from '@pages/workbench/action/action.component';
 import {PTypeComponent} from "@pages/workbench/ptype/ptype.component";
-import {TsViewerComponent} from "@pages/workbench/tsviewer/tsviewer.component";
+import {CodeViewerComponent} from "@pages/workbench/codeviewer/codeviewer.component";
 
 const routes: Routes = [
   { path: '',
@@ -15,7 +15,7 @@ const routes: Routes = [
         { path: '',redirectTo:'/workbench/index', pathMatch:'full'},
         { path: 'action/:actionId',component : ActionComponent},
         { path: 'ptype/:ptypeId',component : PTypeComponent},
-        { path: 'tsviewer/:itemType/:itemId',component : TsViewerComponent,data:{title:'Ts'}}
+        { path: 'codeviewer/:itemType/:itemId',component : CodeViewerComponent,data:{title:'Ts'}}
     ]
   },
   { path: 'index',

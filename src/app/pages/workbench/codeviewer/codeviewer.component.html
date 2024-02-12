@@ -100,12 +100,13 @@
                     <nz-radio-group [(ngModel)]="tsServiceType" (ngModelChange)="tsServiceTypeChanged()">
                       <label nz-radio nzValue="1">Jc</label>
                       <label nz-radio nzValue="2">Common</label>
+                      <label nz-radio nzValue="3">ApiCode</label>
                     </nz-radio-group>
                   </div>
                 </div>
                 <div>
                   <nz-card nzSize="small" class="bgcolor-code">
-                    <pre>{{tsServiceType == "1" ? tsResult.tsService.jcCode : tsResult.tsService.commonCode}}</pre>
+                    <pre>{{tsServiceType == "1" ? tsResult.tsService.jcCode : (tsServiceType == "2" ? tsResult.tsService.commonCode : tsResult.tsService.apiCode)}}</pre>
                   </nz-card>
                 </div>
               </div>
