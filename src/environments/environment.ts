@@ -3,9 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  SERVER_URL: 'http://127.0.0.1:8001/ApiHelper/',
+  //SERVER_URL: 'http://127.0.0.1:8001/ApiHelper/',
   //SERVER_URL: '',
-  //SERVER_URL: 'http://127.0.0.1:5000/',
+  SERVER_URL: 'http://127.0.0.1:5000/ApiHelper/',
   production: false
 };
 
