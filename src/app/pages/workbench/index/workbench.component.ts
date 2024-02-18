@@ -16,7 +16,7 @@ export class WorkbenchComponent implements OnInit {
   searchText: string = ''; //Controller 过滤条件
   controllerList: Controller[] = [];    //实际显示ControllerList
   selectedController: Controller[] = [];
-  queryAmount: number = 5;
+  queryAmount: number = 3;
 
   areaList: Area[] = [];
   selectedArea: Area[] = [];
