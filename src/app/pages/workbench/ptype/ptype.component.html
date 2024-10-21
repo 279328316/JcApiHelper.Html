@@ -8,7 +8,7 @@
               {{ptype.typeName}}
             </label>
             <a nz-button nzType="primary" nzSize="small" nzGhost
-               routerLink="/workbench/tsviewer/ptype/{{ptype.isIEnumerable ? ptype.enumItemId : ptype.id}}"
+               routerLink="/workbench/codeviewer/ptype/{{ptype.isIEnumerable ? ptype.enumItemId : ptype.id}}"
                class="ml50 w80">View Ts</a>
           </div>
           <div *ngIf="ptype.summary" class="mt10">

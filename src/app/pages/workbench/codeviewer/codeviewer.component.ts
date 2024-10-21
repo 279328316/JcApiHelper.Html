@@ -195,6 +195,9 @@ export class CodeViewerComponent implements OnInit {
     ctorLambda += '};\r\n';
 
     this.tsCode = setValueLambda + '\r\n' + expLambda + '\r\n' + ctorLambda;
+
+    console.log(this.tsCode);
+
     this.codeTitle = tsModel.name + ' Lambda';
     this.showCode = true;
   }

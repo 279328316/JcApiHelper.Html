@@ -12,7 +12,8 @@ import {LayoutModule} from '@layout/layout.module';
 import { PagesModule } from '@pages/pages.module';
 import {RouteReuseStrategy} from '@angular/router';
 import {AppReuseStrategy} from '@core/appreusestrategy';
-import {IconModule} from "@shared/icon.module";
+import { IconModule } from "@shared/icon.module";
+
 registerLocaleData(zh);
 
 @NgModule({

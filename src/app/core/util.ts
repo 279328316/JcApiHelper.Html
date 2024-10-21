@@ -1,17 +1,12 @@
-///<reference path="../../../node_modules/rxjs/internal/Observable.d.ts"/>
-/**
- * Created by Myself
- */
-
 import {Router} from '@angular/router';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Title} from "@angular/platform-browser";
 
-import {Observable, Observer} from 'rxjs';
 import {NzModalService} from "ng-zorro-antd/modal";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {NzNotificationService} from "ng-zorro-antd/notification";
 import {environment} from "@env/environment";
+import { Observable, Observer } from 'rxjs';
 
 /*
     把公用的提示信息放到Service里面,用起来很舒服,
