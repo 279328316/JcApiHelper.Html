@@ -4,9 +4,10 @@
 
 import { Injectable } from "@angular/core";
 
-import { ContentType, Util } from "@core/util";
-import { Action, Controller, PTypeModel } from "./api";
+import { Util } from "@core/util";
+import { Action, Controller, PTypeModel } from "../models/api";
 import { Observable } from "rxjs";
+import { ContentType } from "@models/robj";
 
 @Injectable()
 export class ApiService {

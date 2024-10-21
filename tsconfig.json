@@ -24,9 +24,11 @@
       "@asset/*": ["./src/assets/*"],
       "@env/*": ["./src/environments/*"],
       "@core/*": ["./src/app/core/*"],
+      "@common/*": ["./src/app/common/*"],
       "@layout/*": ["./src/app/layout/*"],
       "@pages/*": ["./src/app/pages/*"],
       "@shared/*": ["./src/app/shared/*"],
+      "@models/*": ["./src/app/models/*"],
       "@services/*": ["./src/app/services/*"]
     }
   },

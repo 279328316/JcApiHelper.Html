@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import { DateHelper } from '@core/datehelper';
 import {Util} from '@core/util';
 
 @Component({
@@ -71,7 +72,7 @@ export class WebSocketToolComponent implements OnInit {
 
   // 显示Msg
   showMsg(msg: string) {
-    this.displayMsg += Util.formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss') + ' ' + msg + '\n';
+    this.displayMsg += DateHelper.formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss') + ' ' + msg + '\n';
   }
 
   // 发送Msg

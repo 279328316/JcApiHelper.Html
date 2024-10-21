@@ -1,20 +1,22 @@
-import {Component, OnInit} from '@angular/core';
-import {Area, Controller} from "@pages/workbench/service/api";
-import {ApiService} from "@pages/workbench/service/api.service";
-import {NzTableSize} from "ng-zorro-antd/table";
+import { Component, OnInit } from "@angular/core";
+import { Area, Controller } from "@models/api";
+import { ApiService } from "@services/api.service";
+import { NzTableSize } from "ng-zorro-antd/table";
 
 @Component({
-  selector: 'app-workbench', templateUrl: './workbench.component.html', styleUrls: ['./workbench.component.less']
+  selector: "app-workbench",
+  templateUrl: "./workbench.component.html",
+  styleUrls: ["./workbench.component.less"],
 })
 export class WorkbenchComponent implements OnInit {
   //for修复 nz-affix控件 reusetab情况下,返回后宽度为0bug
-  showControllerList: boolean = true;  //显示ControllerList
+  showControllerList: boolean = true; //显示ControllerList
 
   isDisplayAllMenuSelected: boolean = true;
-  tagcolor: string[] = ['cyan', 'geekblue', 'blue', 'purple'];
-  actionTableSize: NzTableSize = 'middle';
-  searchText: string = ''; //Controller 过滤条件
-  controllerList: Controller[] = [];    //实际显示ControllerList
+  tagcolor: string[] = ["cyan", "geekblue", "blue", "purple"];
+  actionTableSize: NzTableSize = "middle";
+  searchText: string = ""; //Controller 过滤条件
+  controllerList: Controller[] = []; //实际显示ControllerList
   selectedController: Controller[] = [];
   queryAmount: number = 3;
 
@@ -25,8 +27,8 @@ export class WorkbenchComponent implements OnInit {
   isAreaSelectIndeterminate: boolean = false;
 
   constructor(private apiSvc: ApiService) {
-    let actionTableSize = localStorage.getItem('actionTableSize');
-    this.actionTableSize = (actionTableSize ? actionTableSize : 'middle') as NzTableSize;
+    let actionTableSize = localStorage.getItem("actionTableSize");
+    this.actionTableSize = (actionTableSize ? actionTableSize : "middle") as NzTableSize;
   }
 
   ngOnInit() {
@@ -79,21 +81,25 @@ export class WorkbenchComponent implements OnInit {
         break;
       }
     }
-    this.apiSvc.getControllerListByIds(ids).subscribe((result: Controller[]) => {
-      result.forEach(rc => {
-        let filterControllers = this.controllerList.filter(fc => fc.id == rc.id);
-        if (filterControllers && filterControllers.length > 0) {
-          filterControllers[0].summary = rc.summary;
-          filterControllers[0].actionList = rc.actionList;
+    this.apiSvc.getControllerListByIds(ids).subscribe(
+      (result: Controller[]) => {
+        result.forEach((rc) => {
+          let filterControllers = this.controllerList.filter((fc) => fc.id == rc.id);
+          if (filterControllers && filterControllers.length > 0) {
+            filterControllers[0].summary = rc.summary;
+            filterControllers[0].actionList = rc.actionList;
+          }
+        });
+      },
+      null,
+      () => {
+        curIndex += i + 1;
+        console.log("curIndex:", curIndex);
+        if (curIndex < this.controllerList.length) {
+          this.initControllerDetail(curIndex);
         }
-      });
-    }, null, () => {
-      curIndex += i + 1;
-      console.log('curIndex:', curIndex);
-      if (curIndex < this.controllerList.length) {
-        this.initControllerDetail(curIndex);
       }
-    });
+    );
   }
 
   /*初始化AreaList*/
@@ -101,12 +107,12 @@ export class WorkbenchComponent implements OnInit {
     this.areaList = [];
     this.selectedArea = [];
     if (this.controllerList) {
-      this.controllerList.forEach(controller => {
-        if (this.areaList.filter(area => area.areaName == controller.areaName).length <= 0) {
+      this.controllerList.forEach((controller) => {
+        if (this.areaList.filter((area) => area.areaName == controller.areaName).length <= 0) {
           let area: Area = {
             areaName: controller.areaName,
-            displayName: controller.areaName ? controller.areaName : 'None',
-            isSelected: false
+            displayName: controller.areaName ? controller.areaName : "None",
+            isSelected: false,
           };
           this.areaList.push(area);
         }
@@ -123,24 +129,24 @@ export class WorkbenchComponent implements OnInit {
 
   /*全选*/
   allSelectAreaChange() {
-    this.areaList.forEach(area => {
+    this.areaList.forEach((area) => {
       area.isSelected = this.isAllAreaSelected;
     });
-    this.selectedArea = this.areaList.filter(area => area.isSelected);
+    this.selectedArea = this.areaList.filter((area) => area.isSelected);
   }
 
   /*selecteArea*/
   areaSelectChange(area: Area): void {
-    if (this.areaList.filter(a => !a.isSelected).length <= 0) {
+    if (this.areaList.filter((a) => !a.isSelected).length <= 0) {
       this.isAllAreaSelected = true;
       this.isAreaSelectIndeterminate = false;
-    } else if (this.areaList.filter(a => a.isSelected).length <= 0) {
+    } else if (this.areaList.filter((a) => a.isSelected).length <= 0) {
       this.isAllAreaSelected = false;
       this.isAreaSelectIndeterminate = false;
     } else {
       this.isAreaSelectIndeterminate = true;
     }
-    this.selectedArea = this.areaList.filter(area => area.isSelected);
+    this.selectedArea = this.areaList.filter((area) => area.isSelected);
   }
 
   /*刷新Controller列表*/
@@ -153,7 +159,7 @@ export class WorkbenchComponent implements OnInit {
     this.selectedController = [];
     this.selectedController.push(controller);
     console.log(controller);
-    this.controllerList.forEach(a => {
+    this.controllerList.forEach((a) => {
       if (a != controller) {
         a.isSelected = false;
       } else {
@@ -167,13 +173,13 @@ export class WorkbenchComponent implements OnInit {
   displayAll() {
     this.selectedController = this.controllerList;
     this.isDisplayAllMenuSelected = true;
-    this.controllerList.forEach(controller => {
+    this.controllerList.forEach((controller) => {
       controller.isSelected = false;
     });
   }
 
   /*actionTableSize改变*/
   actionTableSizeChanged() {
-    localStorage.setItem('actionTableSize', this.actionTableSize);
+    localStorage.setItem("actionTableSize", this.actionTableSize);
   }
 }
