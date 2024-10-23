@@ -16,7 +16,7 @@ export class ApiService {
   /*获取apiVersion*/
   public getApiVersion(): void {
     if (!this.apiVersion) {
-      Util.ajax("getApiVersion", {}, "form", false).subscribe((apiVersion: string) => {
+      Util.ajax("ApiHelper/getApiVersion").subscribe((apiVersion: string) => {
         this.apiVersion = apiVersion;
       });
     }
@@ -24,31 +24,31 @@ export class ApiService {
 
   /*获取ControllerList*/
   public getControllerList(): Observable<Controller[]> {
-    return Util.ajax("GetControllerList");
+    return Util.ajax("ApiHelper/GetControllerList");
   }
 
   /*获取ControllerListByIds*/
   public getControllerListByIds(ids: string[]): Observable<Controller[]> {
-    return Util.ajax("GetControllerListByIds", ids, ContentType.json);
+    return Util.ajax("ApiHelper/GetControllerListByIds", ids, ContentType.json);
   }
 
   /*获取Controller*/
   public getController(controllerId: string): Observable<Controller> {
-    return Util.ajax("GetController", { controllerId: controllerId });
+    return Util.ajax("ApiHelper/GetController", { controllerId: controllerId });
   }
 
   /*获取Action*/
   public getAction(actionId: string): Observable<Action> {
-    return Util.ajax("GetAction", { actionId: actionId });
+    return Util.ajax("ApiHelper/GetAction", { actionId: actionId });
   }
 
   /*获取PType*/
   public getPType(typeId: string): Observable<PTypeModel> {
-    return Util.ajax("GetPType", { typeId: typeId });
+    return Util.ajax("ApiHelper/GetPType", { typeId: typeId });
   }
 
   /*获取TsModel*/
   public getTs(itemId: string, itemType: string): Observable<any> {
-    return Util.ajax("GetTsModel", { itemId: itemId, itemType: itemType });
+    return Util.ajax("ApiHelper/GetTsModel", { itemId: itemId, itemType: itemType });
   }
 }

@@ -4,13 +4,18 @@ import { ActivatedRoute } from "@angular/router";
 import { TsModel, TsPi, TsResult } from "@models/tsmodel";
 import { Util } from "@core/util";
 import { StringHelper } from "@core/stringhelper";
+import { NzContextMenuService, NzDropdownMenuComponent } from "ng-zorro-antd/dropdown";
+import { NzFormatEmitEvent, NzTreeNode } from "ng-zorro-antd/tree";
+
+import "prismjs/components/prism-csharp.min.js";
+import "prismjs/components/prism-typescript.min.js";
 
 @Component({
-  selector: "app-codeviewer",
-  templateUrl: "./codeviewer.component.html",
-  styleUrls: ["./codeviewer.component.less"],
+  selector: "app-codegenerator",
+  templateUrl: "./codegenerator.component.html",
+  styleUrls: ["./codegenerator.component.less"],
 })
-export class CodeViewerComponent implements OnInit {
+export class CodeGeneratorComponent implements OnInit {
   itemId: string;
   itemType: string;
   tsServiceType = "1";
@@ -27,8 +32,28 @@ export class CodeViewerComponent implements OnInit {
 
   isCtrlDown: boolean = false;
   isShiftDown: boolean = false;
+  code = "";
+  htmlCode = `
+  <nz-tabset>
+    <nz-tab nzTitle="Tab 1">
+      <ng-template nz-tab-content>
+        <div>Content for Tab 1</div>
+      </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Tab 2">
+      <ng-template nz-tab-content>
+        <div>Content for Tab 2</div>
+      </ng-template>
+    </nz-tab>
+  </nz-tabset>
+`;
+  language = "html";
 
-  constructor(private routerParams: ActivatedRoute, private apiSvc: ApiService) {
+  constructor(
+    private routerParams: ActivatedRoute,
+    private apiSvc: ApiService,
+    private nzContextMenuService: NzContextMenuService
+  ) {
     const tsServiceType = localStorage.getItem("tsServiceType");
     this.tsServiceType = tsServiceType ? tsServiceType : "1";
 
@@ -47,6 +72,105 @@ export class CodeViewerComponent implements OnInit {
     if (this.itemId && this.itemType) {
       this.getTsModel();
     }
+
+    this.code = this.htmlCode;
+  }
+
+  activatedNode?: NzTreeNode;
+  nodes = [
+    {
+      title: "models",
+      key: "1",
+      expanded: true,
+      children: [
+        { title: "api.ts", key: "1", isLeaf: true },
+        { title: "robj.ts", key: "2", isLeaf: true },
+      ],
+    },
+    {
+      title: "pages",
+      key: "2",
+      expanded: true,
+      children: [
+        {
+          title: "appmanage",
+          key: "3",
+          expanded: false,
+          children: [
+            {
+              title: "applist",
+              key: "applist",
+              expanded: false,
+              children: [
+                { title: "leaf 1-0", key: "1010", isLeaf: true },
+                { title: "leaf 1-1", key: "1011", isLeaf: true },
+                { title: "leaf 1-1", key: "1013", isLeaf: true },
+              ],
+            },
+            {
+              title: "appedit",
+              key: "4",
+              expanded: false,
+              children: [
+                { title: "leaf 1-0", key: "1010", isLeaf: true },
+                { title: "leaf 1-1", key: "1011", isLeaf: true },
+                { title: "leaf 1-1", key: "1014", isLeaf: true },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      title: "services",
+      key: "5",
+      expanded: true,
+      children: [
+        { title: "leaf 1-0", key: "1020", isLeaf: true },
+        { title: "leaf 1-1", key: "1021", isLeaf: true },
+      ],
+    },
+  ];
+
+  openFolder(data: NzTreeNode | NzFormatEmitEvent): void {
+    // do something if u want
+    if (data instanceof NzTreeNode) {
+      data.isExpanded = !data.isExpanded;
+    } else {
+      const node = data.node;
+      if (node) {
+        node.isExpanded = !node.isExpanded;
+      }
+    }
+  }
+
+  activeNode(data: NzFormatEmitEvent): void {
+    this.activatedNode = data.node!;
+    if (!this.activatedNode.isLeaf) {
+      this.activatedNode.isExpanded = !this.activatedNode.isExpanded;
+    }
+    if (this.activatedNode.key == "1") {
+      this.code = this.htmlCode;
+      this.language = "html";
+      this.codeTitle = "TestHtml";
+    } else {
+      if (this.tsResult.tsModelList) {
+        this.tsResult.tsModelList[0].piList.forEach((a) => (a.isSelected = true));
+        this.viewLambda(this.tsResult.tsModelList[0]);
+        this.code = this.tsCode;
+        this.language = "typescript";
+      } else {
+        this.code = "";
+      }
+    }
+  }
+
+  contextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
+    this.nzContextMenuService.create($event, menu);
+  }
+
+  selectDropdown(): void {
+    // do something
   }
 
   /*获取TsModel*/

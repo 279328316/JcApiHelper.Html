@@ -34,6 +34,8 @@
             ],
             "styles": [
               "node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
+              "node_modules/prismjs/themes/prism.css",
+              "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.css",
               "src/styles.less",
               "src/assets/common.css",
               "src/assets/base.css"

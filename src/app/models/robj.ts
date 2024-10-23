@@ -24,3 +24,15 @@ export class ContentType {
   static json: string = "json";
   static form: string = "form";
 }
+
+/*AjaxOptions
+  * */
+export class AjaxOptions {
+  url: string;
+  params: any = {};
+  contentType: string = ContentType.form;
+  autoError: boolean = true;
+  autoRedirectLogin: boolean = true;
+  waitingTipMsg = "";
+  waitingTipTitle = ""
+}

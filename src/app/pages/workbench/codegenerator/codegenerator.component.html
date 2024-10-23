@@ -1,0 +1,60 @@
+<div class="content">
+  <div>
+    <div nz-row>
+      <div nz-col nzSpan="22">
+        <div class="lh30">
+          <label class="f-size20">
+            Code Generator
+          </label>
+        </div>
+      </div>
+      <div nz-col nzSpan="2" class="valign-bottom">
+        <a nz-button nzType="primary" nzSize="small" nzGhost class="w80" routerLink="/workbench/index">Return</a>
+      </div>
+    </div>
+  </div>
+  <div>
+    <nz-tabset nzSize="large" [nzAnimated]='false'>
+      <nz-tab nzTitle="Angular">
+        <div nz-row nzGutter="16">
+          <div nz-col nzFlex="280px">
+            <div class="w200 border-lightgray">
+              <nz-tree nzBlockNode [nzData]="nodes" (nzClick)="activeNode($event)" (nzDblClick)="openFolder($event)"
+                [nzTreeTemplate]="nzTreeTemplate"></nz-tree>
+              <ng-template #nzTreeTemplate let-node let-origin="origin">
+                @if (!node.isLeaf) {
+                <span class="custom-node" (contextmenu)="contextMenu($event, menu)">
+                  <span>
+                    <span nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+                      (click)="openFolder(node)"></span>
+                    <span class="folder-name">{{ node.title }}</span>
+                  </span>
+                </span>
+                } @else {
+                <span class="custom-node" (contextmenu)="contextMenu($event, menu)">
+                  <span>
+                    <span nz-icon nzType="file"></span>
+                    <span class="file-name">{{ node.title }}</span>
+                  </span>
+                </span>
+                }
+              </ng-template>
+              <nz-dropdown-menu #menu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li nz-menu-item (click)="selectDropdown()">下载</li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+          </div>
+          <div nz-col nzFlex="auto">
+            <div class="code-block">
+              <app-syntax-highlight [title]="codeTitle" [code]="code" [language]="language"></app-syntax-highlight>
+            </div>
+          </div>
+        </div>
+      </nz-tab>
+      <nz-tab nzTitle=".Net">
+      </nz-tab>
+    </nz-tabset>
+  </div>
+</div>

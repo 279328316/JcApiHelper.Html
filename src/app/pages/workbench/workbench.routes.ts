@@ -7,6 +7,7 @@ import {LayoutWorkbenchIndexComponent} from "@layout/workbench/index/workbench.c
 import {ActionComponent} from '@pages/workbench/action/action.component';
 import {PTypeComponent} from "@pages/workbench/ptype/ptype.component";
 import {CodeViewerComponent} from "@pages/workbench/codeviewer/codeviewer.component";
+import { CodeGeneratorComponent } from './codegenerator/codegenerator.component';
 
 const routes: Routes = [
   { path: '',
@@ -15,7 +16,8 @@ const routes: Routes = [
         { path: '',redirectTo:'/workbench/index', pathMatch:'full'},
         { path: 'action/:actionId',component : ActionComponent},
         { path: 'ptype/:ptypeId',component : PTypeComponent},
-        { path: 'codeviewer/:itemType/:itemId',component : CodeViewerComponent,data:{title:'Ts'}}
+        { path: 'codeviewer/:itemType/:itemId',component : CodeViewerComponent,data:{title:'Ts'}},
+        { path: 'codegenerator/:itemType/:itemId',component : CodeGeneratorComponent,data:{title:'Ts'}}
     ]
   },
   { path: 'index',

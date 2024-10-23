@@ -8,7 +8,7 @@ import { NzNotificationService } from "ng-zorro-antd/notification";
 import { Observer, Observable, Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { environment } from "../../environments/environment";
-import { ContentType, Robj } from "@models/robj";
+import { AjaxOptions, ContentType, Robj } from "@models/robj";
 
 /* Util Helper类
  Helper:内容
@@ -16,7 +16,7 @@ import { ContentType, Robj } from "@models/robj";
  * */
 export class Util {
   /*--------Http ajax----------------------------------------------------------------------------*/
-  private static heplerIsInit = false; // SnHelper是否已初始化
+  private static heplerIsInit = false; // 是否已初始化
   static router: Router;
   static modal: NzModalService;
   static msg: NzMessageService;
@@ -93,12 +93,40 @@ export class Util {
     waitingTipMsg = "",
     waitingTipTitle = ""
   ): Observable<any> {
+    let options: AjaxOptions = <AjaxOptions>{
+      url: url,
+      params: params,
+      contentType: contentType,
+      autoError: autoError,
+      autoRedirectLogin: autoRedirectLogin,
+      waitingTipMsg: waitingTipMsg,
+      waitingTipTitle: waitingTipTitle,
+    };
+    return Util.post(options);
+  }
+
+  /*异步Post请求
+      url:string Post请求地址
+      params:any 请求参数
+      autoError:boolean 自动处理错误消息(true)
+      autoRedirectLogin:boolean 自动跳转登录页面(true)
+      waitingTipMsg:string 请求等待提示消息
+      waitingTipTitle:string 请求等待提示标题
+    * */
+  static post(parameter: AjaxOptions = <AjaxOptions>{}): Observable<any> {
+    let url: string = parameter.url;
+    let params: any = parameter.params;
+    let contentType: string = parameter.contentType ? parameter.contentType : ContentType.form;
+    let autoError: boolean = parameter.autoError;
+    let autoRedirectLogin: boolean = parameter.autoRedirectLogin;
+    let waitingTipMsg = parameter.waitingTipMsg;
+    let waitingTipTitle = parameter.waitingTipTitle;
     let ajaxObserver: Observer<any>;
     const ajaxObservable = new Observable<any>((observer) => (ajaxObserver = observer));
     if (!Util.heplerIsInit) {
       Util.modal.info({
         nzTitle: "提示",
-        nzContent: "SnHelper未初始化.无法使用ajax服务.",
+        nzContent: "Util未初始化,请先调用onInit方法进行初始化",
       });
       return ajaxObservable;
     }
@@ -173,7 +201,7 @@ export class Util {
     if (!Util.heplerIsInit) {
       Util.modal.info({
         nzTitle: "提示",
-        nzContent: "SnHelper未初始化.无法使用ajax服务.",
+        nzContent: "Util未初始化,请先调用onInit方法进行初始化",
       });
       return ajaxObservable;
     }
@@ -246,7 +274,7 @@ export class Util {
     if (!Util.heplerIsInit) {
       Util.modal.info({
         nzTitle: "提示",
-        nzContent: "SnHelper未初始化.无法使用ajax服务.",
+        nzContent: "Util未初始化,请先调用onInit方法进行初始化",
       });
       return ajaxObservable;
     }
@@ -389,7 +417,7 @@ export class Util {
     if (!Util.heplerIsInit) {
       Util.modal.info({
         nzTitle: "提示",
-        nzContent: "SnHelper未初始化.无法使用ajax服务.",
+        nzContent: "Util未初始化,请先调用onInit方法进行初始化",
       });
       return ajaxObservable;
     }

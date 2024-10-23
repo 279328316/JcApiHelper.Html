@@ -1,26 +1,29 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <title>Api Helper</title>
   <base id="base" href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script>
-      /*解决nginx代理或非根目录请求*/
-      /*base修改必须在各资源请求之前*/
-      var url = window.location.pathname.toLowerCase();
-      if(url.indexOf('index.html')>0) {
-          document.getElementById("base").href = window.location.pathname.replace("index.html", "");
-      }
-      else if (url.indexOf('apihelper') > 0) {
-          var baseEndIndex = url.indexOf('apihelper') + 'ApiHelper/'.length;
-          document.getElementById("base").href = window.location.pathname.substring(0, baseEndIndex);
-      }
-      console.log('base href', document.getElementById("base").href);
+    /*解决nginx代理或非根目录请求*/
+    /*base修改必须在各资源请求之前*/
+    var url = window.location.pathname.toLowerCase();
+    if (url.indexOf('index.html') > 0) {
+      document.getElementById("base").href = window.location.pathname.replace("index.html", "");
+    }
+    else if (url.indexOf('apihelper/') > 0) {
+      var baseEndIndex = url.indexOf('apihelper') + 'ApiHelper/'.length;
+      document.getElementById("base").href = window.location.pathname.substring(0, baseEndIndex);
+    }
+    console.log('base href', document.getElementById("base").href);
   </script>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
+
 <body>
   <app-root></app-root>
 </body>
+
 </html>

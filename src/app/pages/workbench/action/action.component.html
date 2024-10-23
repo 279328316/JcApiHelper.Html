@@ -1,4 +1,4 @@
-<div style="padding: 20px 80px;">
+<div class="content">
   <div *ngIf="action">
     <div>
       <div nz-row>
@@ -8,24 +8,21 @@
               {{(action.areaName ? action.areaName + '/':'') + action.controllerName + '/' + action.actionName}}
             </label>
             <label class="ml40">
-                  <span *ngFor="let attr of action.customAttrList;let i = index;">
-                    <nz-tag [nzColor]="i<tagcolor.length-1 ? tagcolor[i]:tagcolor[0]">
-                      {{attr.name}}
-                    </nz-tag>
-                  </span>
+              <span *ngFor="let attr of action.customAttrList;let i = index;">
+                <nz-tag [nzColor]="i<tagcolor.length-1 ? tagcolor[i]:tagcolor[0]">
+                  {{attr.name}}
+                </nz-tag>
+              </span>
             </label>
-            <a nz-button nzType="primary" nzSize="small" nzGhost
-               routerLink="/workbench/codeviewer/action/{{action.id}}"
-               class="ml50 w80">View Code</a>
+            <a nz-button nzType="primary" nzSize="small" nzGhost routerLink="/workbench/codeviewer/action/{{action.id}}"
+              class="ml50 w80">View Code</a>
           </div>
           <div *ngIf="action.summary" class="mt10">
             <label class="f-size16">{{action.summary}}</label>
           </div>
         </div>
         <div nz-col nzSpan="4" class="h60 lh60 valign-bottom">
-          <a nz-button nzType="primary" nzSize="small" nzGhost
-             class="ml50 w80"
-             routerLink="/workbench/index">Return</a>
+          <a nz-button nzType="primary" nzSize="small" nzGhost class="ml50 w80" routerLink="/workbench/index">Return</a>
         </div>
       </div>
     </div>
@@ -37,66 +34,64 @@
             <div class="mt5" *ngIf="inputParams.length>0">
               <label class="f-size14" *ngFor="let param of action.inputParameters">
                 <span *ngIf="param.hasPiList">
-                  <span>{{param.name}}</span> : <a routerLink="/workbench/ptype/{{param.isIEnumerable ? param.enumItemId : param.typeId}}">{{param.typeName}}</a>
+                  <span>{{param.name}}</span> : <a
+                    routerLink="/workbench/ptype/{{param.isIEnumerable ? param.enumItemId : param.typeId}}">{{param.typeName}}</a>
                   <label class="ml40">
-                        <span *ngFor="let attr of param.customAttrList;let i = index;">
-                          <nz-tag [nzColor]="i<tagcolor.length-1 ? tagcolor[i]:tagcolor[0]">
-                            {{attr.name}}
-                          </nz-tag>
-                        </span>
+                    <span *ngFor="let attr of param.customAttrList;let i = index;">
+                      <nz-tag [nzColor]="i<tagcolor.length-1 ? tagcolor[i]:tagcolor[0]">
+                        {{attr.name}}
+                      </nz-tag>
+                    </span>
                   </label>
                   <span class="ml20">{{param.summary}}</span>
                 </span>
               </label>
             </div>
-            <label *ngIf="inputParams.length<=0"
-                   class="ml5 f-size18">(none)</label>
+            <label *ngIf="inputParams.length<=0" class="ml5 f-size18">(none)</label>
           </div>
           <div *ngIf="inputParams.length>0">
-            <nz-table #inputParamsTable
-                      [nzShowPagination]='false'
-                      [nzPageSize]="1000"
-                      nzSize="small"
-                      [nzData]="inputParams">
+            <nz-table #inputParamsTable [nzShowPagination]='false' [nzPageSize]="1000" nzSize="small"
+              [nzData]="inputParams">
               <thead>
-              <tr>
-                <th class="w240" [nzShowSort] = "true" [nzSortFn]="nameSortFn">Name</th>
-                <th class="wp30">Summary</th>
-                <th class="w240" [nzShowSort] = "true" [nzSortFn]="typeSortFn">Type</th>
-                <th class="wp10">Attr</th>
-                <th class="w240">Default</th>
-                <th></th>
-              </tr>
+                <tr>
+                  <th class="w240" [nzShowSort]="true" [nzSortFn]="nameSortFn">Name</th>
+                  <th class="wp30">Summary</th>
+                  <th class="w240" [nzShowSort]="true" [nzSortFn]="typeSortFn">Type</th>
+                  <th class="wp10">Attr</th>
+                  <th class="w240">Default</th>
+                  <th></th>
+                </tr>
               </thead>
               <tbody>
-              <tr *ngFor="let param of inputParamsTable.data">
-                <td>
-                  <span>{{param.name}}</span>
-                </td>
-                <td>
-                  <span>{{param.summary}}</span>
-                </td>
-                <td>
-                  <span *ngIf="!param.hasPiList">{{param.typeName}}</span>
-                  <a *ngIf="param.hasPiList" routerLink="/workbench/ptype/{{param.isIEnumerable ? param.enumItemId : param.typeId}}">{{param.typeName}}</a>
-                </td>
-                <td>
+                <tr *ngFor="let param of inputParamsTable.data">
+                  <td>
+                    <span>{{param.name}}</span>
+                  </td>
+                  <td>
+                    <span>{{param.summary}}</span>
+                  </td>
+                  <td>
+                    <span *ngIf="!param.hasPiList">{{param.typeName}}</span>
+                    <a *ngIf="param.hasPiList"
+                      routerLink="/workbench/ptype/{{param.isIEnumerable ? param.enumItemId : param.typeId}}">{{param.typeName}}</a>
+                  </td>
+                  <td>
                     <div class="mt5" *ngFor="let attr of param.customAttrList;let i = index;">
                       <nz-tag [nzColor]="i<tagcolor.length-1 ? tagcolor[i]:tagcolor[0]">
                         {{attr.name}}
                       </nz-tag>
                     </div>
                   </td>
-                <td>{{param.defaultValue}}</td>
-                <td></td>
-              </tr>
+                  <td>{{param.defaultValue}}</td>
+                  <td></td>
+                </tr>
               </tbody>
             </nz-table>
           </div>
         </div>
       </div>
       <div class="mt30">
-        <div  *ngIf="action.returnParameter.hasPiList">
+        <div *ngIf="action.returnParameter.hasPiList">
           <div class="p10">
             <label class="f-size18 fw500">ReturnParamters</label>
             <div class="mt5 f-size14">
@@ -105,66 +100,61 @@
             </div>
           </div>
           <div>
-            <nz-table #returnParamsTable
-                      [nzShowPagination]='false'
-                      [nzPageSize]="1000"
-                      nzSize="small"
-                      [nzData]="returnParams">
+            <nz-table #returnParamsTable [nzShowPagination]='false' [nzPageSize]="1000" nzSize="small"
+              [nzData]="returnParams">
               <thead>
-              <tr>
-                <th class="w240" [nzShowSort] = "true" [nzSortFn]="nameSortFn">Name</th>
-                <th class="wp30">Summary</th>
-                <th class="w240" [nzShowSort] = "true" [nzSortFn]="typeSortFn">Type</th>
-                <th></th>
-              </tr>
+                <tr>
+                  <th class="w240" [nzShowSort]="true" [nzSortFn]="nameSortFn">Name</th>
+                  <th class="wp30">Summary</th>
+                  <th class="w240" [nzShowSort]="true" [nzSortFn]="typeSortFn">Type</th>
+                  <th></th>
+                </tr>
               </thead>
               <tbody>
-              <tr *ngFor="let param of returnParamsTable.data">
-                <td>
-                  <span>{{param.name}}</span>
-                </td>
-                <td>
-                  <span>{{param.summary}}</span>
-                </td>
-                <td>
-                  <span *ngIf="!param.hasPiList">{{param.typeName}}</span>
-                  <a *ngIf="param.hasPiList" routerLink="/workbench/ptype/{{param.isIEnumerable ? param.enumItemId : param.typeId}}">{{param.typeName}}</a>
-                </td>
-                <td></td>
-              </tr>
+                <tr *ngFor="let param of returnParamsTable.data">
+                  <td>
+                    <span>{{param.name}}</span>
+                  </td>
+                  <td>
+                    <span>{{param.summary}}</span>
+                  </td>
+                  <td>
+                    <span *ngIf="!param.hasPiList">{{param.typeName}}</span>
+                    <a *ngIf="param.hasPiList"
+                      routerLink="/workbench/ptype/{{param.isIEnumerable ? param.enumItemId : param.typeId}}">{{param.typeName}}</a>
+                  </td>
+                  <td></td>
+                </tr>
               </tbody>
             </nz-table>
           </div>
         </div>
 
-        <div class="border-bottom"  *ngIf="!action.returnParameter.hasPiList">
+        <div class="border-bottom" *ngIf="!action.returnParameter.hasPiList">
           <div class="p10 f-size18">
             <label class="fw500">ReturnParamters</label>
             <label class="ml5" *ngIf="returnParams?.length<=0">(none)</label>
           </div>
           <div>
-            <nz-table #returnParamsTable
-                      [nzShowPagination]='false'
-                      nzSize="small"
-                      [nzData]="returnParams">
+            <nz-table #returnParamsTable [nzShowPagination]='false' nzSize="small" [nzData]="returnParams">
               <thead>
-              <tr>
-                <th class="w240">Type</th>
-                <th class="wp30">Summary</th>
-                <th></th>
-              </tr>
+                <tr>
+                  <th class="w240">Type</th>
+                  <th class="wp30">Summary</th>
+                  <th></th>
+                </tr>
               </thead>
               <tbody>
-              <tr *ngFor="let param of returnParamsTable.data">
-                <td>
-                  <span *ngIf="!param.hasPiList">{{param.typeName}}</span>
-                  <a *ngIf="param.hasPiList">{{param.typeName}}</a>
-                </td>
-                <td>
-                  <span>{{param.summary}}</span>
-                </td>
-                <td></td>
-              </tr>
+                <tr *ngFor="let param of returnParamsTable.data">
+                  <td>
+                    <span *ngIf="!param.hasPiList">{{param.typeName}}</span>
+                    <a *ngIf="param.hasPiList">{{param.typeName}}</a>
+                  </td>
+                  <td>
+                    <span>{{param.summary}}</span>
+                  </td>
+                  <td></td>
+                </tr>
               </tbody>
             </nz-table>
           </div>
@@ -173,4 +163,3 @@
     </div>
   </div>
 </div>
-

@@ -7,6 +7,8 @@ import { RouterModule } from '@angular/router';
 import { SHARED_ZORRO_MODULES  } from './shared-zorro.module';
 import { ClipboardModule } from "ngx-clipboard";
 
+import { SyntaxHighLightComponent } from '@pages/components/syntax-highlight/syntax-highlight.component';
+
 const THIRDMODULES = [
   SHARED_ZORRO_MODULES,
   ClipboardModule
@@ -14,7 +16,7 @@ const THIRDMODULES = [
 // endregion
 
 // region: your componets & directives
-const COMPONENTS : Type<any>[] = [];
+const COMPONENTS : Type<any>[] = [SyntaxHighLightComponent];
 const DIRECTIVES : Type<any>[] = [];
 // endregion
 

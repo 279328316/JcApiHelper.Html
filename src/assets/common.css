@@ -3,7 +3,7 @@
 body {
   font-size: 13px;
   -webkit-text-size-adjust: none;
-  background: #FFFFFF;
+  background: #ffffff;
 }
 
 label {
@@ -56,7 +56,7 @@ input:-webkit-autofill {
   overflow-x: hidden;
   overflow-y: auto;
   color: #000;
-  font-size: .7rem;
+  font-size: 0.7rem;
   font-family: "\5FAE\8F6F\96C5\9ED1", Helvetica, "黑体", Arial, Tahoma;
   height: 100%;
 }
@@ -124,7 +124,7 @@ body::-webkit-scrollbar{
 .file {
   position: relative;
   display: inline-block;
-  background: #D0EEFF;
+  background: #d0eeff;
   /*border: 1px solid #99D3F5;*/
   /*border-radius: 4px;*/
   /*padding: 4px 12px;*/
@@ -147,8 +147,8 @@ body::-webkit-scrollbar{
 }
 
 .file:hover {
-  background: #AADFFD;
-  border-color: #78C3F3;
+  background: #aadffd;
+  border-color: #78c3f3;
   color: #004974;
   text-decoration: none;
 }
@@ -158,18 +158,18 @@ body::-webkit-scrollbar{
   padding-right: 15px;
   padding-left: 15px;
   margin-right: auto;
-  margin-left: auto
+  margin-left: auto;
 }
 
 @media (min-width: 768px) {
   .container {
-    width: 750px
+    width: 750px;
   }
 }
 
 @media (min-width: 992px) {
   .container {
-    width: 970px
+    width: 970px;
   }
 }
 
@@ -178,4 +178,9 @@ body::-webkit-scrollbar{
     width: 90%;
     min-height: 420px;
   }
+}
+
+.content {
+  padding: 20px 80px;
+  min-height: calc(100vh - 120px);
 }

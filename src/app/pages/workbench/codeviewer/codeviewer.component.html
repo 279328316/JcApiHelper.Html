@@ -14,8 +14,7 @@
           </div>
         </div>
         <div nz-col nzSpan="4" class="h60 lh60 valign-bottom">
-          <a nz-button nzType="primary" nzSize="small" nzGhost
-             class="ml50 w80" (click)="goback()">Return</a>
+          <a nz-button nzType="primary" nzSize="small" nzGhost class="ml50 w80" (click)="goback()">Return</a>
         </div>
       </div>
       <div>
@@ -31,7 +30,7 @@
                       <label nz-radio nzValue="2">CodeView</label>
                     </nz-radio-group>
                     <label class="ml50" *ngIf="tsModelViewType=='2'" nz-checkbox [(ngModel)]="isShowPageQueryModel"
-                           (ngModelChange)="isShowPageQueryModelChanged()">
+                      (ngModelChange)="isShowPageQueryModelChanged()">
                       Show PageQueryModels</label>
                   </div>
                 </div>
@@ -48,36 +47,30 @@
                               {{tsModel.summary}}
                             </label>
                             <div class="pull-right mr80">
-                              <a nz-button nzType="primary" nzSize="small" nzGhost
-                                 (click)="viewLambda(tsModel)"
-                                 class="w100">快捷Lambda</a>
-                              <a nz-button nzType="primary" nzSize="small" nzGhost
-                                 (click)="viewModelCode(tsModel)"
-                                 class="ml20 w80">Code</a>
+                              <a nz-button nzType="primary" nzSize="small" nzGhost (click)="viewLambda(tsModel)"
+                                class="w100">快捷Lambda</a>
+                              <a nz-button nzType="primary" nzSize="small" nzGhost (click)="viewModelCode(tsModel)"
+                                class="ml20 w80">Code</a>
                             </div>
                           </div>
                         </div>
                         <div tabindex="1" (keyup)="onKeyUpHandler($event)" (keydown)="onKeyDownHandler($event)">
-                          <nz-table #tsModelTable [nzBordered]="true"
-                                    class="mt5 modelTable"
-                                    [nzShowPagination]='false'
-                                    [nzPageSize]="1000"
-                                    nzSize="small"
-                                    [nzData]="tsModel.piList">
+                          <nz-table #tsModelTable [nzBordered]="true" class="mt5 modelTable" [nzShowPagination]='false'
+                            [nzPageSize]="1000" nzSize="small" [nzData]="tsModel.piList">
                             <thead>
-                            <tr>
-                              <th class="wp25" [nzShowSort] = "true" [nzSortFn]="nameSortFn">Name</th>
-                              <th class="wp15" [nzShowSort] = "true" [nzSortFn]="typeSortFn">Type</th>
-                              <th>Summary</th>
-                            </tr>
+                              <tr>
+                                <th class="wp25" [nzShowSort]="true" [nzSortFn]="nameSortFn">Name</th>
+                                <th class="wp15" [nzShowSort]="true" [nzSortFn]="typeSortFn">Type</th>
+                                <th>Summary</th>
+                              </tr>
                             </thead>
                             <tbody>
-                            <tr *ngFor="let pi of tsModelTable.data;let i = index;" (click)="selectPi(tsModel,pi,i)"
+                              <tr *ngFor="let pi of tsModelTable.data;let i = index;" (click)="selectPi(tsModel,pi,i)"
                                 class="{{pi.isSelected ? 'selected':''}}">
-                              <td>{{pi.name}}</td>
-                              <td>{{pi.tsType}}</td>
-                              <td>{{pi.summary}}</td>
-                            </tr>
+                                <td>{{pi.name}}</td>
+                                <td>{{pi.tsType}}</td>
+                                <td>{{pi.summary}}</td>
+                              </tr>
                             </tbody>
                           </nz-table>
                         </div>
@@ -119,14 +112,13 @@
       </div>
     </div>
   </div>
-  <nz-modal [(nzVisible)]="showCode" [nzTitle]="codeTitle"
-            [nzCancelText]="null" [nzWidth]="800"
-            (nzOnCancel)="closeModal()"
-            (nzOnOk)="closeModal()">
-    <textarea nz-input class="wp100 bgcolor-code scrolly" spellcheck="false"
-              style="height: calc( 100vh - 320px);border:none;box-shadow: none;">{{tsCode}}</textarea>
-    <div>
-      <label class="mt10 ml10 f-size12">Not all code is useful, the generated code is for reference only</label>
-    </div>
+  <nz-modal [(nzVisible)]="showCode" [nzTitle]="codeTitle" [nzCancelText]="null" (nzOnCancel)="closeModal()"
+    (nzOnOk)="closeModal()">
+    <ng-container *nzModalContent>
+      <textarea nz-input class="wp100 bgcolor-code scrolly" spellcheck="false"
+        style="height: calc( 100vh - 320px);border:none;box-shadow: none;">
+        {{tsCode}}
+      </textarea>
+    </ng-container>
   </nz-modal>
 </div>

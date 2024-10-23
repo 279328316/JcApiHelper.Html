@@ -81,8 +81,12 @@ export class WorkbenchComponent implements OnInit {
         break;
       }
     }
-    this.apiSvc.getControllerListByIds(ids).subscribe(
-      (result: Controller[]) => {
+
+    curIndex += i + 1;
+    console.log("curIndex:", curIndex);
+
+    this.apiSvc.getControllerListByIds(ids).subscribe({
+      next: (result: Controller[]) => {
         result.forEach((rc) => {
           let filterControllers = this.controllerList.filter((fc) => fc.id == rc.id);
           if (filterControllers && filterControllers.length > 0) {
@@ -91,15 +95,18 @@ export class WorkbenchComponent implements OnInit {
           }
         });
       },
-      null,
-      () => {
-        curIndex += i + 1;
-        console.log("curIndex:", curIndex);
+      error: (error) => {
+        console.log("error:", error);
         if (curIndex < this.controllerList.length) {
           this.initControllerDetail(curIndex);
         }
-      }
-    );
+      },
+      complete: () => {
+        if (curIndex < this.controllerList.length) {
+          this.initControllerDetail(curIndex);
+        }
+      },
+    });
   }
 
   /*初始化AreaList*/
