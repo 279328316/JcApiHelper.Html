@@ -1,6 +1,7 @@
-
-::ng-deep .ant-menu-vertical > .ant-menu-item, .ant-menu-vertical-left > .ant-menu-item,
-.ant-menu-vertical-right > .ant-menu-item, .ant-menu-inline > .ant-menu-item,
+::ng-deep .ant-menu-vertical > .ant-menu-item,
+.ant-menu-vertical-left > .ant-menu-item,
+.ant-menu-vertical-right > .ant-menu-item,
+.ant-menu-inline > .ant-menu-item,
 .ant-menu-vertical > .ant-menu-submenu > .ant-menu-submenu-title,
 .ant-menu-vertical-left > .ant-menu-submenu > .ant-menu-submenu-title,
 .ant-menu-vertical-right > .ant-menu-submenu > .ant-menu-submenu-title,
@@ -15,8 +16,23 @@
   overflow-x: hidden;
   overflow-y: hidden;
   //max-height:calc( 100vh - 165px );
-  max-height:calc( 100vh - 100px );
+  max-height: calc(100vh - 100px);
 }
 .main-menu:hover .main-menu-inner {
   overflow-y: auto;
+}
+
+a {
+  text-decoration: none;
+  cursor: pointer;
+  color: #2ea7e7;
+}
+
+a:hover {
+  text-decoration: none;
+  color: #2f8bfa;
+}
+
+.actionLink {
+  color: #2ea7e7;
 }

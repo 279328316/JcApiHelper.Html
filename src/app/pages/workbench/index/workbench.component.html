@@ -109,7 +109,7 @@
                 <tbody>
                 <tr *ngFor="let action of actionTable.data">
                   <td>
-                    <a routerLink="/workbench/action/{{action.id}}">
+                    <a routerLink="/workbench/action/{{action.id}}" class="actionLink">
                       {{(action.areaName ? action.areaName + '/':'') + action.controllerName + '/' + action.actionName}}
                     </a>
                   </td>
