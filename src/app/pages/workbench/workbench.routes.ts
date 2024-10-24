@@ -17,7 +17,7 @@ const routes: Routes = [
         { path: 'action/:actionId',component : ActionComponent},
         { path: 'ptype/:ptypeId',component : PTypeComponent},
         { path: 'codeviewer/:itemType/:itemId',component : CodeViewerComponent,data:{title:'Ts'}},
-        { path: 'codegenerator/:itemType/:itemId',component : CodeGeneratorComponent,data:{title:'Ts'}}
+        { path: 'codegenerator/:controllerId',component : CodeGeneratorComponent,data:{title:'Ts'}}
     ]
   },
   { path: 'index',

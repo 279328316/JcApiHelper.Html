@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  //SERVER_URL: 'http://127.0.0.1:8001/ApiHelper/',
+  //SERVER_URL: "https://debugapp.sinounion.com/Api/",
   //SERVER_URL: '',
   SERVER_URL: "http://10.10.9.165:5000/",
   production: false,

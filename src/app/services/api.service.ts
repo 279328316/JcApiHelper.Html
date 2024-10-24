@@ -51,4 +51,8 @@ export class ApiService {
   public getTs(itemId: string, itemType: string): Observable<any> {
     return Util.ajax("ApiHelper/GetTsModel", { itemId: itemId, itemType: itemType });
   }
+  /*获取Code File Tree*/
+  public getCodeTree(controllerId: string): Observable<any> {
+    return Util.ajax("ApiHelper/getCodeTree", { controllerId: controllerId });
+  }
 }

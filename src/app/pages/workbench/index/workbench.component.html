@@ -7,8 +7,7 @@
             <div nz-row>
               <div nz-col nzSpan="18">
                 <nz-input-group nzSize="small" [nzSuffix]="suffixIcon">
-                  <input placeholder="Search" nz-input
-                         [(ngModel)]="searchText"/>
+                  <input placeholder="Search" nz-input [(ngModel)]="searchText" />
                 </nz-input-group>
                 <ng-template #suffixIcon>
                   <i nz-icon nzType="search"></i>
@@ -31,15 +30,14 @@
                       <label class="fw600 f-size16">Areas</label>
                     </div>
                     <div nz-col nzSpan="12" class="lh24">
-                      <label nz-checkbox [(ngModel)]="isAllAreaSelected"
-                             [nzIndeterminate]="isAreaSelectIndeterminate"
-                             (ngModelChange)="allSelectAreaChange()">All</label>
+                      <label nz-checkbox [(ngModel)]="isAllAreaSelected" [nzIndeterminate]="isAreaSelectIndeterminate"
+                        (ngModelChange)="allSelectAreaChange()">All</label>
                     </div>
                   </div>
                   <div nz-row class="mt5">
                     <div nz-col nzSpan="12" *ngFor="let area of areaList;let i=index;">
                       <label class="{{ i>1 ? 'mt5':''}} cursor-Hand" nz-checkbox [(ngModel)]="area.isSelected"
-                             (ngModelChange)="areaSelectChange(area)">
+                        (ngModelChange)="areaSelectChange(area)">
                         {{area.displayName}}</label>
                     </div>
                   </div>
@@ -49,11 +47,12 @@
           </div>
           <section class="main-menu-inner">
             <ul nz-menu nzMode="inline">
-              <li nz-menu-item [nzSelected] = "isDisplayAllMenuSelected"
-                  *ngIf="controllerList?.length>0 && !searchText && !isAreaSelectIndeterminate"
-                  (click)="displayAll()">Display All
+              <li nz-menu-item [nzSelected]="isDisplayAllMenuSelected"
+                *ngIf="controllerList?.length>0 && !searchText && !isAreaSelectIndeterminate" (click)="displayAll()">
+                Display All
               </li>
-              <li nz-menu-item [nzSelected] = "controller.isSelected" *ngFor="let controller of controllerList|controllerFilter:searchText:selectedArea">
+              <li nz-menu-item [nzSelected]="controller.isSelected"
+                *ngFor="let controller of controllerList|controllerFilter:searchText:selectedArea">
                 <a class="overxhiden" (click)="onSelectController(controller)">
                   {{controller.controllerName}}
                   <span class="ml8 f-size12" style="color: #a5a5a5">{{controller.summary}}</span>
@@ -89,39 +88,36 @@
                 <label *ngIf="controller.summary" class="f-size12" style="max-width: 80%;">
                   {{controller.summary}}</label>
                 <a nz-button nzType="primary" nzSize="small" nzGhost
-                   routerLink="/workbench/codegenerator/controller/{{controller.id}}"
-                   class="pull-right mr20 w80">View Code</a>
+                  routerLink="/workbench/codegenerator/{{controller.id}}" class="pull-right mr20 w80">View Code</a>
               </div>
             </div>
             <div class="wp90 mt5">
-              <nz-table #actionTable
-                        [nzShowPagination]='false'
-                        [nzSize]="actionTableSize"
-                        [nzPageSize]="1000"
-                        [nzData]="controller.actionList">
+              <nz-table #actionTable [nzShowPagination]='false' [nzSize]="actionTableSize" [nzPageSize]="1000"
+                [nzData]="controller.actionList">
                 <thead>
-                <tr>
-                  <th class="wp33">API</th>
-                  <th class="wp15">Attr</th>
-                  <th>Summary</th>
-                </tr>
+                  <tr>
+                    <th class="wp33">API</th>
+                    <th class="wp15">Attr</th>
+                    <th>Summary</th>
+                  </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let action of actionTable.data">
-                  <td>
-                    <a routerLink="/workbench/action/{{action.id}}" class="actionLink">
-                      {{(action.areaName ? action.areaName + '/':'') + action.controllerName + '/' + action.actionName}}
-                    </a>
-                  </td>
-                  <td>
-                    <div class="mt5" *ngFor="let attr of action.customAttrList;let i = index;">
-                      <nz-tag [nzColor]="i<tagcolor.length-1 ? tagcolor[i]:tagcolor[0]">
-                        {{attr.name}}
-                      </nz-tag>
-                    </div>
-                  </td>
-                  <td>{{action.summary}}</td>
-                </tr>
+                  <tr *ngFor="let action of actionTable.data">
+                    <td>
+                      <a routerLink="/workbench/action/{{action.id}}" class="actionLink">
+                        {{(action.areaName ? action.areaName + '/':'') + action.controllerName + '/' +
+                        action.actionName}}
+                      </a>
+                    </td>
+                    <td>
+                      <div class="mt5" *ngFor="let attr of action.customAttrList;let i = index;">
+                        <nz-tag [nzColor]="i<tagcolor.length-1 ? tagcolor[i]:tagcolor[0]">
+                          {{attr.name}}
+                        </nz-tag>
+                      </div>
+                    </td>
+                    <td>{{action.summary}}</td>
+                  </tr>
                 </tbody>
               </nz-table>
             </div>
@@ -134,4 +130,3 @@
     </div>
   </div>
 </div>
-
