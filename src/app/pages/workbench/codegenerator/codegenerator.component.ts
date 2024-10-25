@@ -16,7 +16,8 @@ import "prismjs/components/prism-typescript.min.js";
   styleUrls: ["./codegenerator.component.less"],
 })
 export class CodeGeneratorComponent implements OnInit {
-  controllerId: string;
+  itemId: string;
+  itemType: string;
 
   tsServiceType = "1";
   tsModelViewType = "1";
@@ -29,9 +30,9 @@ export class CodeGeneratorComponent implements OnInit {
   showCode: boolean = false;
   codeTitle: string;
   tsCode: string;
+  
+  activatedNode?: NzTreeNode;
 
-  isCtrlDown: boolean = false;
-  isShiftDown: boolean = false;
   code = "";
   htmlCode = `
   <nz-tabset>
@@ -67,15 +68,15 @@ export class CodeGeneratorComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.controllerId = this.routerParams.snapshot.paramMap.get("controllerId");
-    if (this.controllerId) {
-      this.getCodeTree();
+    this.itemId = this.routerParams.snapshot.paramMap.get("itemId");
+    this.itemType = this.routerParams.snapshot.paramMap.get("itemType");
+    if (this.itemId && this.itemType) {
+      this.getTsModel();
     }
 
     this.code = this.htmlCode;
   }
 
-  activatedNode?: NzTreeNode;
   nodes = [
     {
       title: "models",
@@ -153,14 +154,8 @@ export class CodeGeneratorComponent implements OnInit {
       this.language = "html";
       this.codeTitle = "TestHtml";
     } else {
-      if (this.tsResult.tsModelList) {
-        this.tsResult.tsModelList[0].piList.forEach((a) => (a.isSelected = true));
-        this.viewLambda(this.tsResult.tsModelList[0]);
-        this.code = this.tsCode;
-        this.language = "typescript";
-      } else {
-        this.code = "";
-      }
+      this.code = this.tsResult?.tsCode.tsModelCode;
+      this.language = "typescript";
     }
   }
 
@@ -173,79 +168,10 @@ export class CodeGeneratorComponent implements OnInit {
   }
 
   /*获取TsModel*/
-  getCodeTree() {
-    this.apiSvc.getCodeTree(this.controllerId).subscribe((tsResult: TsResult) => {
+  getTsModel() {
+    this.apiSvc.GetTsModel(this.itemId, this.itemType).subscribe((tsResult: TsResult) => {
       this.tsResult = tsResult;
-      if (tsResult && tsResult.tsModelList) {
-        let tsModelCode = "";
-        let tsModelCodeWithPgQuery = "";
-        tsResult.tsModelList.forEach((tsModel) => {
-          tsModelCode += tsModel.tsModelCode;
-          tsModelCodeWithPgQuery += tsModel.tsModelCode;
-          tsModelCodeWithPgQuery += tsModel.pgQueryModelCode;
-        });
-        this.tsModelCode = tsModelCode;
-        this.tsModelCodeWithPgQuery = tsModelCodeWithPgQuery;
-      }
     });
-  }
-
-  /*查看Lambda Code*/
-  viewLambda(tsModel: TsModel) {
-    if (tsModel.piList.filter((a) => a.isSelected).length <= 0) {
-      Util.showInfoBox("No record is selected.");
-      return;
-    }
-    let selectedPiList = tsModel.piList.filter((a) => a.isSelected);
-    let lambdaStr = "";
-
-    // SetValue Lambda
-    let setValueLambda = "//1 SetValue \r\n";
-    setValueLambda +=
-      tsModel.name + " " + StringHelper.firstToLower(tsModel.name) + " = new " + tsModel.name + "();\r\n";
-    selectedPiList.forEach((a, index) => {
-      setValueLambda +=
-        StringHelper.firstToLower(tsModel.name) +
-        "." +
-        StringHelper.firstToLower(a.name) +
-        " = source." +
-        StringHelper.firstToLower(a.name) +
-        ";\r\n";
-    });
-
-    // Expression Lambda
-    let expLambda = "//2 Expression Lambda \r\n";
-    if (selectedPiList.length == 1) {
-      //length == 1
-      expLambda += "a => a." + selectedPiList[0].name + "\r\n";
-    } else {
-      //length > 1
-      expLambda += "var exp = ExpressionHelper.CreateExpression<" + tsModel.name + ">(a => new {\r\n";
-      selectedPiList.forEach((a, index) => {
-        expLambda += "  " + "a." + a.name;
-        if (index < selectedPiList.length - 1) {
-          expLambda += ",";
-        }
-        expLambda += "\r\n";
-      });
-      expLambda += "};\r\n";
-    }
-
-    // Ctor Lambda
-    let ctorLambda = "//3 C# Ctor \r\n";
-    ctorLambda += tsModel.name + " " + StringHelper.firstToLower(tsModel.name) + " = new " + tsModel.name + "(){\r\n";
-    selectedPiList.forEach((a, index) => {
-      ctorLambda += "  " + a.name + " = source." + a.name;
-      if (index < selectedPiList.length - 1) {
-        ctorLambda += ",";
-      }
-      ctorLambda += "\r\n";
-    });
-    ctorLambda += "};\r\n";
-
-    this.tsCode = setValueLambda + "\r\n" + expLambda + "\r\n" + ctorLambda;
-    this.codeTitle = tsModel.name + " Lambda";
-    this.showCode = true;
   }
 
   /*隐藏Modal*/

@@ -51,19 +51,8 @@ export class CodeViewerComponent implements OnInit {
 
   /*获取TsModel*/
   getTsModel() {
-    this.apiSvc.getTs(this.itemId, this.itemType).subscribe((tsResult: TsResult) => {
+    this.apiSvc.GetTsModel(this.itemId, this.itemType).subscribe((tsResult: TsResult) => {
       this.tsResult = tsResult;
-      if (tsResult && tsResult.tsModelList) {
-        let tsModelCode = "";
-        let tsModelCodeWithPgQuery = "";
-        tsResult.tsModelList.forEach((tsModel) => {
-          tsModelCode += tsModel.tsModelCode;
-          tsModelCodeWithPgQuery += tsModel.tsModelCode;
-          tsModelCodeWithPgQuery += tsModel.pgQueryModelCode;
-        });
-        this.tsModelCode = tsModelCode;
-        this.tsModelCodeWithPgQuery = tsModelCodeWithPgQuery;
-      }
     });
   }
 
@@ -152,13 +141,6 @@ export class CodeViewerComponent implements OnInit {
     return a["typeName"].localeCompare(b["typeName"]);
   }
 
-  /*查看ModelCode*/
-  viewModelCode(tsModel: TsModel) {
-    this.tsCode = tsModel.tsModelCode + tsModel.pgQueryModelCode;
-    this.codeTitle = tsModel.name + " Code";
-    this.showCode = true;
-  }
-
   /*查看Lambda Code*/
   viewLambda(tsModel: TsModel) {
     if (tsModel.piList.filter((a) => a.isSelected).length <= 0) {
@@ -166,7 +148,6 @@ export class CodeViewerComponent implements OnInit {
       return;
     }
     let selectedPiList = tsModel.piList.filter((a) => a.isSelected);
-    let lambdaStr = "";
 
     // SetValue Lambda
     let setValueLambda = "//1 SetValue \r\n";
@@ -182,8 +163,20 @@ export class CodeViewerComponent implements OnInit {
         ";\r\n";
     });
 
+    // Ctor Lambda
+    let ctorLambda = "//2 C# Ctor \r\n";
+    ctorLambda += tsModel.name + " " + StringHelper.firstToLower(tsModel.name) + " = new " + tsModel.name + "(){\r\n";
+    selectedPiList.forEach((a, index) => {
+      ctorLambda += "  " + a.name + " = source." + a.name;
+      if (index < selectedPiList.length - 1) {
+        ctorLambda += ",";
+      }
+      ctorLambda += "\r\n";
+    });
+    ctorLambda += "};\r\n";
+
     // Expression Lambda
-    let expLambda = "//2 Expression Lambda \r\n";
+    let expLambda = "//3 Expression Lambda \r\n";
     if (selectedPiList.length == 1) {
       //length == 1
       expLambda += "a => a." + selectedPiList[0].name + "\r\n";
@@ -200,19 +193,7 @@ export class CodeViewerComponent implements OnInit {
       expLambda += "};\r\n";
     }
 
-    // Ctor Lambda
-    let ctorLambda = "//3 C# Ctor \r\n";
-    ctorLambda += tsModel.name + " " + StringHelper.firstToLower(tsModel.name) + " = new " + tsModel.name + "(){\r\n";
-    selectedPiList.forEach((a, index) => {
-      ctorLambda += "  " + a.name + " = source." + a.name;
-      if (index < selectedPiList.length - 1) {
-        ctorLambda += ",";
-      }
-      ctorLambda += "\r\n";
-    });
-    ctorLambda += "};\r\n";
-
-    this.tsCode = setValueLambda + "\r\n" + expLambda + "\r\n" + ctorLambda;
+    this.tsCode = "\r\n" + setValueLambda + "\r\n" + ctorLambda + "\r\n" + expLambda;
     this.codeTitle = tsModel.name + " Lambda";
     this.showCode = true;
   }

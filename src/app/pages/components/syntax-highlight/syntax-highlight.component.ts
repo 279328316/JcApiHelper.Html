@@ -14,6 +14,7 @@ export class SyntaxHighLightComponent implements AfterViewInit, OnInit {
   @Input() title: string = "";
   @Input() code: string = "";
   @Input() language: string = "html";
+  @Input() size: string = "";
   copyButtonText: string = "Copy";
   htmlSnippet: string;
   isCopied: boolean;
@@ -43,7 +44,7 @@ export class SyntaxHighLightComponent implements AfterViewInit, OnInit {
   highlightCode() {
     if (this.code) {
       let language = this.language || "html";
-      this.htmlSnippet = Prism.highlight(this.code, Prism.languages[language], language);
+      this.htmlSnippet = Prism.highlight("\r\n" + this.code, Prism.languages[language], language);
     }
   }
 

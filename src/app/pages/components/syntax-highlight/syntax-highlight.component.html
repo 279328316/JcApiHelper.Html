@@ -1,12 +1,12 @@
 <div class="code-container">
   <div class="title-bar">
-    <span class="color-primary">{{ title }}</span>
-    <a class=" copy-button" (click)="copyToClipboard()">
+    <span>{{ title }}</span>
+    <a class="copy-button" (click)="copyToClipboard()">
       <span nz-icon *ngIf="!isCopied" nzType="copy" nzTheme="outline"></span>
       <span nz-icon *ngIf="isCopied" nzType="check" nzTheme="outline" style="color: green;"></span>
     </a>
   </div>
-  <pre class="code-block language-{{ language }}">
+  <pre class="code-block language-{{ language }} {{size}}">
     <code [innerHTML]="htmlSnippet"></code>
   </pre>
 </div>

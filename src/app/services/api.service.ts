@@ -48,11 +48,7 @@ export class ApiService {
   }
 
   /*获取TsModel*/
-  public getTs(itemId: string, itemType: string): Observable<any> {
+  public GetTsModel(itemId: string, itemType: string): Observable<any> {
     return Util.ajax("ApiHelper/GetTsModel", { itemId: itemId, itemType: itemType });
-  }
-  /*获取Code File Tree*/
-  public getCodeTree(controllerId: string): Observable<any> {
-    return Util.ajax("ApiHelper/getCodeTree", { controllerId: controllerId });
   }
 }

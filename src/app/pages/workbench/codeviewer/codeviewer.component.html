@@ -20,18 +20,15 @@
       <div>
         <nz-card class="mt10 minh500">
           <nz-tabset nzSize="large" [nzAnimated]='false'>
-            <nz-tab nzTitle="Models" *ngIf="tsResult?.tsModelList && tsResult.tsModelList.length>0">
+            <nz-tab nzTitle="Models" *ngIf="tsResult?.tsModelList.length>0">
               <div>
                 <div class="lh40">
-                  <label class="f-size18">Ts Models</label>
-                  <div class="lineblock ml80">
+                  <label class="f-size18 w80">Ts Models</label>
+                  <div class="lineblock ml50">
                     <nz-radio-group [(ngModel)]="tsModelViewType" (ngModelChange)="modelViewTypeChanged()">
                       <label nz-radio nzValue="1">TableView</label>
                       <label nz-radio nzValue="2">CodeView</label>
                     </nz-radio-group>
-                    <label class="ml50" *ngIf="tsModelViewType=='2'" nz-checkbox [(ngModel)]="isShowPageQueryModel"
-                      (ngModelChange)="isShowPageQueryModelChanged()">
-                      Show PageQueryModels</label>
                   </div>
                 </div>
                 <div>
@@ -49,8 +46,6 @@
                             <div class="pull-right mr80">
                               <a nz-button nzType="primary" nzSize="small" nzGhost (click)="viewLambda(tsModel)"
                                 class="w100">快捷Lambda</a>
-                              <a nz-button nzType="primary" nzSize="small" nzGhost (click)="viewModelCode(tsModel)"
-                                class="ml20 w80">Code</a>
                             </div>
                           </div>
                         </div>
@@ -79,27 +74,33 @@
                   </div>
                   <div *ngIf="tsModelViewType=='2'">
                     <nz-card nzSize="small" class="bgcolor-code">
-                      <pre>{{ isShowPageQueryModel ? tsModelCodeWithPgQuery : tsModelCode}}</pre>
+                      <app-syntax-highlight [title]="'Typescript'" [code]="tsResult?.tsCode.tsModelCode"
+                        [language]="'typescript'"></app-syntax-highlight>
                     </nz-card>
                   </div>
                 </div>
               </div>
             </nz-tab>
-            <nz-tab nzTitle="Services" *ngIf="tsResult?.tsService">
+            <nz-tab nzTitle="Services" *ngIf="tsResult?.tsCode?.tsServiceCode">
               <div>
                 <div class="lh40">
-                  <label class="f-size18">Ts Services</label>
-                  <div class="lineblock ml80">
+                  <label class="f-size18 w100">Api Services</label>
+                  <div class="lineblock ml30">
                     <nz-radio-group [(ngModel)]="tsServiceType" (ngModelChange)="tsServiceTypeChanged()">
-                      <label nz-radio nzValue="1">Jc</label>
-                      <label nz-radio nzValue="2">Common</label>
-                      <label nz-radio nzValue="3">ApiCode</label>
+                      <label nz-radio nzValue="1">Ts Service</label>
+                      <label nz-radio nzValue="2">ApiCode</label>
                     </nz-radio-group>
                   </div>
                 </div>
                 <div>
                   <nz-card nzSize="small" class="bgcolor-code">
-                    <pre>{{tsServiceType == "1" ? tsResult.tsService.jcCode : (tsServiceType == "2" ? tsResult.tsService.commonCode : tsResult.tsService.apiCode)}}</pre>
+                    @if(tsServiceType == '1'){
+                    <app-syntax-highlight [title]="'Typescript'" [code]="tsResult?.tsCode.tsServiceCode"
+                      [language]="'typescript'"></app-syntax-highlight>
+                    }@else {
+                    <app-syntax-highlight [title]="'C#'" [code]="tsResult?.tsCode.apiCode"
+                      [language]="'csharp'"></app-syntax-highlight>
+                    }
                   </nz-card>
                 </div>
               </div>
@@ -113,12 +114,10 @@
     </div>
   </div>
   <nz-modal [(nzVisible)]="showCode" [nzTitle]="codeTitle" [nzCancelText]="null" (nzOnCancel)="closeModal()"
-    (nzOnOk)="closeModal()">
+    (nzOnOk)="closeModal()" nzWidth="720px">
     <ng-container *nzModalContent>
-      <textarea nz-input class="wp100 bgcolor-code scrolly" spellcheck="false"
-        style="height: calc( 100vh - 320px);border:none;box-shadow: none;">
-        {{tsCode}}
-      </textarea>
+      <app-syntax-highlight [title]="'Typescript'" size="middle" [code]="tsCode"
+        [language]="'typescript'"></app-syntax-highlight>
     </ng-container>
   </nz-modal>
 </div>
