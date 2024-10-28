@@ -19,7 +19,7 @@
       </div>
       <div>
         <nz-card class="mt10 minh500">
-          <nz-tabset nzSize="large" [nzAnimated]='false'>
+          <nz-tabset nzSize="small" [nzAnimated]='false'>
             <nz-tab nzTitle="Models" *ngIf="tsResult?.tsModelList.length>0">
               <div>
                 <div class="lh40">
@@ -73,10 +73,62 @@
                     </nz-card>
                   </div>
                   <div *ngIf="tsModelViewType=='2'">
-                    <nz-card nzSize="small" class="bgcolor-code">
-                      <app-syntax-highlight [title]="'Typescript'" [code]="tsResult?.tsCode.tsModelCode"
-                        [language]="'typescript'"></app-syntax-highlight>
-                    </nz-card>
+                    <app-syntax-highlight [title]="'Typescript'" [code]="tsResult?.tsCode.tsModelCode"
+                      [language]="'typescript'"></app-syntax-highlight>
+                  </div>
+                </div>
+              </div>
+            </nz-tab>
+            <nz-tab nzTitle="Pages" *ngIf="tsResult?.tsModelList.length>0">
+              <div>
+                <div class="lh40">
+                  <label class="f-size18 w80">Ts Pages</label>
+                  <div class="lineblock ml50">
+                    <label>Base Model</label>
+                    <nz-select nzPlaceHolder="select base model for pages" class="w200 ml20" [(ngModel)]="pageBaseModel"
+                      (ngModelChange)="pageBaseModelChange($event)" [nzShowArrow]="true">
+                      @for (model of tsResult?.tsModelList; track model.id) {
+                      <nz-option [nzLabel]="model.name" [nzValue]="model"></nz-option>
+                      }
+                    </nz-select>
+                    <button nz-button nzType="primary" class="ml30 w100" (click)="generatePage()">Generate</button>
+                  </div>
+                </div>
+                <div nz-row nzGutter="16" class="mt10">
+                  <div nz-col nzFlex="200px">
+                    <div class="w200 border-lightgray">
+                      <nz-tree nzBlockNode [nzData]="nodes" (nzClick)="activeNode($event)"
+                        (nzDblClick)="openFolder($event)" [nzTreeTemplate]="nzTreeTemplate"></nz-tree>
+                      <ng-template #nzTreeTemplate let-node let-origin="origin">
+                        @if (!node.isLeaf) {
+                        <span class="custom-node" (contextmenu)="contextMenu($event, menu)">
+                          <span>
+                            <span nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+                              (click)="openFolder(node)"></span>
+                            <span class="folder-name">{{ node.title }}</span>
+                          </span>
+                        </span>
+                        } @else {
+                        <span class="custom-node" (contextmenu)="contextMenu($event, menu)">
+                          <span>
+                            <span nz-icon nzType="file"></span>
+                            <span class="file-name">{{ node.title }}</span>
+                          </span>
+                        </span>
+                        }
+                      </ng-template>
+                      <nz-dropdown-menu #menu="nzDropdownMenu">
+                        <ul nz-menu>
+                          <li nz-menu-item (click)="selectDropdown()">下载</li>
+                        </ul>
+                      </nz-dropdown-menu>
+                    </div>
+                  </div>
+                  <div nz-col nzFlex="auto">
+                    <div class="wp90">
+                      <app-syntax-highlight [title]="pageCodeTitle" size="'middle'" [code]="pageCode"
+                        [language]="pageLanguage"></app-syntax-highlight>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -93,15 +145,13 @@
                   </div>
                 </div>
                 <div>
-                  <nz-card nzSize="small" class="bgcolor-code">
-                    @if(tsServiceType == '1'){
-                    <app-syntax-highlight [title]="'Typescript'" [code]="tsResult?.tsCode.tsServiceCode"
-                      [language]="'typescript'"></app-syntax-highlight>
-                    }@else {
-                    <app-syntax-highlight [title]="'C#'" [code]="tsResult?.tsCode.apiCode"
-                      [language]="'csharp'"></app-syntax-highlight>
-                    }
-                  </nz-card>
+                  @if(tsServiceType == '1'){
+                  <app-syntax-highlight [title]="'Typescript'" [code]="tsResult?.tsCode.tsServiceCode"
+                    [language]="'typescript'"></app-syntax-highlight>
+                  }@else {
+                  <app-syntax-highlight [title]="'C#'" [code]="tsResult?.tsCode.apiCode"
+                    [language]="'csharp'"></app-syntax-highlight>
+                  }
                 </div>
               </div>
             </nz-tab>

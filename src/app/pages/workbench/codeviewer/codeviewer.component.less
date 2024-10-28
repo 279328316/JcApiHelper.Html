@@ -1,9 +1,9 @@
 
 ::ng-deep {
-  .modelTable tbody>tr.selected {
+  .modelTable tbody>tr:hover {
     background-color: #e8f8fe;
   }
-  .modelTable tbody>tr:hover {
+  .modelTable tbody>tr.selected {
     background-color: #e8f8fe;
   }
   .ant-modal-body {
@@ -21,4 +21,34 @@ div:focus {
   /*outline-color: red;*/
   outline-style: auto;
   outline-width: 0px;
+}
+
+
+nz-tree {
+  overflow: hidden;
+  margin: 0 -24px;
+  padding: 0 24px;
+}
+
+.custom-node {
+  cursor: pointer;
+  line-height: 28px;
+  margin-left: 4px;
+  display: inline-block;
+  width: 100%;
+}
+
+.file-name,
+.folder-name {
+  margin-left: 4px;
+}
+
+.file-desc,
+.folder-desc {
+  padding: 0 8px;
+  display: inline-block;
+  background: #1890ff;
+  color: #ffffff;
+  position: relative;
+  left: 12px;
 }

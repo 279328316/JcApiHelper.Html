@@ -4,6 +4,13 @@ import { ActivatedRoute } from "@angular/router";
 import { TsModel, TsPi, TsResult } from "@models/tsmodel";
 import { Util } from "@core/util";
 import { StringHelper } from "@core/stringhelper";
+import { NzFormatEmitEvent, NzTreeNode } from "ng-zorro-antd/tree";
+import { NzContextMenuService, NzDropdownMenuComponent } from "ng-zorro-antd/dropdown";
+
+export class PageTreeNode extends NzTreeNode {
+  language: string;
+  code : string;
+}
 
 @Component({
   selector: "app-codeviewer",
@@ -21,6 +28,8 @@ export class CodeViewerComponent implements OnInit {
   tsModelCode: string;
   tsModelCodeWithPgQuery: string;
 
+  pageBaseModel: TsModel;
+
   showCode: boolean = false;
   codeTitle: string;
   tsCode: string;
@@ -28,7 +37,18 @@ export class CodeViewerComponent implements OnInit {
   isCtrlDown: boolean = false;
   isShiftDown: boolean = false;
 
-  constructor(private routerParams: ActivatedRoute, private apiSvc: ApiService) {
+  pages: PageTreeNode[] = [];
+  activatedNode?: PageTreeNode;
+
+  pageCode = "";
+  pageCodeTitle = "";
+  pageLanguage = "html";
+
+  constructor(
+    private routerParams: ActivatedRoute,
+    private nzContextMenuService: NzContextMenuService,
+    private apiSvc: ApiService
+  ) {
     const tsServiceType = localStorage.getItem("tsServiceType");
     this.tsServiceType = tsServiceType ? tsServiceType : "1";
 
@@ -54,6 +74,87 @@ export class CodeViewerComponent implements OnInit {
     this.apiSvc.GetTsModel(this.itemId, this.itemType).subscribe((tsResult: TsResult) => {
       this.tsResult = tsResult;
     });
+  }
+
+  // BaseModelChange
+  pageBaseModelChange(value: string): void {
+    console.log(value);
+    if (value) {
+      //this.generatePages();
+    }
+  }
+
+  generatePage() {
+    throw new Error("Method not implemented.");
+  }
+
+  nodes = [
+    {
+      title: "pages",
+      key: "2",
+      expanded: true,
+      children: [
+        {
+          title: "appmanage",
+          key: "3",
+          expanded: true,
+          children: [
+            {
+              title: "applist",
+              key: "applist",
+              expanded: false,
+              children: [
+                { title: "leaf 1-0", key: "1010", isLeaf: true },
+                { title: "leaf 1-1", key: "1011", isLeaf: true },
+                { title: "leaf 1-1", key: "1013", isLeaf: true },
+              ],
+            },
+            {
+              title: "appedit",
+              key: "4",
+              expanded: false,
+              children: [
+                { title: "leaf 1-0", key: "1010", isLeaf: true, code: "123",language: "html" },
+                { title: "leaf 1-1", key: "1011", isLeaf: true },
+                { title: "leaf 1-1", key: "1014", isLeaf: true },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  ];
+
+  openFolder(data: NzTreeNode | NzFormatEmitEvent): void {
+    // do something if u want
+    if (data instanceof NzTreeNode) {
+      data.isExpanded = !data.isExpanded;
+    } else {
+      const node = data.node;
+      if (node) {
+        node.isExpanded = !node.isExpanded;
+      }
+    }
+  }
+
+  activeNode(data: NzFormatEmitEvent): void {
+    this.activatedNode = data.node! as PageTreeNode;
+    if (!this.activatedNode.isLeaf) {
+      this.activatedNode.isExpanded = !this.activatedNode.isExpanded;
+    }
+    else {
+      this.pageCode = this.activatedNode.code;
+      this.pageLanguage = this.activatedNode.language;
+      this.pageCodeTitle = this.activatedNode?.title;
+    }
+  }
+
+  contextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
+    this.nzContextMenuService.create($event, menu);
+  }
+
+  selectDropdown(): void {
+    // do something
   }
 
   /*选择Model 属性*/
