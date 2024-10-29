@@ -9,7 +9,8 @@ import { NzContextMenuService, NzDropdownMenuComponent } from "ng-zorro-antd/dro
 
 export class PageTreeNode extends NzTreeNode {
   language: string;
-  code : string;
+  code: string;
+  expanded: boolean;
 }
 
 @Component({
@@ -23,7 +24,9 @@ export class CodeViewerComponent implements OnInit {
   tsServiceType = "1";
   tsModelViewType = "1";
   isShowPageQueryModel = true;
+
   tsResult: TsResult;
+  tsModelList: TsModel[] = [];
 
   tsModelCode: string;
   tsModelCodeWithPgQuery: string;
@@ -37,7 +40,14 @@ export class CodeViewerComponent implements OnInit {
   isCtrlDown: boolean = false;
   isShiftDown: boolean = false;
 
-  pages: PageTreeNode[] = [];
+  rootNode: PageTreeNode = <PageTreeNode>{
+    title: "pages",
+    key: "pages",
+    expanded: true,
+    children: [],
+  };
+
+  pageNodes: PageTreeNode[] = [this.rootNode];
   activatedNode?: PageTreeNode;
 
   pageCode = "";
@@ -73,19 +83,191 @@ export class CodeViewerComponent implements OnInit {
   getTsModel() {
     this.apiSvc.GetTsModel(this.itemId, this.itemType).subscribe((tsResult: TsResult) => {
       this.tsResult = tsResult;
+      this.tsModelList = this.tsResult.tsModelList;
+      if (this.tsModelList?.length > 0) {
+        let filterModels = this.tsModelList.filter((x) => x.name.toLowerCase() === this.tsResult.name.toLowerCase());
+        if (filterModels.length > 0) {
+          this.pageBaseModel = filterModels[0];
+        } else {
+          filterModels = this.tsModelList.filter((x) => x.name.indexOf("<") < 0);
+          this.pageBaseModel = filterModels.length > 0 ? filterModels[0] : null;
+        }
+        if (this.pageBaseModel) {
+          this.generatePages();
+        }
+      }
     });
   }
 
   // BaseModelChange
-  pageBaseModelChange(value: string): void {
-    console.log(value);
+  pageBaseModelChange(value: TsModel): void {
     if (value) {
       //this.generatePages();
     }
   }
 
-  generatePage() {
-    throw new Error("Method not implemented.");
+  // 生成页面代码
+  generatePages() {
+    console.log(this.rootNode);
+    if (!this.pageBaseModel) {
+      return;
+    }
+    let filterNodes = this.rootNode.children;
+    if (filterNodes.filter((a) => a.key == this.pageBaseModel.id).length > 0) {
+      return;
+    }
+    let modelId = this.pageBaseModel.id.toLocaleLowerCase();
+    let modelName = this.pageBaseModel.name.toLocaleLowerCase();
+    let pageNode = <PageTreeNode>{
+      title: modelName,
+      key: modelId,
+      expanded: true,
+      children: [],
+    };
+    this.rootNode.children.push(pageNode);
+
+    {
+      let listPageNode = <PageTreeNode>{
+        title: modelName + "list",
+        key: modelId + "list",
+        expanded: false,
+        children: [],
+      };
+      pageNode.children.push(listPageNode);
+
+      let listPageHtmlNode = <PageTreeNode>{
+        title: modelName + "list.html",
+        key: modelId + "list.html",
+        isLeaf: true,
+      };
+      let listPageLessNode = <PageTreeNode>{
+        title: modelName + "less.ts",
+        key: modelId + "less.ts",
+        isLeaf: true,
+      };
+      let listPageTsNode = <PageTreeNode>{
+        title: modelName + "list.ts",
+        key: modelId + "list.ts",
+        isLeaf: true,
+      };
+      listPageNode.children.push(listPageHtmlNode);
+      listPageNode.children.push(listPageLessNode);
+      listPageNode.children.push(listPageTsNode);
+    }
+
+    {
+      let editPageNode = <PageTreeNode>{
+        title: modelName + "edit",
+        key: modelId + "edit",
+        expanded: false,
+        children: [],
+      };
+      pageNode.children.push(editPageNode);
+
+      let editPageHtmlNode = <PageTreeNode>{
+        title: modelName + "edit.html",
+        key: modelId + "edit.html",
+        isLeaf: true,
+      };
+      let editPageLessNode = <PageTreeNode>{
+        title: modelName + "less.ts",
+        key: modelId + "less.ts",
+        isLeaf: true,
+      };
+      let editPageTsNode = <PageTreeNode>{
+        title: modelName + "edit.ts",
+        key: modelId + "edit.ts",
+        isLeaf: true,
+      };
+      editPageNode.children.push(editPageHtmlNode);
+      editPageNode.children.push(editPageLessNode);
+      editPageNode.children.push(editPageTsNode);
+    }
+
+    {
+      let editPageNode = <PageTreeNode>{
+        title: modelName + "edit_modal",
+        key: modelId + "edit_modal",
+        expanded: false,
+        children: [],
+      };
+      pageNode.children.push(editPageNode);
+
+      let editPageHtmlNode = <PageTreeNode>{
+        title: modelName + "edit.html",
+        key: modelId + "edit_modal.html",
+        isLeaf: true,
+      };
+      let editPageLessNode = <PageTreeNode>{
+        title: modelName + "less.ts",
+        key: modelId + "less_modal.ts",
+        isLeaf: true,
+      };
+      let editPageTsNode = <PageTreeNode>{
+        title: modelName + "edit.ts",
+        key: modelId + "edit_modal.ts",
+        isLeaf: true,
+      };
+      editPageNode.children.push(editPageHtmlNode);
+      editPageNode.children.push(editPageLessNode);
+      editPageNode.children.push(editPageTsNode);
+    }
+
+    {
+      let detailPageNode = <PageTreeNode>{
+        title: modelName + "detail",
+        key: modelId + "detail",
+        expanded: false,
+        children: [],
+      };
+      pageNode.children.push(detailPageNode);
+      let detailPageHtmlNode = <PageTreeNode>{
+        title: modelName + "detail.html",
+        key: modelId + "detail.html",
+        isLeaf: true,
+      };
+      let detailPageLessNode = <PageTreeNode>{
+        title: modelName + "less.ts",
+        key: modelId + "less.ts",
+        isLeaf: true,
+      };
+      let detailPageTsNode = <PageTreeNode>{
+        title: modelName + "detail.ts",
+        key: modelId + "detail.ts",
+        isLeaf: true,
+      };
+      detailPageNode.children.push(detailPageHtmlNode);
+      detailPageNode.children.push(detailPageLessNode);
+      detailPageNode.children.push(detailPageTsNode);
+    }
+
+    {
+      let detailPageNode = <PageTreeNode>{
+        title: modelName + "detail_modal",
+        key: modelId + "detail_modal",
+        expanded: false,
+        children: [],
+      };
+      pageNode.children.push(detailPageNode);
+      let detailPageHtmlNode = <PageTreeNode>{
+        title: modelName + "detail.html",
+        key: modelId + "detail_modal.html",
+        isLeaf: true,
+      };
+      let detailPageLessNode = <PageTreeNode>{
+        title: modelName + "less.ts",
+        key: modelId + "less_modal.ts",
+        isLeaf: true,
+      };
+      let detailPageTsNode = <PageTreeNode>{
+        title: modelName + "detail.ts",
+        key: modelId + "detail_modal.ts",
+        isLeaf: true,
+      };
+      detailPageNode.children.push(detailPageHtmlNode);
+      detailPageNode.children.push(detailPageLessNode);
+      detailPageNode.children.push(detailPageTsNode);
+    }
   }
 
   nodes = [
@@ -100,7 +282,7 @@ export class CodeViewerComponent implements OnInit {
           expanded: true,
           children: [
             {
-              title: "applist",
+              title: "applist.ts",
               key: "applist",
               expanded: false,
               children: [
@@ -114,7 +296,7 @@ export class CodeViewerComponent implements OnInit {
               key: "4",
               expanded: false,
               children: [
-                { title: "leaf 1-0", key: "1010", isLeaf: true, code: "123",language: "html" },
+                { title: "leaf 1-0", key: "1010", isLeaf: true, code: "123", language: "html" },
                 { title: "leaf 1-1", key: "1011", isLeaf: true },
                 { title: "leaf 1-1", key: "1014", isLeaf: true },
               ],
@@ -141,8 +323,7 @@ export class CodeViewerComponent implements OnInit {
     this.activatedNode = data.node! as PageTreeNode;
     if (!this.activatedNode.isLeaf) {
       this.activatedNode.isExpanded = !this.activatedNode.isExpanded;
-    }
-    else {
+    } else {
       this.pageCode = this.activatedNode.code;
       this.pageLanguage = this.activatedNode.language;
       this.pageCodeTitle = this.activatedNode?.title;

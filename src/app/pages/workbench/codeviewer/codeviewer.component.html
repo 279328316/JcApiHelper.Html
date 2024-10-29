@@ -20,7 +20,7 @@
       <div>
         <nz-card class="mt10 minh500">
           <nz-tabset nzSize="small" [nzAnimated]='false'>
-            <nz-tab nzTitle="Models" *ngIf="tsResult?.tsModelList.length>0">
+            <nz-tab nzTitle="Models" *ngIf="tsModelList?.length>0">
               <div>
                 <div class="lh40">
                   <label class="f-size18 w80">Ts Models</label>
@@ -79,7 +79,7 @@
                 </div>
               </div>
             </nz-tab>
-            <nz-tab nzTitle="Pages" *ngIf="tsResult?.tsModelList.length>0">
+            <nz-tab nzTitle="Pages" *ngIf="tsModelList?.length>0">
               <div>
                 <div class="lh40">
                   <label class="f-size18 w80">Ts Pages</label>
@@ -87,17 +87,17 @@
                     <label>Base Model</label>
                     <nz-select nzPlaceHolder="select base model for pages" class="w200 ml20" [(ngModel)]="pageBaseModel"
                       (ngModelChange)="pageBaseModelChange($event)" [nzShowArrow]="true">
-                      @for (model of tsResult?.tsModelList; track model.id) {
+                      @for (model of tsModelList; track model.id) {
                       <nz-option [nzLabel]="model.name" [nzValue]="model"></nz-option>
                       }
                     </nz-select>
-                    <button nz-button nzType="primary" class="ml30 w100" (click)="generatePage()">Generate</button>
+                    <button nz-button nzType="primary" class="ml30 w100" (click)="generatePages()">Generate</button>
                   </div>
                 </div>
                 <div nz-row nzGutter="16" class="mt10">
-                  <div nz-col nzFlex="200px">
-                    <div class="w200 border-lightgray">
-                      <nz-tree nzBlockNode [nzData]="nodes" (nzClick)="activeNode($event)"
+                  <div nz-col nzFlex="320px">
+                    <div class="border-lightgray minh300 maxh400" style="overflow-x: hidden;overflow-y: auto;">
+                      <nz-tree nzBlockNode [nzData]="pageNodes" (nzClick)="activeNode($event)"
                         (nzDblClick)="openFolder($event)" [nzTreeTemplate]="nzTreeTemplate"></nz-tree>
                       <ng-template #nzTreeTemplate let-node let-origin="origin">
                         @if (!node.isLeaf) {
