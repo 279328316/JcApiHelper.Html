@@ -1,0 +1,51 @@
+import { PageTreeNode, TsModel } from "@models/tsmodel";
+
+export class ListPageCreator {
+  // 获取列表页面的节点
+  static getListPageNode(pageBaseModel: TsModel): PageTreeNode {
+    let modelId = pageBaseModel.id.toLocaleLowerCase();
+    let modelName = pageBaseModel.name.toLocaleLowerCase();
+    let listPageNode = <PageTreeNode>{
+      title: modelName + "list",
+      key: modelId + "list",
+      expanded: false,
+      children: [],
+    };
+
+    let listPageHtmlNode = <PageTreeNode>{
+      title: modelName + "list.component.html",
+      key: modelId + "list.component.html",
+      isLeaf: true,
+      code: ListPageCreator.getListPageHtmlCode(pageBaseModel),
+      language: "html",
+    };
+    let listPageLessNode = <PageTreeNode>{
+      title: modelName + "list.component.less",
+      key: modelId + "list.component.less",
+      isLeaf: true,
+      code: '',
+      language: "less",
+    };
+    let listPageTsNode = <PageTreeNode>{
+      title: modelName + "list.component.ts",
+      key: modelId + "list.component.ts",
+      isLeaf: true,
+      code: ListPageCreator.getListPageComponentCode(pageBaseModel),
+      language: "typescript",
+    };
+    listPageNode.children.push(listPageHtmlNode);
+    listPageNode.children.push(listPageLessNode);
+    listPageNode.children.push(listPageTsNode);
+    return listPageNode;
+  }
+  
+  // 获取列表页面的html代码
+  static getListPageHtmlCode(pageBaseModel: TsModel): string {
+    throw new Error("Method not implemented.");
+  }
+
+  // 获取列表组件的代码
+  static getListPageComponentCode(pageBaseModel: TsModel): string {
+    throw new Error("Method not implemented.");
+  }
+}

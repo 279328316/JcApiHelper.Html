@@ -87,41 +87,44 @@
                     <label>Base Model</label>
                     <nz-select nzPlaceHolder="select base model for pages" class="w200 ml20" [(ngModel)]="pageBaseModel"
                       (ngModelChange)="pageBaseModelChange($event)" [nzShowArrow]="true">
-                      @for (model of tsModelList; track model.id) {
+                      @for (model of pageModelList; track model.id) {
                       <nz-option [nzLabel]="model.name" [nzValue]="model"></nz-option>
                       }
                     </nz-select>
                     <button nz-button nzType="primary" class="ml30 w100" (click)="generatePages()">Generate</button>
                   </div>
                 </div>
-                <div nz-row nzGutter="16" class="mt10">
-                  <div nz-col nzFlex="320px">
-                    <div class="border-lightgray minh300 maxh400" style="overflow-x: hidden;overflow-y: auto;">
+                <div nz-row nzGutter="32" class="mt10">
+                  <div nz-col nzFlex="360px" style="overflow-x: hidden;overflow-y: auto;">
+                    <div class="border-lightgray minh300 maxh400 w350">
                       <nz-tree nzBlockNode [nzData]="pageNodes" (nzClick)="activeNode($event)"
                         (nzDblClick)="openFolder($event)" [nzTreeTemplate]="nzTreeTemplate"></nz-tree>
                       <ng-template #nzTreeTemplate let-node let-origin="origin">
                         @if (!node.isLeaf) {
-                        <span class="custom-node" (contextmenu)="contextMenu($event, menu)">
-                          <span>
-                            <span nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
-                              (click)="openFolder(node)"></span>
-                            <span class="folder-name">{{ node.title }}</span>
-                          </span>
-                        </span>
+                        <div class="custom-node">
+                          <div nz-row nzGutter="5">
+                            <div nz-col nzSpan="1">
+                              <span nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+                                (click)="openFolder(node)"></span>
+                            </div>
+                            <div nz-col nzSpan="23">
+                              <span class="folder-name ml8">{{ node.title }}</span>
+                            </div>
+                          </div>
+                        </div>
                         } @else {
-                        <span class="custom-node" (contextmenu)="contextMenu($event, menu)">
-                          <span>
-                            <span nz-icon nzType="file"></span>
-                            <span class="file-name">{{ node.title }}</span>
-                          </span>
-                        </span>
+                        <div class="custom-node">
+                          <div nz-row nzGutter="5">
+                            <div nz-col nzSpan="1">
+                              <span nz-icon nzType="file"></span>
+                            </div>
+                            <div nz-col nzSpan="23">
+                              <span class="file-name ml8">{{ node.title }}</span>
+                            </div>
+                          </div>
+                        </div>
                         }
                       </ng-template>
-                      <nz-dropdown-menu #menu="nzDropdownMenu">
-                        <ul nz-menu>
-                          <li nz-menu-item (click)="selectDropdown()">下载</li>
-                        </ul>
-                      </nz-dropdown-menu>
                     </div>
                   </div>
                   <div nz-col nzFlex="auto">

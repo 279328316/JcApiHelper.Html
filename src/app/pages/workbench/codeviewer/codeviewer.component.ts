@@ -1,17 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { ApiService } from "@services/api.service";
 import { ActivatedRoute } from "@angular/router";
-import { TsModel, TsPi, TsResult } from "@models/tsmodel";
+import { PageTreeNode, TsModel, TsPi, TsResult } from "@models/tsmodel";
 import { Util } from "@core/util";
 import { StringHelper } from "@core/stringhelper";
 import { NzFormatEmitEvent, NzTreeNode } from "ng-zorro-antd/tree";
 import { NzContextMenuService, NzDropdownMenuComponent } from "ng-zorro-antd/dropdown";
-
-export class PageTreeNode extends NzTreeNode {
-  language: string;
-  code: string;
-  expanded: boolean;
-}
+import { PageHelper } from "@core/PageHelper/pagehelper";
 
 @Component({
   selector: "app-codeviewer",
@@ -27,6 +22,7 @@ export class CodeViewerComponent implements OnInit {
 
   tsResult: TsResult;
   tsModelList: TsModel[] = [];
+  pageModelList: TsModel[] = [];
 
   tsModelCode: string;
   tsModelCodeWithPgQuery: string;
@@ -84,13 +80,13 @@ export class CodeViewerComponent implements OnInit {
     this.apiSvc.GetTsModel(this.itemId, this.itemType).subscribe((tsResult: TsResult) => {
       this.tsResult = tsResult;
       this.tsModelList = this.tsResult.tsModelList;
-      if (this.tsModelList?.length > 0) {
+      this.pageModelList = this.tsModelList?.filter((x) => x.name.indexOf("<") < 0);
+      if (this.pageModelList?.length > 0) {
         let filterModels = this.tsModelList.filter((x) => x.name.toLowerCase() === this.tsResult.name.toLowerCase());
         if (filterModels.length > 0) {
           this.pageBaseModel = filterModels[0];
         } else {
-          filterModels = this.tsModelList.filter((x) => x.name.indexOf("<") < 0);
-          this.pageBaseModel = filterModels.length > 0 ? filterModels[0] : null;
+          this.pageBaseModel = this.pageModelList[0];
         }
         if (this.pageBaseModel) {
           this.generatePages();
@@ -116,196 +112,9 @@ export class CodeViewerComponent implements OnInit {
     if (filterNodes.filter((a) => a.key == this.pageBaseModel.id).length > 0) {
       return;
     }
-    let modelId = this.pageBaseModel.id.toLocaleLowerCase();
-    let modelName = this.pageBaseModel.name.toLocaleLowerCase();
-    let pageNode = <PageTreeNode>{
-      title: modelName,
-      key: modelId,
-      expanded: true,
-      children: [],
-    };
+    let pageNode = PageHelper.generatePageNode(this.pageBaseModel);
     this.rootNode.children.push(pageNode);
-
-    {
-      let listPageNode = <PageTreeNode>{
-        title: modelName + "list",
-        key: modelId + "list",
-        expanded: false,
-        children: [],
-      };
-      pageNode.children.push(listPageNode);
-
-      let listPageHtmlNode = <PageTreeNode>{
-        title: modelName + "list.html",
-        key: modelId + "list.html",
-        isLeaf: true,
-      };
-      let listPageLessNode = <PageTreeNode>{
-        title: modelName + "less.ts",
-        key: modelId + "less.ts",
-        isLeaf: true,
-      };
-      let listPageTsNode = <PageTreeNode>{
-        title: modelName + "list.ts",
-        key: modelId + "list.ts",
-        isLeaf: true,
-      };
-      listPageNode.children.push(listPageHtmlNode);
-      listPageNode.children.push(listPageLessNode);
-      listPageNode.children.push(listPageTsNode);
-    }
-
-    {
-      let editPageNode = <PageTreeNode>{
-        title: modelName + "edit",
-        key: modelId + "edit",
-        expanded: false,
-        children: [],
-      };
-      pageNode.children.push(editPageNode);
-
-      let editPageHtmlNode = <PageTreeNode>{
-        title: modelName + "edit.html",
-        key: modelId + "edit.html",
-        isLeaf: true,
-      };
-      let editPageLessNode = <PageTreeNode>{
-        title: modelName + "less.ts",
-        key: modelId + "less.ts",
-        isLeaf: true,
-      };
-      let editPageTsNode = <PageTreeNode>{
-        title: modelName + "edit.ts",
-        key: modelId + "edit.ts",
-        isLeaf: true,
-      };
-      editPageNode.children.push(editPageHtmlNode);
-      editPageNode.children.push(editPageLessNode);
-      editPageNode.children.push(editPageTsNode);
-    }
-
-    {
-      let editPageNode = <PageTreeNode>{
-        title: modelName + "edit_modal",
-        key: modelId + "edit_modal",
-        expanded: false,
-        children: [],
-      };
-      pageNode.children.push(editPageNode);
-
-      let editPageHtmlNode = <PageTreeNode>{
-        title: modelName + "edit.html",
-        key: modelId + "edit_modal.html",
-        isLeaf: true,
-      };
-      let editPageLessNode = <PageTreeNode>{
-        title: modelName + "less.ts",
-        key: modelId + "less_modal.ts",
-        isLeaf: true,
-      };
-      let editPageTsNode = <PageTreeNode>{
-        title: modelName + "edit.ts",
-        key: modelId + "edit_modal.ts",
-        isLeaf: true,
-      };
-      editPageNode.children.push(editPageHtmlNode);
-      editPageNode.children.push(editPageLessNode);
-      editPageNode.children.push(editPageTsNode);
-    }
-
-    {
-      let detailPageNode = <PageTreeNode>{
-        title: modelName + "detail",
-        key: modelId + "detail",
-        expanded: false,
-        children: [],
-      };
-      pageNode.children.push(detailPageNode);
-      let detailPageHtmlNode = <PageTreeNode>{
-        title: modelName + "detail.html",
-        key: modelId + "detail.html",
-        isLeaf: true,
-      };
-      let detailPageLessNode = <PageTreeNode>{
-        title: modelName + "less.ts",
-        key: modelId + "less.ts",
-        isLeaf: true,
-      };
-      let detailPageTsNode = <PageTreeNode>{
-        title: modelName + "detail.ts",
-        key: modelId + "detail.ts",
-        isLeaf: true,
-      };
-      detailPageNode.children.push(detailPageHtmlNode);
-      detailPageNode.children.push(detailPageLessNode);
-      detailPageNode.children.push(detailPageTsNode);
-    }
-
-    {
-      let detailPageNode = <PageTreeNode>{
-        title: modelName + "detail_modal",
-        key: modelId + "detail_modal",
-        expanded: false,
-        children: [],
-      };
-      pageNode.children.push(detailPageNode);
-      let detailPageHtmlNode = <PageTreeNode>{
-        title: modelName + "detail.html",
-        key: modelId + "detail_modal.html",
-        isLeaf: true,
-      };
-      let detailPageLessNode = <PageTreeNode>{
-        title: modelName + "less.ts",
-        key: modelId + "less_modal.ts",
-        isLeaf: true,
-      };
-      let detailPageTsNode = <PageTreeNode>{
-        title: modelName + "detail.ts",
-        key: modelId + "detail_modal.ts",
-        isLeaf: true,
-      };
-      detailPageNode.children.push(detailPageHtmlNode);
-      detailPageNode.children.push(detailPageLessNode);
-      detailPageNode.children.push(detailPageTsNode);
-    }
   }
-
-  nodes = [
-    {
-      title: "pages",
-      key: "2",
-      expanded: true,
-      children: [
-        {
-          title: "appmanage",
-          key: "3",
-          expanded: true,
-          children: [
-            {
-              title: "applist.ts",
-              key: "applist",
-              expanded: false,
-              children: [
-                { title: "leaf 1-0", key: "1010", isLeaf: true },
-                { title: "leaf 1-1", key: "1011", isLeaf: true },
-                { title: "leaf 1-1", key: "1013", isLeaf: true },
-              ],
-            },
-            {
-              title: "appedit",
-              key: "4",
-              expanded: false,
-              children: [
-                { title: "leaf 1-0", key: "1010", isLeaf: true, code: "123", language: "html" },
-                { title: "leaf 1-1", key: "1011", isLeaf: true },
-                { title: "leaf 1-1", key: "1014", isLeaf: true },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ];
 
   openFolder(data: NzTreeNode | NzFormatEmitEvent): void {
     // do something if u want

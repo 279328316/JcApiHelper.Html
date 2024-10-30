@@ -1,3 +1,4 @@
+import { NzTreeNode } from "ng-zorro-antd/tree";
 
 /*TsResult生成返回对象*/
 export class TsResult {
@@ -16,12 +17,23 @@ export class TsModel {
   piList: TsPi[]; // 类属性列表
 }
 
+export class PageTreeNode extends NzTreeNode {
+  language: string;
+  code: string;
+  expanded: boolean;
+}
+
 /*TsPiModel*/
 export class TsPi {
   name: string; // 参数名
   isSelected: boolean; // 是否选中
   tsType: string; // Ts参数类型
   summary: string; // Summary
+  isEnum = false; // 是否枚举
+
+  isQuery = false; // 是否查询参数
+  isList = false; // 是否列表参数
+  isEdit = false; // 是否编辑参数
 }
 
 /*TsCode Model*/
