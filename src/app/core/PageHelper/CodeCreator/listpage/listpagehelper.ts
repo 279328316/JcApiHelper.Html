@@ -1,6 +1,7 @@
 import { PageTreeNode, TsModel } from "@models/tsmodel";
+import { ListPageHtmlCreator } from "./listpagehtmlcreator";
 
-export class ListPageCreator {
+export class ListPageHelper {
   // 获取列表页面的节点
   static getListPageNode(pageBaseModel: TsModel): PageTreeNode {
     let modelId = pageBaseModel.id.toLocaleLowerCase();
@@ -16,7 +17,7 @@ export class ListPageCreator {
       title: modelName + "list.component.html",
       key: modelId + "list.component.html",
       isLeaf: true,
-      code: ListPageCreator.getListPageHtmlCode(pageBaseModel),
+      code: ListPageHtmlCreator.getListPageHtmlCode(pageBaseModel),
       language: "html",
     };
     let listPageLessNode = <PageTreeNode>{
@@ -39,10 +40,6 @@ export class ListPageCreator {
     return listPageNode;
   }
   
-  // 获取列表页面的html代码
-  static getListPageHtmlCode(pageBaseModel: TsModel): string {
-    throw new Error("Method not implemented.");
-  }
 
   // 获取列表组件的代码
   static getListPageComponentCode(pageBaseModel: TsModel): string {

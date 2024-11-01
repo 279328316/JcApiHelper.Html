@@ -1,9 +1,9 @@
 import { PageTreeNode, TsModel } from "@models/tsmodel";
-import { ListPageCreator } from "./listpagecreator";
-import { EditPageCreator } from "./editpagecreator";
-import { EditModalPageCreator } from "./editmodalpagecreator";
-import { DetailPageCreator } from "./detailpagecreator";
-import { DetailModalPageCreator } from "./detailmodalpagecreator";
+import { ListPageCreator } from "./CodeCreator/listpage/listpagehelper";
+import { EditPageCreator } from "./CodeCreator/editpage/editpagecreator";
+import { EditModalPageCreator } from "./CodeCreator/editpage/editmodalpagecreator";
+import { DetailPageCreator } from "./CodeCreator/detailpage/detailpagecreator";
+import { DetailModalPageCreator } from "./CodeCreator/detailpage/detailmodalpagecreator";
 
 export class PageHelper {
   // 生成页面节点
