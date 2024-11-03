@@ -1,5 +1,6 @@
 import { PageTreeNode, TsModel } from "@models/tsmodel";
 import { ListPageHtmlCreator } from "./listpagehtmlcreator";
+import { ListPageTsCreator } from "./listpagetscreator";
 
 export class ListPageHelper {
   // 获取列表页面的节点
@@ -31,18 +32,12 @@ export class ListPageHelper {
       title: modelName + "list.component.ts",
       key: modelId + "list.component.ts",
       isLeaf: true,
-      code: ListPageCreator.getListPageComponentCode(pageBaseModel),
+      code: ListPageTsCreator.getListPageTsCode(pageBaseModel),
       language: "typescript",
     };
     listPageNode.children.push(listPageHtmlNode);
     listPageNode.children.push(listPageLessNode);
     listPageNode.children.push(listPageTsNode);
     return listPageNode;
-  }
-  
-
-  // 获取列表组件的代码
-  static getListPageComponentCode(pageBaseModel: TsModel): string {
-    throw new Error("Method not implemented.");
   }
 }

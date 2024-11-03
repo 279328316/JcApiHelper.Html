@@ -1,5 +1,5 @@
 import { PageTreeNode, TsModel } from "@models/tsmodel";
-import { ListPageCreator } from "./CodeCreator/listpage/listpagehelper";
+import { ListPageHelper } from "./CodeCreator/listpage/listpagehelper";
 import { EditPageCreator } from "./CodeCreator/editpage/editpagecreator";
 import { EditModalPageCreator } from "./CodeCreator/editpage/editmodalpagecreator";
 import { DetailPageCreator } from "./CodeCreator/detailpage/detailpagecreator";
@@ -9,6 +9,7 @@ export class PageHelper {
   // 生成页面节点
   static generatePageNode(pageBaseModel: TsModel): PageTreeNode {
     if (!pageBaseModel) return null;
+    console.log("pageBaseModel", pageBaseModel);
     let modelId = pageBaseModel.id.toLocaleLowerCase();
     let modelName = pageBaseModel.name.toLocaleLowerCase();
     let pageNode = <PageTreeNode>{
@@ -17,7 +18,7 @@ export class PageHelper {
       expanded: true,
       children: [],
     };
-    let listPageNode = ListPageCreator.getListPageNode(pageBaseModel);
+    let listPageNode = ListPageHelper.getListPageNode(pageBaseModel);
     let editPageNode = EditPageCreator.getEditPageNode(pageBaseModel);
     let editModalPageNode = EditModalPageCreator.getEditModalPageNode(pageBaseModel);
     let detailPageNode = DetailPageCreator.getDetailPageNode(pageBaseModel);

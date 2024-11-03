@@ -95,7 +95,7 @@
                   </div>
                 </div>
                 <div nz-row nzGutter="32" class="mt10">
-                  <div nz-col nzFlex="360px" style="overflow-x: hidden;overflow-y: auto;">
+                  <div nz-col nzSpan="6" style="overflow-x: hidden;overflow-y: auto;">
                     <div class="border-lightgray minh300 maxh400 w350">
                       <nz-tree nzBlockNode [nzData]="pageNodes" (nzClick)="activeNode($event)"
                         (nzDblClick)="openFolder($event)" [nzTreeTemplate]="nzTreeTemplate"></nz-tree>
@@ -127,11 +127,9 @@
                       </ng-template>
                     </div>
                   </div>
-                  <div nz-col nzFlex="auto">
-                    <div class="wp90">
-                      <app-syntax-highlight [title]="pageCodeTitle" size="'middle'" [code]="pageCode"
-                        [language]="pageLanguage"></app-syntax-highlight>
-                    </div>
+                  <div nz-col nzSpan="18">
+                    <app-syntax-highlight [title]="pageCodeTitle" size="'middle'" [code]="pageCode"
+                      [language]="pageLanguage"></app-syntax-highlight>
                   </div>
                 </div>
               </div>

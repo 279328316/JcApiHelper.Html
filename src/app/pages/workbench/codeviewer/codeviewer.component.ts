@@ -44,7 +44,7 @@ export class CodeViewerComponent implements OnInit {
   };
 
   pageNodes: PageTreeNode[] = [this.rootNode];
-  activatedNode?: PageTreeNode;
+  activatedNode?: NzTreeNode;
 
   pageCode = "";
   pageCodeTitle = "";
@@ -104,7 +104,6 @@ export class CodeViewerComponent implements OnInit {
 
   // 生成页面代码
   generatePages() {
-    console.log(this.rootNode);
     if (!this.pageBaseModel) {
       return;
     }
@@ -114,6 +113,7 @@ export class CodeViewerComponent implements OnInit {
     }
     let pageNode = PageHelper.generatePageNode(this.pageBaseModel);
     this.rootNode.children.push(pageNode);
+    console.log(this.rootNode, pageNode);
   }
 
   openFolder(data: NzTreeNode | NzFormatEmitEvent): void {
@@ -129,14 +129,16 @@ export class CodeViewerComponent implements OnInit {
   }
 
   activeNode(data: NzFormatEmitEvent): void {
-    this.activatedNode = data.node! as PageTreeNode;
+    this.activatedNode = data.node as NzTreeNode;
     if (!this.activatedNode.isLeaf) {
       this.activatedNode.isExpanded = !this.activatedNode.isExpanded;
     } else {
-      this.pageCode = this.activatedNode.code;
-      this.pageLanguage = this.activatedNode.language;
-      this.pageCodeTitle = this.activatedNode?.title;
+      let pageTreeNode = this.activatedNode?.origin as PageTreeNode;
+      this.pageCode = pageTreeNode.code;
+      this.pageLanguage = pageTreeNode.language;
+      this.pageCodeTitle = pageTreeNode?.title;
     }
+    console.log(data);
   }
 
   contextMenu($event: MouseEvent, menu: NzDropdownMenuComponent): void {
