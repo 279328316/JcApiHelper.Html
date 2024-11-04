@@ -2,8 +2,8 @@ import { PageTreeNode, TsModel } from '@models/tsmodel';
 import { ListPageHelper } from './CodeCreator/listpage/listpagehelper';
 import { EditPageHelper } from './CodeCreator/editpage/editpagehelper';
 import { EditModalHelper } from './CodeCreator/editmodal/editmodalhelper';
-import { DetailPageCreator } from './CodeCreator/detailpage/detailpagecreator';
-import { DetailModalPageCreator } from './CodeCreator/detailpage/detailmodalpagecreator';
+import { DetailPageHelper } from './CodeCreator/detailpage/detailpagehelper';
+import { DetailModalHelper } from './CodeCreator/detailmodal/detailmodalhelper';
 
 export class PageHelper {
   // 生成页面节点
@@ -20,15 +20,15 @@ export class PageHelper {
     };
     let listPageNode = ListPageHelper.getListPageNode(pageBaseModel);
     let editPageNode = EditPageHelper.getEditPageNode(pageBaseModel);
-    let editModalPageNode = EditModalHelper.getEditModalNode(pageBaseModel);
-    let detailPageNode = DetailPageCreator.getDetailPageNode(pageBaseModel);
-    let detailModalPageNode = DetailModalPageCreator.getDetailModalPageNode(pageBaseModel);
+    let editModalNode = EditModalHelper.getEditModalNode(pageBaseModel);
+    let detailPageNode = DetailPageHelper.getDetailPageNode(pageBaseModel);
+    let detailModalNode = DetailModalHelper.getDetailModalNode(pageBaseModel);
 
     pageNode.children.push(listPageNode);
     pageNode.children.push(editPageNode);
-    pageNode.children.push(editModalPageNode);
+    pageNode.children.push(editModalNode);
     pageNode.children.push(detailPageNode);
-    pageNode.children.push(detailModalPageNode);
+    pageNode.children.push(detailModalNode);
     return pageNode;
   }
 }

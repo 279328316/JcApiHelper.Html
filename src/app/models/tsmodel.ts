@@ -1,4 +1,4 @@
-import { NzTreeNode } from "ng-zorro-antd/tree";
+import { NzTreeNode } from 'ng-zorro-antd/tree';
 
 /*TsResult生成返回对象*/
 export class TsResult {
@@ -36,6 +36,7 @@ export class TsPi {
   isListSort = false; // 是否列表排序参数
   isEdit = false; // 是否编辑参数
   isRequire = false; // 是否必填
+  isDetail = false; // 是否详情显示
 }
 
 /*TsCode Model*/

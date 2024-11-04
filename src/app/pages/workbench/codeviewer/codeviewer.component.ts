@@ -107,7 +107,21 @@ export class CodeViewerComponent implements OnInit {
     if (!this.pageBaseModel) {
       return;
     }
-    let piList = this.pageBaseModel?.piList;
+    this.setModelPiList(this.pageBaseModel);
+    let filterNodes = this.rootNode.children;
+    if (filterNodes.filter((a) => a.key == this.pageBaseModel.id).length > 0) {
+      let existsNode = filterNodes.filter((a) => a.key == this.pageBaseModel.id)[0];
+      let pageNode = PageHelper.generatePageNode(this.pageBaseModel);
+      existsNode.children = pageNode.children;
+    } else {
+      let pageNode = PageHelper.generatePageNode(this.pageBaseModel);
+      this.rootNode.children.push(pageNode);
+    }
+  }
+
+  // 设置参数列表
+  setModelPiList(pageBaseModel: TsModel) {
+    let piList = pageBaseModel?.piList;
     if (piList) {
       if (piList.filter((a) => a.isQuery === true).length <= 0) {
         piList.forEach((a) => {
@@ -126,16 +140,11 @@ export class CodeViewerComponent implements OnInit {
           a.isRequire = true;
         });
       }
-    }
-
-    let filterNodes = this.rootNode.children;
-    if (filterNodes.filter((a) => a.key == this.pageBaseModel.id).length > 0) {
-      let existsNode = filterNodes.filter((a) => a.key == this.pageBaseModel.id)[0];
-      let pageNode = PageHelper.generatePageNode(this.pageBaseModel);
-      existsNode.children = pageNode.children;
-    } else {
-      let pageNode = PageHelper.generatePageNode(this.pageBaseModel);
-      this.rootNode.children.push(pageNode);
+      if (piList.filter((a) => a.isDetail === true).length <= 0) {
+        piList.forEach((a) => {
+          a.isDetail = true;
+        });
+      }
     }
   }
 
