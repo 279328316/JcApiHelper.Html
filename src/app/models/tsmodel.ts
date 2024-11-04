@@ -33,6 +33,7 @@ export class TsPi {
 
   isQuery = false; // 是否查询参数
   isList = false; // 是否列表参数
+  isListSort = false; // 是否列表排序参数
   isEdit = false; // 是否编辑参数
 }
 

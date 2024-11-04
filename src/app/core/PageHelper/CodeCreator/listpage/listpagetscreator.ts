@@ -15,46 +15,46 @@ export class ListPageTsCreator {
       .replace(/@modelName/g, modelName)
       .replace(/@modelClassName/g, modelClassName)
       .replace(/@modelSummary/g, modelSummary);
+    console.log(code);
     return code;
   }
 
   private static getTsTemplate(): string {
-    let template = `
-import { Component, OnInit } from "@angular/core";
+    let template = `import { Component, OnInit } from "@angular/core";
 import { NzModalRef, NzModalService } from "ng-zorro-antd/modal";
 import { NzTableQueryParams } from "ng-zorro-antd/table";
 import { Util } from "@core/util";
-import { @modalClassName, @modalClassNameQueryObj } from "@models/@modalNamemanage/@modalName";
+import { @modelClassName, @modelClassNameQueryObj } from "@models/@modelNamemanage/@modelName";
 import { PageResult } from "@models/page";
 import { EnumItem } from "@models/enumitem";
 import { KeyValueItem } from "@models/keyvalue";
-import { @modalClassNameService } from "@services/@modalNamemanage/@modalNameservice";
+import { @modelClassNameService } from "@services/@modelNamemanage/@modelNameservice";
 import { EnumService } from "@services/enumservice";
 import { KeyValueItemService } from "@services/keyvalueitemservice";
-import { @modalClassNameEditModalComponent } from "../@modalNameeditmodal/@modalNameedit.component";
-import { @modalClassNameDetailModalComponent } from "../@modalNamedetailmodal/@modalNamedetailmodal.component";
+import { @modelClassNameEditModalComponent } from "../@modelNameeditmodal/@modelNameedit.component";
+import { @modelClassNameDetailModalComponent } from "../@modelNamedetailmodal/@modelNamedetailmodal.component";
 
 @Component({
-  selector: "@modalName-@modalNamelist",
-  templateUrl: "./@modalNamelist.component.html",
-  styleUrl: "./@modalNamelist.component.less",
+  selector: "@modelName-@modelNamelist",
+  templateUrl: "./@modelNamelist.component.html",
+  styleUrl: "./@modelNamelist.component.less",
 })
-export class @modalClassNameListComponent implements OnInit {
+export class @modelClassNameListComponent implements OnInit {
   loading = false;
   totalCount: number = 0;
-  queryObj: @modalClassNameQueryObj = new @modalClassNameQueryObj();
-  @modalNameList: @modalClassName[] = [];
+  queryObj: @modelClassNameQueryObj = new @modelClassNameQueryObj();
+  @modelNameList: @modelClassName[] = [];
 
   constructor(
     private modalSvc: NzModalService,
     private enumSvc: EnumService,
     private keyvalueItemSvc: KeyValueItemService,
-    private @modalNameSvc: @modalClassNameService
+    private @modelNameSvc: @modelClassNameService
   ) {}
 
   ngOnInit(): void {
     Util.setTitle("@modelSummary管理");
-    this.query@modalClassNameList();
+    this.query@modelClassNameList();
   }
 
   /**
@@ -97,7 +97,7 @@ export class @modalClassNameListComponent implements OnInit {
       this.queryObj.pageIndex = pageIndex;
       this.queryObj.sort = sortField || null;
       this.queryObj.order = sortOrder ? sortOrder.replace("end", "") : null;
-      this.query@modalClassNameList();
+      this.query@modelClassNameList();
     }
   }
 
@@ -106,15 +106,15 @@ export class @modalClassNameListComponent implements OnInit {
    *
    * @param isReload 是否重新加载列表，默认为 false
    */
-  query@modalClassNameList(isReload: boolean = false): void {
+  query@modelClassNameList(isReload: boolean = false): void {
     this.loading = true;
     if (isReload) {
       this.queryObj.pageIndex = 1;
     }
     console.log(this.queryObj);
-    this.@modalNameSvc.query@modalClassNameList(this.queryObj).subscribe({
-      next: (pgResult: PageResult<@modalClassName>) => {
-        this.@modalNameList = pgResult.rows;
+    this.@modelNameSvc.query@modelClassNameList(this.queryObj).subscribe({
+      next: (pgResult: PageResult<@modelClassName>) => {
+        this.@modelNameList = pgResult.rows;
         this.totalCount = pgResult.total;
         this.loading = false;
       },
@@ -125,48 +125,48 @@ export class @modalClassNameListComponent implements OnInit {
   }
 
   /*添加@modelSummary*/
-  add@modalClassName(): void {
-    Util.goTo("/systemmanage/@modalNameedit/add/new");
-    //this.add@modalClassNameModal();
+  add@modelClassName(): void {
+    Util.goTo("/systemmanage/@modelNameedit/add/new");
+    //this.add@modelClassNameModal();
   }
 
   /*编辑@modelSummary*/
-  edit@modalClassName(@modalName: @modalClassName): void {
-    Util.goTo("/systemmanage/@modalNameedit/edit/" + @modalName.id);
-    //this.edit@modalClassNameModal(@modalName);
+  edit@modelClassName(@modelName: @modelClassName): void {
+    Util.goTo("/systemmanage/@modelNameedit/edit/" + @modelName.id);
+    //this.edit@modelClassNameModal(@modelName);
   }
 
   /*查看@modelSummary详情*/
-  view@modalClassName(@modalName: @modalClassName): void {
-    Util.goTo("/systemmanage/@modalNamedetail/" + @modalName.id);
-    //this.view@modalClassNameModal(@modalName);
+  view@modelClassName(@modelName: @modelClassName): void {
+    Util.goTo("/systemmanage/@modelNamedetail/" + @modelName.id);
+    //this.view@modelClassNameModal(@modelName);
   }
 
   /*删除@modelSummary*/
-  delete@modalClassName(@modalName: @modalClassName): void {
-    Util.showConfirmBox("确认要删除@modelSummary" + @modalName.name + "吗?").subscribe((res) => {
+  delete@modelClassName(@modelName: @modelClassName): void {
+    Util.showConfirmBox("确认要删除@modelSummary" + @modelName.name + "吗?").subscribe((res) => {
       if (res) {
-        this.@modalNameSvc.delete@modalClassName(@modalName.id).subscribe(() => {
-          this.query@modalClassNameList();
+        this.@modelNameSvc.delete@modelClassName(@modelName.id).subscribe(() => {
+          this.query@modelClassNameList();
         });
       }
     });
   }
 
   /*添加@modelSummary*/
-  add@modalClassNameModal(): void {
-    let @modalName = new @modalClassName();
-    this.edit@modalClassNameModal(@modalName);
+  add@modelClassNameModal(): void {
+    let @modelName = new @modelClassName();
+    this.edit@modelClassNameModal(@modelName);
   }
 
   /*编辑@modelSummary*/
-  edit@modalClassNameModal(@modalName: @modalClassName): void {
-    let title = @modalName.id ? "编辑@modelSummary" : "添加@modelSummary";
+  edit@modelClassNameModal(@modelName: @modelClassName): void {
+    let title = @modelName.id ? "编辑@modelSummary" : "添加@modelSummary";
     const modal: NzModalRef = this.modalSvc.create({
       nzTitle: title,
       nzWidth: 720,
-      nzContent: @modalClassNameEditModalComponent,
-      nzData: { @modalName: @modalName },
+      nzContent: @modelClassNameEditModalComponent,
+      nzData: { @modelName: @modelName },
       nzCentered: true,
       nzMaskClosable: false,
       nzNoAnimation: true,
@@ -175,18 +175,18 @@ export class @modalClassNameListComponent implements OnInit {
     });
     modal.afterClose.subscribe((result) => {
       if (result) {
-        this.query@modalClassNameList(true);
+        this.query@modelClassNameList(true);
       }
     });
   }
 
   /*查看@modelSummary详情*/
-  view@modalClassNameModal(@modalName: @modalClassName): void {
+  view@modelClassNameModal(@modelName: @modelClassName): void {
     this.modalSvc.create({
       nzTitle: "查看@modelSummary",
       nzWidth: 720,
-      nzContent: @modalClassNameDetailModalComponent,
-      nzData: { @modalNameId: @modalName.id },
+      nzContent: @modelClassNameDetailModalComponent,
+      nzData: { @modelNameId: @modelName.id },
       nzCentered: true,
       nzMaskClosable: false,
       nzNoAnimation: true,

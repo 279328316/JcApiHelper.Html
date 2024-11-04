@@ -1,9 +1,17 @@
 // syntax-highlight.component.ts
 import { AfterViewInit, Component, Input, OnInit, SimpleChanges } from "@angular/core";
 import * as Prism from "prismjs";
+
+import prettier from "prettier/standalone";
+import prettierPluginHtml from "prettier/plugins/html";
+import prettierPluginTypescript from "prettier/plugins/typescript";
+import prettierPluginBabel from "prettier/plugins/babel";
+
 import "prismjs/plugins/line-numbers/prism-line-numbers.min.js";
 import "prismjs/components/prism-csharp.min.js";
 import "prismjs/components/prism-typescript.min.js";
+import "prettier/plugins/html.js";
+import "prettier/plugins/typescript.js";
 
 @Component({
   selector: "app-syntax-highlight",
@@ -18,6 +26,11 @@ export class SyntaxHighLightComponent implements AfterViewInit, OnInit {
   copyButtonText: string = "Copy";
   htmlSnippet: string;
   isCopied: boolean;
+  languages = {
+    html: "html",
+    ts: "typescript",
+    csharp: "csharp",
+  };
 
   constructor() {}
 
@@ -42,10 +55,35 @@ export class SyntaxHighLightComponent implements AfterViewInit, OnInit {
    * @returns 无返回值
    */
   highlightCode() {
-    if (this.code) {
-      let language = this.language || "html";
-      this.htmlSnippet = Prism.highlight("\r\n" + this.code, Prism.languages[language], language);
+    let language = this.languages[this.language] || this.languages.html;
+    //let prettierCode = await this.prettyCode(this.code, language);
+    //console.log(this.code, prettierCode);
+    this.htmlSnippet = Prism.highlight("\r\n" + this.code, Prism.languages[language], language);
+  }
+
+  async prettyCode(code: string, language: string): Promise<string> {
+    let prettierCode = code;
+    let parsers = {
+      html: "html",
+      ts: "typescript",
+      csharp: "typescript", // 注意：Prettier 默认没有 C# 解析器，这里使用了 Babel 作为替代，实际使用时需要根据实际情况调整
+    };
+    const parser = parsers[language] || parsers.html;
+    try {
+      const formatted = await prettier.format(code, {
+        parser: parser,
+        plugins: [prettierPluginHtml, prettierPluginTypescript, prettierPluginBabel], // 根据需要添加
+        semi: false,
+        trailingComma: "all",
+        singleQuote: false,
+        printWidth: 120,
+        tabWidth: 2,
+      });
+      prettierCode = formatted;
+    } catch (error) {
+      console.error("Error formatting code:", error);
     }
+    return prettierCode;
   }
 
   /**

@@ -8,8 +8,7 @@ export class ListPageHtmlCreator {
     let modelClassName = pageBaseModel.name;
     let modelSummary = pageBaseModel.summary ?? modelName;
     let htmlCode = "";
-    let htmlTemplate = `
-<div>
+    let htmlTemplate = `<div>
     <nz-page-header class="contentPageHeader">
         <nz-page-header-subtitle>@modelSummary</nz-page-header-subtitle>
         <nz-page-header-extra>
@@ -32,7 +31,6 @@ export class ListPageHtmlCreator {
       .replace(/@modelSummary/g, modelSummary)
       .replace(/@queryFormCode/g, queryFormCode)
       .replace(/@tableListCode/g, tableListCode);
-    console.log(htmlCode);
     return htmlCode;
   }
 
@@ -60,7 +58,6 @@ export class ListPageHtmlCreator {
         </form>`;
     let queryPiIndex = 0;
     let queryPiList = pageBaseModel.piList.filter((pi) => pi.isQuery);
-    queryPiList = pageBaseModel.piList;
     let queryItemCode = "";
     let queryMoreItemCode = "";
     for (let pi of queryPiList) {
@@ -70,7 +67,7 @@ export class ListPageHtmlCreator {
           queryItemCode += `\n                <div nz-row [nzGutter]="24">`;
         }
         queryItemCode += piCode;
-        if (queryPiIndex % 3 == 2 || queryPiIndex == 5 || queryPiIndex == queryPiList.length - 1) {
+        if (queryPiIndex % 3 == 2 || queryPiIndex == queryPiList.length - 1) {
           queryItemCode += `\n                </div>`;
         }
       } else {
@@ -191,14 +188,14 @@ export class ListPageHtmlCreator {
           </ng-template>
       </nz-table>`;
     let piList = pageBaseModel.piList.filter((pi) => pi.isList);
-    piList = pageBaseModel.piList;
     let theadListCode = "";
     let tbodyListCode = "";
     for (let pi of piList) {
       let piName = StringHelper.firstToLower(pi.name);
       let piSummary = pi.summary ?? piName;
+      let isSort = pi.isListSort;
       let theadCode = `
-                <th nz-th [nzSortFn]="true" nzColumnKey="@piName">@piSummary</th>`;
+                <th nz-th${isSort ? ' [nzSortFn]="true" nzColumnKey="@piName"' : ""}>@piSummary</th>`;
       let tbodyCode = `
                 <td>{{ @modelName.@piName }}</td>`;
       if (pi.tsType == "date") {
