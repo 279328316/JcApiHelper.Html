@@ -5,8 +5,8 @@ import { ListPageTsCreator } from "./listpagetscreator";
 export class ListPageHelper {
   // 获取列表页面的节点
   static getListPageNode(pageBaseModel: TsModel): PageTreeNode {
-    let modelId = pageBaseModel.id.toLocaleLowerCase();
-    let modelName = pageBaseModel.name.toLocaleLowerCase();
+    let modelId = pageBaseModel.id.toLowerCase();
+    let modelName = pageBaseModel.name.toLowerCase();
     let listPageNode = <PageTreeNode>{
       title: modelName + "list",
       key: modelId + "list",

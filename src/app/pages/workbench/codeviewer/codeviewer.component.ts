@@ -1,23 +1,23 @@
-import { Component, OnInit } from "@angular/core";
-import { ApiService } from "@services/api.service";
-import { ActivatedRoute } from "@angular/router";
-import { PageTreeNode, TsModel, TsPi, TsResult } from "@models/tsmodel";
-import { Util } from "@core/util";
-import { StringHelper } from "@core/stringhelper";
-import { NzFormatEmitEvent, NzTreeNode } from "ng-zorro-antd/tree";
-import { NzContextMenuService, NzDropdownMenuComponent } from "ng-zorro-antd/dropdown";
-import { PageHelper } from "@core/PageHelper/pagehelper";
+import { Component, OnInit } from '@angular/core';
+import { ApiService } from '@services/api.service';
+import { ActivatedRoute } from '@angular/router';
+import { PageTreeNode, TsModel, TsPi, TsResult } from '@models/tsmodel';
+import { Util } from '@core/util';
+import { StringHelper } from '@core/stringhelper';
+import { NzFormatEmitEvent, NzTreeNode } from 'ng-zorro-antd/tree';
+import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
+import { PageHelper } from '@core/PageHelper/pagehelper';
 
 @Component({
-  selector: "app-codeviewer",
-  templateUrl: "./codeviewer.component.html",
-  styleUrls: ["./codeviewer.component.less"],
+  selector: 'app-codeviewer',
+  templateUrl: './codeviewer.component.html',
+  styleUrls: ['./codeviewer.component.less'],
 })
 export class CodeViewerComponent implements OnInit {
   itemId: string;
   itemType: string;
-  tsServiceType = "1";
-  tsModelViewType = "1";
+  tsServiceType = '1';
+  tsModelViewType = '1';
   isShowPageQueryModel = true;
 
   tsResult: TsResult;
@@ -37,8 +37,8 @@ export class CodeViewerComponent implements OnInit {
   isShiftDown: boolean = false;
 
   rootNode: PageTreeNode = <PageTreeNode>{
-    title: "pages",
-    key: "pages",
+    title: 'pages',
+    key: 'pages',
     expanded: true,
     children: [],
   };
@@ -46,30 +46,30 @@ export class CodeViewerComponent implements OnInit {
   pageNodes: PageTreeNode[] = [this.rootNode];
   activatedNode?: NzTreeNode;
 
-  pageCode = "";
-  pageCodeTitle = "";
-  pageLanguage = "html";
+  pageCode = '';
+  pageCodeTitle = '';
+  pageLanguage = 'html';
 
   constructor(
     private routerParams: ActivatedRoute,
     private nzContextMenuService: NzContextMenuService,
     private apiSvc: ApiService
   ) {
-    const tsServiceType = localStorage.getItem("tsServiceType");
-    this.tsServiceType = tsServiceType ? tsServiceType : "1";
+    const tsServiceType = localStorage.getItem('tsServiceType');
+    this.tsServiceType = tsServiceType ? tsServiceType : '1';
 
-    const tsModelViewType = localStorage.getItem("tsModelViewType");
-    this.tsModelViewType = tsModelViewType ? tsModelViewType : "1";
+    const tsModelViewType = localStorage.getItem('tsModelViewType');
+    this.tsModelViewType = tsModelViewType ? tsModelViewType : '1';
 
-    const isShowPageQueryModel = localStorage.getItem("isShowPageQueryModel");
-    if (isShowPageQueryModel === "false") {
+    const isShowPageQueryModel = localStorage.getItem('isShowPageQueryModel');
+    if (isShowPageQueryModel === 'false') {
       this.isShowPageQueryModel = false;
     }
   }
 
   ngOnInit() {
-    this.itemId = this.routerParams.snapshot.paramMap.get("itemId");
-    this.itemType = this.routerParams.snapshot.paramMap.get("itemType");
+    this.itemId = this.routerParams.snapshot.paramMap.get('itemId');
+    this.itemType = this.routerParams.snapshot.paramMap.get('itemType');
     if (this.itemId && this.itemType) {
       this.getTsModel();
     }
@@ -80,7 +80,7 @@ export class CodeViewerComponent implements OnInit {
     this.apiSvc.GetTsModel(this.itemId, this.itemType).subscribe((tsResult: TsResult) => {
       this.tsResult = tsResult;
       this.tsModelList = this.tsResult.tsModelList;
-      this.pageModelList = this.tsModelList?.filter((x) => x.name.indexOf("<") < 0);
+      this.pageModelList = this.tsModelList?.filter((x) => x.name.indexOf('<') < 0);
       if (this.pageModelList?.length > 0) {
         let filterModels = this.tsModelList.filter((x) => x.name.toLowerCase() === this.tsResult.name.toLowerCase());
         if (filterModels.length > 0) {
@@ -123,6 +123,7 @@ export class CodeViewerComponent implements OnInit {
       if (piList.filter((a) => a.isEdit === true).length <= 0) {
         piList.forEach((a) => {
           a.isEdit = true;
+          a.isRequire = true;
         });
       }
     }
@@ -154,9 +155,9 @@ export class CodeViewerComponent implements OnInit {
     this.activatedNode = data.node as NzTreeNode;
     if (!this.activatedNode.isLeaf) {
       this.activatedNode.isExpanded = !this.activatedNode.isExpanded;
-      this.pageCode = "";
-      this.pageLanguage = "html";
-      this.pageCodeTitle = "";
+      this.pageCode = '';
+      this.pageLanguage = 'html';
+      this.pageCodeTitle = this.activatedNode.title;
     } else {
       let pageTreeNode = this.activatedNode?.origin as PageTreeNode;
       this.pageCode = pageTreeNode.code;
@@ -245,73 +246,73 @@ export class CodeViewerComponent implements OnInit {
 
   /* name参数排序 */
   nameSortFn(a: any, b: any, sortOrder: string) {
-    return a["name"].localeCompare(b["name"]);
+    return a['name'].localeCompare(b['name']);
   }
 
   /* value参数排序 */
   valueSortFn(a: any, b: any, sortOrder: string) {
-    return a["paramValue"] - b["paramValue"];
+    return a['paramValue'] - b['paramValue'];
   }
 
   /* type参数排序 */
   typeSortFn(a: any, b: any, sortOrder: string) {
-    return a["typeName"].localeCompare(b["typeName"]);
+    return a['typeName'].localeCompare(b['typeName']);
   }
 
   /*查看Lambda Code*/
   viewLambda(tsModel: TsModel) {
     if (tsModel.piList.filter((a) => a.isSelected).length <= 0) {
-      Util.showInfoBox("No record is selected.");
+      Util.showInfoBox('No record is selected.');
       return;
     }
     let selectedPiList = tsModel.piList.filter((a) => a.isSelected);
 
     // SetValue Lambda
-    let setValueLambda = "//1 SetValue \r\n";
+    let setValueLambda = '//1 SetValue \r\n';
     setValueLambda +=
-      tsModel.name + " " + StringHelper.firstToLower(tsModel.name) + " = new " + tsModel.name + "();\r\n";
+      tsModel.name + ' ' + StringHelper.firstToLower(tsModel.name) + ' = new ' + tsModel.name + '();\r\n';
     selectedPiList.forEach((a, index) => {
       setValueLambda +=
         StringHelper.firstToLower(tsModel.name) +
-        "." +
+        '.' +
         StringHelper.firstToLower(a.name) +
-        " = source." +
+        ' = source.' +
         StringHelper.firstToLower(a.name) +
-        ";\r\n";
+        ';\r\n';
     });
 
     // Ctor Lambda
-    let ctorLambda = "//2 C# Ctor \r\n";
-    ctorLambda += tsModel.name + " " + StringHelper.firstToLower(tsModel.name) + " = new " + tsModel.name + "(){\r\n";
+    let ctorLambda = '//2 C# Ctor \r\n';
+    ctorLambda += tsModel.name + ' ' + StringHelper.firstToLower(tsModel.name) + ' = new ' + tsModel.name + '(){\r\n';
     selectedPiList.forEach((a, index) => {
-      ctorLambda += "  " + a.name + " = source." + a.name;
+      ctorLambda += '  ' + a.name + ' = source.' + a.name;
       if (index < selectedPiList.length - 1) {
-        ctorLambda += ",";
+        ctorLambda += ',';
       }
-      ctorLambda += "\r\n";
+      ctorLambda += '\r\n';
     });
-    ctorLambda += "};\r\n";
+    ctorLambda += '};\r\n';
 
     // Expression Lambda
-    let expLambda = "//3 Expression Lambda \r\n";
+    let expLambda = '//3 Expression Lambda \r\n';
     if (selectedPiList.length == 1) {
       //length == 1
-      expLambda += "a => a." + selectedPiList[0].name + "\r\n";
+      expLambda += 'a => a.' + selectedPiList[0].name + '\r\n';
     } else {
       //length > 1
-      expLambda += "var exp = ExpressionHelper.CreateExpression<" + tsModel.name + ">(a => new {\r\n";
+      expLambda += 'var exp = ExpressionHelper.CreateExpression<' + tsModel.name + '>(a => new {\r\n';
       selectedPiList.forEach((a, index) => {
-        expLambda += "  " + "a." + a.name;
+        expLambda += '  ' + 'a.' + a.name;
         if (index < selectedPiList.length - 1) {
-          expLambda += ",";
+          expLambda += ',';
         }
-        expLambda += "\r\n";
+        expLambda += '\r\n';
       });
-      expLambda += "};\r\n";
+      expLambda += '};\r\n';
     }
 
-    this.tsCode = "\r\n" + setValueLambda + "\r\n" + ctorLambda + "\r\n" + expLambda;
-    this.codeTitle = tsModel.name + " Lambda";
+    this.tsCode = '\r\n' + setValueLambda + '\r\n' + ctorLambda + '\r\n' + expLambda;
+    this.codeTitle = tsModel.name + ' Lambda';
     this.showCode = true;
   }
 
@@ -322,17 +323,17 @@ export class CodeViewerComponent implements OnInit {
 
   /*ModelView类型变化*/
   modelViewTypeChanged() {
-    localStorage.setItem("tsModelViewType", this.tsModelViewType);
+    localStorage.setItem('tsModelViewType', this.tsModelViewType);
   }
 
   /*isShowPageQueryModel变化*/
   isShowPageQueryModelChanged() {
-    localStorage.setItem("isShowPageQueryModel", this.isShowPageQueryModel.toString());
+    localStorage.setItem('isShowPageQueryModel', this.isShowPageQueryModel.toString());
   }
 
   /*使用服务类型变化*/
   tsServiceTypeChanged() {
-    localStorage.setItem("tsServiceType", this.tsServiceType);
+    localStorage.setItem('tsServiceType', this.tsServiceType);
   }
 
   /*keyDownHandler*/

@@ -4,22 +4,20 @@
       <div nz-row>
         <div nz-col nzSpan="20">
           <div class="lh40">
-            <label class="f-size26">
+            <label class="f-size20">
               Ts For {{itemType|titlecase}}
               <span class="color-lightblue">{{tsResult?.name}}</span>
             </label>
-          </div>
-          <div *ngIf="tsResult?.summary" class="mt10">
-            <label class="f-size16">{{tsResult.summary}}</label>
+            <span class="f-size16 ml30" *ngIf="tsResult?.summary">{{tsResult.summary}}</span>
           </div>
         </div>
-        <div nz-col nzSpan="4" class="h60 lh60 valign-bottom">
+        <div nz-col nzSpan="4" class="lh40 valign-bottom">
           <a nz-button nzType="primary" nzSize="small" nzGhost class="ml50 w80" (click)="goback()">Return</a>
         </div>
       </div>
       <div>
-        <nz-card class="mt10 minh500">
-          <nz-tabset nzSize="small" [nzAnimated]='false'>
+        <nz-card class="mt10 minh500" [nzSize]="'small'">
+          <nz-tabset [nzSize]="'small'" [nzAnimated]='false'>
             <nz-tab nzTitle="Models" *ngIf="tsModelList?.length>0">
               <div>
                 <div class="lh40">
@@ -96,7 +94,7 @@
                 </div>
                 <div nz-row nzGutter="32" class="mt10">
                   <div nz-col nzSpan="6" style="overflow-x: hidden;overflow-y: auto;">
-                    <div class="border-lightgray minh300 maxh400 w350">
+                    <div class="h420 w350">
                       <nz-tree nzBlockNode [nzData]="pageNodes" (nzClick)="activeNode($event)"
                         (nzDblClick)="openFolder($event)" [nzTreeTemplate]="nzTreeTemplate"></nz-tree>
                       <ng-template #nzTreeTemplate let-node let-origin="origin">
@@ -128,7 +126,7 @@
                     </div>
                   </div>
                   <div nz-col nzSpan="18">
-                    <app-syntax-highlight [title]="pageCodeTitle" size="'middle'" [code]="pageCode"
+                    <app-syntax-highlight [title]="pageCodeTitle" [size]="'middle'" [code]="pageCode"
                       [language]="pageLanguage"></app-syntax-highlight>
                   </div>
                 </div>

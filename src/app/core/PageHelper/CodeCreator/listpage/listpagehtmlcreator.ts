@@ -1,5 +1,5 @@
-import { StringHelper } from "@core/stringhelper";
-import { TsModel, TsPi } from "@models/tsmodel";
+import { StringHelper } from '@core/stringhelper';
+import { TsModel, TsPi } from '@models/tsmodel';
 
 export class ListPageHtmlCreator {
   // 获取列表页面的html代码
@@ -7,7 +7,7 @@ export class ListPageHtmlCreator {
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
     let modelSummary = pageBaseModel.summary ?? modelName;
-    let htmlCode = "";
+    let htmlCode = '';
     let htmlTemplate = `<div>
     <nz-page-header class="contentPageHeader">
         <nz-page-header-subtitle>@modelSummary</nz-page-header-subtitle>
@@ -39,7 +39,7 @@ export class ListPageHtmlCreator {
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
     let modelSummary = pageBaseModel.summary ?? modelName;
-    let queryFormCode = "";
+    let queryFormCode = '';
     let queryFormTemplate = `<form nz-form>
             <div class="pt24">@queryItemCode
             </div>
@@ -58,8 +58,8 @@ export class ListPageHtmlCreator {
         </form>`;
     let queryPiIndex = 0;
     let queryPiList = pageBaseModel.piList.filter((pi) => pi.isQuery);
-    let queryItemCode = "";
-    let queryMoreItemCode = "";
+    let queryItemCode = '';
+    let queryMoreItemCode = '';
     for (let pi of queryPiList) {
       let piCode = this.getQueryItemCode(pageBaseModel, pi);
       if (queryPiIndex <= 5) {
@@ -90,8 +90,8 @@ export class ListPageHtmlCreator {
 
   // 获取查询参数项的html代码
   private static getQueryItemCode(pageBaseModel: TsModel, pi: TsPi): string {
-    let queryCode = "";
-    let queryCodeTemplate = "";
+    let queryCode = '';
+    let queryCodeTemplate = '';
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
     let modelSummary = pageBaseModel.summary ?? modelName;
@@ -112,7 +112,7 @@ export class ListPageHtmlCreator {
                             </nz-form-control>
                         </nz-form-item>
                     </div>`;
-    } else if (pi.tsType == "bool") {
+    } else if (pi.tsType == 'boolean') {
       queryCodeTemplate = `<div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="10" [nzLg]="10">
                         <nz-form-item>
                             <nz-form-label class="w80">@piSummary</nz-form-label>
@@ -126,7 +126,7 @@ export class ListPageHtmlCreator {
                             </nz-form-control>
                         </nz-form-item>
                     </div>`;
-    } else if (pi.tsType == "date") {
+    } else if (pi.tsType == 'Date') {
       queryCodeTemplate = `
                     <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="8">
                         <nz-form-item>
@@ -188,17 +188,17 @@ export class ListPageHtmlCreator {
           </ng-template>
       </nz-table>`;
     let piList = pageBaseModel.piList.filter((pi) => pi.isList);
-    let theadListCode = "";
-    let tbodyListCode = "";
+    let theadListCode = '';
+    let tbodyListCode = '';
     for (let pi of piList) {
       let piName = StringHelper.firstToLower(pi.name);
       let piSummary = pi.summary ?? piName;
       let isSort = pi.isListSort;
       let theadCode = `
-                <th nz-th${isSort ? ' [nzSortFn]="true" nzColumnKey="@piName"' : ""}>@piSummary</th>`;
+                <th nz-th${isSort ? ' [nzSortFn]="true" nzColumnKey="@piName"' : ''}>@piSummary</th>`;
       let tbodyCode = `
                 <td>{{ @modelName.@piName }}</td>`;
-      if (pi.tsType == "date") {
+      if (pi.tsType == 'Date') {
         tbodyCode = `
                 <td>{{ @modelName.@piName | date:'yyyy-MM-dd HH:mm:ss' }}</td>`;
       }
@@ -218,8 +218,8 @@ export class ListPageHtmlCreator {
     theadListCode += opHead;
     tbodyListCode += opBody;
 
-    tableListCode = tableListCode.replace("@theadListCode", theadListCode);
-    tableListCode = tableListCode.replace("@tbodyListCode", tbodyListCode);
+    tableListCode = tableListCode.replace('@theadListCode', theadListCode);
+    tableListCode = tableListCode.replace('@tbodyListCode', tbodyListCode);
     tableListCode = tableListCode.replace(/@modelName/g, modelName);
     tableListCode = tableListCode.replace(/@modelClassName/g, modelClassName);
     return tableListCode;

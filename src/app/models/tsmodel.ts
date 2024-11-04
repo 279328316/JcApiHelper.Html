@@ -35,6 +35,7 @@ export class TsPi {
   isList = false; // 是否列表参数
   isListSort = false; // 是否列表排序参数
   isEdit = false; // 是否编辑参数
+  isRequire = false; // 是否必填
 }
 
 /*TsCode Model*/

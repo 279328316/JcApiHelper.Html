@@ -15,7 +15,6 @@ export class ListPageTsCreator {
       .replace(/@modelName/g, modelName)
       .replace(/@modelClassName/g, modelClassName)
       .replace(/@modelSummary/g, modelSummary);
-    console.log(code);
     return code;
   }
 
@@ -24,11 +23,11 @@ export class ListPageTsCreator {
 import { NzModalRef, NzModalService } from "ng-zorro-antd/modal";
 import { NzTableQueryParams } from "ng-zorro-antd/table";
 import { Util } from "@core/util";
-import { @modelClassName, @modelClassNameQueryObj } from "@models/@modelNamemanage/@modelName";
+import { @modelClassName, @modelClassNameQueryObj } from "@models/@modelName";
 import { PageResult } from "@models/page";
 import { EnumItem } from "@models/enumitem";
 import { KeyValueItem } from "@models/keyvalue";
-import { @modelClassNameService } from "@services/@modelNamemanage/@modelNameservice";
+import { @modelClassNameService } from "@services/@modelNameservice";
 import { EnumService } from "@services/enumservice";
 import { KeyValueItemService } from "@services/keyvalueitemservice";
 import { @modelClassNameEditModalComponent } from "../@modelNameeditmodal/@modelNameedit.component";
