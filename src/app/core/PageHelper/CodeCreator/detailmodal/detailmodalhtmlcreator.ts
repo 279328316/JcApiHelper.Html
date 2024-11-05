@@ -1,5 +1,6 @@
 import { StringHelper } from '@core/stringhelper';
-import { TsModel, TsPi } from '@models/tsmodel';
+import { TsPi } from '@models/propertyinfo';
+import { TsModel } from '@models/tsmodel';
 
 export class DetailModalHtmlCreator {
   // 获取详情页面的html代码

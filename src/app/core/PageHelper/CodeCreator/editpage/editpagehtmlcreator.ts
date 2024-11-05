@@ -1,5 +1,6 @@
 import { StringHelper } from '@core/stringhelper';
-import { TsModel, TsPi } from '@models/tsmodel';
+import { TsPi } from '@models/propertyinfo';
+import { TsModel } from '@models/tsmodel';
 
 export class EditPageHtmlCreator {
   // 获取列表页面的html代码
@@ -9,7 +10,7 @@ export class EditPageHtmlCreator {
     let modelSummary = pageBaseModel.summary ?? modelName;
     let htmlCode = '';
     let htmlTemplate = `<nz-page-header>
-    <nz-page-header-subtitle>{{action=='edit' ? '编辑@modelSummary':'新增@modelSummary'}}</nz-page-header-subtitle>
+    <nz-page-header-subtitle>{{@modelNameId ? '编辑@modelSummary':'新增@modelSummary'}}</nz-page-header-subtitle>
 </nz-page-header>
 <!--Content-->
 <nz-card nzBordered="false">

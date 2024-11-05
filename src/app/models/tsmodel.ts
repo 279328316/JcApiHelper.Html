@@ -1,4 +1,6 @@
 import { NzTreeNode } from 'ng-zorro-antd/tree';
+import { KeyValueItem, KeyValueObj } from './keyvalue';
+import { TsPi } from './propertyinfo';
 
 /*TsResult生成返回对象*/
 export class TsResult {
@@ -23,25 +25,10 @@ export class PageTreeNode extends NzTreeNode {
   expanded: boolean;
 }
 
-/*TsPiModel*/
-export class TsPi {
-  name: string; // 参数名
-  isSelected: boolean; // 是否选中
-  tsType: string; // Ts参数类型
-  summary: string; // Summary
-  isEnum = false; // 是否枚举
-
-  isQuery = false; // 是否查询参数
-  isList = false; // 是否列表参数
-  isListSort = false; // 是否列表排序参数
-  isEdit = false; // 是否编辑参数
-  isRequire = false; // 是否必填
-  isDetail = false; // 是否详情显示
-}
-
 /*TsCode Model*/
 export class TsCode {
   tsModelCode: string; // Jc Service Code
   tsServiceCode: string; // Common Service Code
   apiCode: string; // Common Service Code
 }
+

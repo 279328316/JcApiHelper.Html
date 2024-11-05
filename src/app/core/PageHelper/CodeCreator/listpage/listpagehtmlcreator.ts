@@ -1,5 +1,6 @@
 import { StringHelper } from '@core/stringhelper';
-import { TsModel, TsPi } from '@models/tsmodel';
+import { DisplayType, TsPi } from '@models/propertyinfo';
+import { TsModel } from '@models/tsmodel';
 
 export class ListPageHtmlCreator {
   // 获取列表页面的html代码
@@ -98,21 +99,7 @@ export class ListPageHtmlCreator {
     let piName = StringHelper.firstToLower(pi.name);
     let piSummary = pi.summary ?? piName;
 
-    if (pi.isEnum) {
-      queryCodeTemplate = `
-                    <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="6">
-                        <nz-form-item>
-                            <nz-form-label class="w80">@piSummary</nz-form-label>
-                            <nz-form-control>
-                                <nz-select name="@piName" [(ngModel)]="queryObj.@piName" nzAllowClear
-                                    nzPlaceHolder="-- 请 选 择 --">
-                                    <nz-option *ngFor="let @piName of @piNames" [nzValue]="@piName.value"
-                                        [nzLabel]="@piName.displayName"></nz-option>
-                                </nz-select>
-                            </nz-form-control>
-                        </nz-form-item>
-                    </div>`;
-    } else if (pi.tsType == 'boolean') {
+    if (pi.queryDisplayType == DisplayType.RadioGroup) {
       queryCodeTemplate = `<div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="10" [nzLg]="10">
                         <nz-form-item>
                             <nz-form-label class="w80">@piSummary</nz-form-label>
@@ -120,13 +107,24 @@ export class ListPageHtmlCreator {
                                 <nz-radio-group name="@piName" [(ngModel)]="queryObj.@piName"
                                     (ngModelChange)="query@modelClassNameList(true)">
                                     <label nz-radio [nzValue]="null">全部</label>
-                                    <label nz-radio [nzValue]="true">是</label>
-                                    <label nz-radio [nzValue]="false">否</label>
+                                    <label nz-radio *ngFor="let @piName of @piNames" [nzValue]="@piName.value">{{@piName.displayName}}</label>
                                 </nz-radio-group>
                             </nz-form-control>
                         </nz-form-item>
                     </div>`;
-    } else if (pi.tsType == 'Date') {
+    } else if (pi.queryDisplayType == DisplayType.Select) {
+      queryCodeTemplate = `<div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="10" [nzLg]="10">
+                        <nz-form-item>
+                            <nz-form-label class="w80">@piSummary</nz-form-label>
+                            <nz-form-control>
+                                <nz-select name="@piName" [(ngModel)]="queryObj.@piName" nzAllowClear nzPlaceHolder="-- 请 选 择 --">
+                                    <nz-option *ngFor="let @piName of @piNames" [nzValue]="@piName.value"
+                                        [nzLabel]="@piName.displayName"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>`;
+    } else if (pi.queryDisplayType == DisplayType.RangePicker) {
       queryCodeTemplate = `
                     <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="8">
                         <nz-form-item>

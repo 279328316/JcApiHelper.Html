@@ -64,7 +64,6 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './@modelNameedit.component.less',
 })
 export class @modelClassNameEditComponent implements OnInit {
-  action: string;
   @modelNameId: string;
   @modelName: @modelClassName = new @modelClassName();
   editForm!: FormGroup<{
@@ -81,12 +80,11 @@ export class @modelClassNameEditComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.action = this.route.snapshot.params['action'];
     this.@modelNameId = this.route.snapshot.params['id'];    
     this.editForm = this.formBuilder.group({
       @editItemBuildCode
     });
-    if (this.action == 'edit') {
+    if (this.@modelNameId) {
       this.get@modelClassName();
     }
   }

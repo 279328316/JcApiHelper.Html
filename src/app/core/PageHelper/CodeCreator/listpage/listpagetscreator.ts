@@ -125,7 +125,7 @@ export class @modelClassNameListComponent implements OnInit {
 
   /*添加@modelSummary*/
   add@modelClassName(): void {
-    Util.goTo("/systemmanage/@modelNameedit/add/new");
+    Util.goTo("/systemmanage/@modelNameedit/add");
     //this.add@modelClassNameModal();
   }
 
