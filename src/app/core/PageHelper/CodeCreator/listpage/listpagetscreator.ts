@@ -1,5 +1,6 @@
-import { StringHelper } from "@core/stringhelper";
-import { TsModel } from "@models/tsmodel";
+import { StringHelper } from '@core/stringhelper';
+import { TsModel } from '@models/tsmodel';
+import { CodeCreator } from '../../codecreator';
 
 export class ListPageTsCreator {
   // 获取列表页面的component代码
@@ -8,10 +9,27 @@ export class ListPageTsCreator {
     let modelClassName = pageBaseModel.name;
     let modelSummary = pageBaseModel.summary ?? modelName;
 
-    let code = "";
+    let code = '';
     let template = ListPageTsCreator.getTsTemplate();
 
+    let expandPropertyCode = '';
+    let expandInitCode = '';
+    let expandFunctionCode = '';
+
+    let queryPiList = pageBaseModel.piList.filter((pi) => pi.isQuery);
+    if (queryPiList.filter((a) => a.isEnum).length > 0) {
+      let enumPiList = queryPiList.filter((a) => a.isEnum);
+      for (let enumPi of enumPiList) {
+        let enumName = StringHelper.firstToLower(enumPi.name);
+        expandPropertyCode += `  ${enumName}s: EnumItem[] = [];`;
+        expandFunctionCode += CodeCreator.getEnumPiInitCode(enumPi);
+        expandInitCode += `\n    this.init${enumPi.name}();`;
+      }
+    }
     code = template
+      .replace(/@expandPropertyCode/g, expandPropertyCode)
+      .replace(/@expandInitCode/g, expandPropertyCode)
+      .replace(/@expandFunctionCode/g, expandFunctionCode)
       .replace(/@modelName/g, modelName)
       .replace(/@modelClassName/g, modelClassName)
       .replace(/@modelSummary/g, modelSummary);
@@ -42,7 +60,8 @@ export class @modelClassNameListComponent implements OnInit {
   loading = false;
   totalCount: number = 0;
   queryObj: @modelClassNameQueryObj = new @modelClassNameQueryObj();
-  @modelNameList: @modelClassName[] = [];
+  @modelNameList: @modelClassName[] = [];  
+  @expandPropertyCode
 
   constructor(
     private modalSvc: NzModalService,
@@ -52,10 +71,13 @@ export class @modelClassNameListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    Util.setTitle("@modelSummary管理");
+    Util.setTitle("@modelSummary管理");    
+    @expandInitCode
     this.query@modelClassNameList();
   }
 
+  @expandFunctionCode
+  
   /**
    * 初始化enumItems
    */

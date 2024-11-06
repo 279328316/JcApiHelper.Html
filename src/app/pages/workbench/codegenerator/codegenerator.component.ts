@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ApiService } from "@services/api.service";
 import { ActivatedRoute } from "@angular/router";
-import { TsModel, TsPi, TsResult } from "@models/tsmodel";
+import { TsModel, TsResult } from "@models/tsmodel";
 import { Util } from "@core/util";
 import { StringHelper } from "@core/stringhelper";
 import { NzContextMenuService, NzDropdownMenuComponent } from "ng-zorro-antd/dropdown";

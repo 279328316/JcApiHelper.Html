@@ -1,7 +1,8 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { Util } from "@core/util";
-import { TsModel, TsPi } from "../../models/tsmodel";
+import { TsModel } from "@models/tsmodel";
 import { StringHelper } from "@core/stringhelper";
+import { TsPi } from "@models/propertyinfo";
 
 @Component({
   selector: "app-jsontool",

@@ -9,7 +9,6 @@ export class PageHelper {
   // 生成页面节点
   static generatePageNode(pageBaseModel: TsModel): PageTreeNode {
     if (!pageBaseModel) return null;
-    console.log('pageBaseModel', pageBaseModel);
     let modelId = pageBaseModel.id.toLocaleLowerCase();
     let modelName = pageBaseModel.name.toLocaleLowerCase();
     let pageNode = <PageTreeNode>{

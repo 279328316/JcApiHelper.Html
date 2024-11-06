@@ -1,5 +1,5 @@
 import { StringHelper } from '@core/stringhelper';
-import { TsPi } from '@models/propertyinfo';
+import { DisplayType, TsPi } from '@models/propertyinfo';
 import { TsModel } from '@models/tsmodel';
 
 export class DetailModalHtmlCreator {
@@ -52,24 +52,56 @@ export class DetailModalHtmlCreator {
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let piName = StringHelper.firstToLower(pi.name);
     let piSummary = pi.summary ?? piName;
-    if (pi.tsType == 'boolean') {
+    if (pi.detailDisplayType == DisplayType.Text) {
+      if (pi.tsType == 'Date') {
+        itemCodeTemplate = `
+            <div nz-col [nzSpan]="6">
+                <label class="w100">@piSummary</label>
+                <span>{{ @modelName.@piName | date:'yyyy-MM-dd HH:mm:ss' }}</span>
+            </div>`;
+      } else {
+        itemCodeTemplate = `
+            <div nz-col [nzSpan]="6">
+                <label class="w100">@piSummary</label>
+                <span>{{ @modelName.@piName }}</span>
+            </div>`;
+      }
+    } else if (pi.detailDisplayType == DisplayType.Tag) {
       itemCodeTemplate = `
-        <div nz-col [nzSpan]="6">
-            <label class="w100">@piSummary</label>
-            <nz-switch [nzDisabled]="true" [ngModel]="@modelName.@piName"></nz-switch>
-        </div>`;
-    } else if (pi.tsType == 'Date') {
+            <div nz-col [nzSpan]="6">
+                <label class="w100">@piSummary</label>
+                <nz-tag [nzColor]="'cyan'">{{ @modelName.@piName }}</nz-tag>
+            </div>`;
+    } else if (pi.detailDisplayType == DisplayType.Pre) {
       itemCodeTemplate = `
-        <div nz-col [nzSpan]="6">
-            <label class="w100">@piSummary</label>
-            <span>{{ @modelName.@piName | date:'yyyy-MM-dd HH:mm:ss' }}</span>
-        </div>`;
-    } else {
+            <div nz-col [nzSpan]="6">
+                <label class="w100">@piSummary</label>
+                <pre>{{ @modelName.@piName }}</pre>
+            </div>`;
+    } else if (pi.detailDisplayType == DisplayType.ProgressBar) {
       itemCodeTemplate = `
-        <div nz-col [nzSpan]="6">
-            <label class="w100">@piSummary</label>
-            <span>{{ @modelName.@piName }}</span>
-        </div>`;
+            <div nz-col [nzSpan]="6">
+                <label class="w100">@piSummary</label>
+                <nz-progress [nzPercent]="@modelName.@piName"></nz-progress>
+            </div>`;
+    } else if (pi.detailDisplayType == DisplayType.Rate) {
+      itemCodeTemplate = `
+            <div nz-col [nzSpan]="6">
+                <label class="w100">@piSummary</label>
+                <nz-rate [ngModel]="@modelName.@piName" nzAllowHalf nzDisabled></nz-rate>
+            </div>`;
+    } else if (pi.detailDisplayType == DisplayType.Switch) {
+      itemCodeTemplate = `
+            <div nz-col [nzSpan]="6">
+                <label class="w100">@piSummary</label>
+                <nz-switch [ngModel]="@modelName.@piName" nzDisabled></nz-switch>
+            </div>`;
+    } else if (pi.detailDisplayType == DisplayType.Checkbox) {
+      itemCodeTemplate = `
+            <div nz-col [nzSpan]="6">
+                <label class="w100">@piSummary</label>
+                <label nz-checkbox [ngModel]="@modelName.@piName" nzDisabled></label>
+            </div>`;
     }
     itemCode = itemCodeTemplate
       .replace(/@modelName/g, modelName)

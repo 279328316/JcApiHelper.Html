@@ -124,14 +124,52 @@ export class ListPageHtmlCreator {
                             </nz-form-control>
                         </nz-form-item>
                     </div>`;
+    } else if (pi.queryDisplayType == DisplayType.DatePicker) {
+      queryCodeTemplate = `
+                    <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="8">
+                        <nz-form-item>
+                            <nz-form-label class="w80">@piSummary</nz-form-label>
+                            <nz-form-control>
+                                <nz-date-picker name="@piName" [(ngModel)]="queryObj.@piNameRange"></nz-date-picker>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>`;
     } else if (pi.queryDisplayType == DisplayType.RangePicker) {
       queryCodeTemplate = `
                     <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="8">
                         <nz-form-item>
                             <nz-form-label class="w80">@piSummary</nz-form-label>
                             <nz-form-control>
-                                <nz-range-picker name="@piName"
-                                    [(ngModel)]="queryObj.@piNameRange"></nz-range-picker>
+                                <nz-range-picker name="@piName" [(ngModel)]="queryObj.@piNameRange"></nz-range-picker>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>`;
+    } else if (pi.queryDisplayType == DisplayType.Checkbox) {
+      queryCodeTemplate = `
+                    <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="8">
+                        <nz-form-item>
+                            <nz-form-label class="w80">@piSummary</nz-form-label>
+                            <nz-form-control>                            
+                                <label nz-checkbox name="@piName" [(ngModel)]="queryObj.@piName">@piSummary</label>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>`;
+    } else if (pi.queryDisplayType == DisplayType.InputNumber) {
+      queryCodeTemplate = `
+                    <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="8">
+                        <nz-form-item>
+                            <nz-form-label class="w80">@piName</nz-form-label>
+                            <nz-form-control>
+                                <nz-input-group [nzSuffix]="inputClearTpl">
+                                    <input nz-input name="@piName" type="number" [(ngModel)]="queryObj.@piName"
+                                        placeholder="请输入@piSummary" />
+                                </nz-input-group>
+                                <ng-template #inputClearTpl>
+                                    @if (queryObj.@piName) {
+                                    <span nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle"
+                                        (click)="queryObj.@piName = null"></span>
+                                    }
+                                </ng-template>
                             </nz-form-control>
                         </nz-form-item>
                     </div>`;
@@ -196,9 +234,34 @@ export class ListPageHtmlCreator {
                 <th nz-th${isSort ? ' [nzSortFn]="true" nzColumnKey="@piName"' : ''}>@piSummary</th>`;
       let tbodyCode = `
                 <td>{{ @modelName.@piName }}</td>`;
-      if (pi.tsType == 'Date') {
-        tbodyCode = `
+      if (pi.listDisplayType == DisplayType.Text) {
+        if (pi.tsType == 'Date') {
+          tbodyCode = `
                 <td>{{ @modelName.@piName | date:'yyyy-MM-dd HH:mm:ss' }}</td>`;
+        } else {
+          tbodyCode = `
+                <td>{{ @modelName.@piName }}</td>`;
+        }
+      }
+      if (pi.listDisplayType == DisplayType.Tag) {
+        tbodyCode = `
+                <td><nz-tag [nzColor]="'cyan'">{{ @modelName.@piName }}</nz-tag></td>`;
+      }
+      if (pi.listDisplayType == DisplayType.Pre) {
+        tbodyCode = `
+                <td><pre>{{ @modelName.@piName }}</pre></td>`;
+      } else if (pi.listDisplayType == DisplayType.ProgressBar) {
+        tbodyCode = `
+                <td><nz-progress [nzPercent]="@modelName.@piName" nzSize="small"></nz-progress></td>`;
+      } else if (pi.listDisplayType == DisplayType.Rate) {
+        tbodyCode = `
+                <td><nz-rate [ngModel]="@modelName.@piName" nzAllowHalf nzDisabled></nz-rate></td>`;
+      } else if (pi.listDisplayType == DisplayType.Switch) {
+        tbodyCode = `
+                <td><nz-switch [ngModel]="@modelName.@piName" nzDisabled></nz-switch></td>`;
+      } else if (pi.listDisplayType == DisplayType.Checkbox) {
+        tbodyCode = `
+                <td><label nz-checkbox [ngModel]="@modelName.@piName" nzDisabled></label></td>`;
       }
       theadCode = theadCode.replace(/@piName/g, piName).replace(/@piSummary/g, piSummary);
       tbodyCode = tbodyCode.replace(/@modelName/g, modelName).replace(/@piName/g, piName);

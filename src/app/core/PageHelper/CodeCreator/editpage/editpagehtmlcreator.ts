@@ -1,5 +1,5 @@
 import { StringHelper } from '@core/stringhelper';
-import { TsPi } from '@models/propertyinfo';
+import { DisplayType, TsPi } from '@models/propertyinfo';
 import { TsModel } from '@models/tsmodel';
 
 export class EditPageHtmlCreator {
@@ -65,7 +65,7 @@ export class EditPageHtmlCreator {
     let piSummary = pi.summary ?? piName;
     let isRequire = pi.isRequire ?? piName;
 
-    if (pi.isEnum) {
+    if (pi.editDisplayType == DisplayType.Select) {
       editCodeTemplate = `
         <div nz-row>
             <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12">
@@ -80,7 +80,21 @@ export class EditPageHtmlCreator {
                 </nz-form-item>
             </div>
         </div>`;
-    } else if (pi.tsType == 'boolean') {
+    } else if (pi.editDisplayType == DisplayType.RadioGroup) {
+      editCodeTemplate = `
+        <div nz-row>
+            <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12">
+                <nz-form-item>
+                    <nz-form-label class="w100 mr5">@piSummary</nz-form-label>
+                    <nz-form-control>
+                        <nz-radio-group formControlName="@piName">
+                            <label nz-radio *ngFor="let @piName of @piNames" [nzValue]="@piName.value">{{@piName.displayName}}</label>
+                        </nz-radio-group>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>`;
+    } else if (pi.editDisplayType == DisplayType.Switch) {
       editCodeTemplate = `
         <div nz-row>
             <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12">
@@ -92,7 +106,19 @@ export class EditPageHtmlCreator {
                 </nz-form-item>
             </div>
         </div>`;
-    } else if (pi.tsType == 'Date') {
+    } else if (pi.editDisplayType == DisplayType.Checkbox) {
+      editCodeTemplate = `
+        <div nz-row>
+            <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12">
+                <nz-form-item>
+                    <nz-form-label class="w100 mr5">@piSummary</nz-form-label>
+                    <nz-form-control>
+                        <label nz-checkbox formControlName="@piName"></label>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>`;
+    } else if (pi.editDisplayType == DisplayType.DatePicker) {
       editCodeTemplate = `
         <div nz-row>
             <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12">
@@ -100,6 +126,85 @@ export class EditPageHtmlCreator {
                     <nz-form-label class="w100 mr5">@piSummary</nz-form-label>
                     <nz-form-control ${isRequire ? 'nzErrorTip="请选择@piSummary"' : ''}>
                         <nz-date-picker formControlName="@piName"></nz-date-picker>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>`;
+    } else if (pi.editDisplayType == DisplayType.Rate) {
+      editCodeTemplate = `
+        <div nz-row>
+            <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12">
+                <nz-form-item>
+                    <nz-form-label class="w100 mr5">@piSummary</nz-form-label>                    
+                    <nz-form-control ${isRequire ? 'nzErrorTip="请设置@piSummary"' : ''}>
+                        <nz-rate formControlName="@piName" nzAllowHalf></nz-rate>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>`;
+    } else if (pi.editDisplayType == DisplayType.UploadFile) {
+      editCodeTemplate = `
+        <div nz-row>
+            <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12">
+                <nz-form-item>
+                    <nz-form-label class="w100 mr5">@piSummary</nz-form-label>                    
+                    <nz-form-control ${isRequire ? 'nzErrorTip="请设置@piSummary"' : ''}>   
+                        @if (!uploadFile)                     
+                        <a style="position: relative;" href="javascript:void(0)">
+                            <button nz-button class="w120 mr10" nzType="primary" nzGhost>选择文件</button>
+                            <input type="file" accept=".doc" name="file" (change)="selectUploadFiles($event)"
+                                style="position: absolute; top: 0; left: 0; opacity: 0;" />
+                        </a>
+                        }
+                        @else if (uploadFile.fileStatus ==1) {
+                        <div nz-row [nzGutter]="16">
+                            <div nz-col nzSpan="10">
+                                <nz-progress [nzPercent]="uploadFile.progress"></nz-progress>
+                            </div>
+                            <div nz-col nzSpan="12">
+                                <a (click)='cancelUpload()'>
+                                    取消上传
+                                </a>
+                            </div>
+                        </div>
+                        } @else if (uploadFile.fileStatus!=1) {
+                        <a [title]="uploadFile.fileName" class="maxw200">
+                            {{uploadFile.fileName}}
+                        </a>
+                        <a class="ml10" (click)='deleteUploadFile()'>
+                            <span nz-icon nzType="delete" nzTheme="outline"></span>
+                        </a>
+                        <span *ngIf="uploadFile.fileStatus==2 || uploadFile.fileStatus == 3" class="ml10 color-red">
+                            {{uploadFile.fileStatusStr}}
+                            <span class="ml10 maxw200" [title]="uploadFile.fileStatusNote">
+                                {{uploadFile.fileStatusNote |nzEllipsis:36:'...'}}
+                            </span>
+                        </span>
+                        }
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>`;
+    } else if (pi.editDisplayType == DisplayType.TextArea) {
+      editCodeTemplate = `
+        <div nz-row>
+            <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12">
+                <nz-form-item>
+                    <nz-form-label class="w100 mr5">@piSummary</nz-form-label>                    
+                    <nz-form-control ${isRequire ? 'nzErrorTip="请设置@piSummary"' : ''}>
+                        <textarea nz-input formControlName="@piName" rows="4" placeholder="请输入@piSummary" nzAutoSize></textarea>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+        </div>`;
+    } else if (pi.editDisplayType == DisplayType.InputNumber) {
+      editCodeTemplate = `
+        <div nz-row>
+            <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12">
+                <nz-form-item>
+                    <nz-form-label class="w100 mr5">@piSummary</nz-form-label>                    
+                    <nz-form-control ${isRequire ? 'nzErrorTip="请输入@piSummary"' : ''}>
+                        <input nz-input type="number" formControlName="@piName" placeholder="请输入@piSummary" />
                     </nz-form-control>
                 </nz-form-item>
             </div>

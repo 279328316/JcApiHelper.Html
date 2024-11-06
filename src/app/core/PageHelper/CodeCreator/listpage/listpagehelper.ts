@@ -1,6 +1,7 @@
 import { PageTreeNode, TsModel } from "@models/tsmodel";
 import { ListPageHtmlCreator } from "./listpagehtmlcreator";
 import { ListPageTsCreator } from "./listpagetscreator";
+import { ListPageLessCreator } from "./listpagelesscreator";
 
 export class ListPageHelper {
   // 获取列表页面的节点
@@ -25,7 +26,7 @@ export class ListPageHelper {
       title: modelName + "list.component.less",
       key: modelId + "list.component.less",
       isLeaf: true,
-      code: '',
+      code: ListPageLessCreator.getListPageLessCode(pageBaseModel),
       language: "less",
     };
     let listPageTsNode = <PageTreeNode>{

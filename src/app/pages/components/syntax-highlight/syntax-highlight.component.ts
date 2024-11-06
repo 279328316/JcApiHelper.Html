@@ -60,7 +60,7 @@ export class SyntaxHighLightComponent implements AfterViewInit, OnInit {
     let language = this.languages[this.language] || this.languages.html;
     //let prettierCode = await this.prettyCode(this.code, language);
     //console.log(this.code, prettierCode);
-    console.log('highlightCode', this.language, language);
+    //console.log('highlightCode', this.language, language);
     this.htmlSnippet = Prism.highlight('\r\n' + this.code, Prism.languages[language], language);
   }
 

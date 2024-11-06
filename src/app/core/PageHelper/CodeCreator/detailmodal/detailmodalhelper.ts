@@ -1,7 +1,7 @@
 import { PageTreeNode, TsModel } from '@models/tsmodel';
 import { DetailModalHtmlCreator } from './detailmodalhtmlcreator';
 import { DetailModalTsCreator } from './detailmodaltscreator';
-import { DetailModalLessCreator } from './detailmodellesscreator';
+import { DetailModalLessCreator } from './detailmodallesscreator';
 
 export class DetailModalHelper {
   // 获取编辑Modal的节点

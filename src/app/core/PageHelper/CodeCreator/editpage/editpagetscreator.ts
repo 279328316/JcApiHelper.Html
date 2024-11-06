@@ -1,5 +1,7 @@
 import { StringHelper } from '@core/stringhelper';
+import { DisplayType, TsPi } from '@models/propertyinfo';
 import { TsModel } from '@models/tsmodel';
+import { CodeCreator } from '../../codecreator';
 
 export class EditPageTsCreator {
   // 获取列表页面的component代码
@@ -39,8 +41,27 @@ export class EditPageTsCreator {
       editItemCode += `    ${piName}: FormControl<${piType}>;`;
       editItemBuildCode += `      ${piName}: [${piDefaultValue}, ${isRequire ? 'Validators.required' : ''}],`;
     }
+    let expandPropertyCode = '';
+    let expandInitCode = '';
+    let expandFunctionCode = '';
 
+    if (editPiList.filter((a) => a.isEnum).length > 0) {
+      let enumPiList = editPiList.filter((a) => a.isEnum);
+      for (let enumPi of enumPiList) {
+        let enumName = StringHelper.firstToLower(enumPi.name);
+        expandPropertyCode += `  ${enumName}s: EnumItem[] = [];`;
+        expandFunctionCode += CodeCreator.getEnumPiInitCode(enumPi);
+        expandInitCode += `\n    this.init${enumPi.name}();`;
+      }
+    }
+    if (editPiList.filter((a) => a.editDisplayType == DisplayType.UploadFile).length > 0) {
+      expandPropertyCode += ``;
+      expandFunctionCode += EditPageTsCreator.getUploadFileFunctionCode();
+    }
     code = template
+      .replace(/@expandPropertyCode/g, expandPropertyCode)
+      .replace(/@expandInitCode/g, expandPropertyCode)
+      .replace(/@expandFunctionCode/g, expandFunctionCode)
       .replace(/@editItemCode/g, editItemCode)
       .replace(/@editItemBuildCode/g, editItemBuildCode)
       .replace(/@modelName/g, modelName)
@@ -65,7 +86,8 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class @modelClassNameEditComponent implements OnInit {
   @modelNameId: string;
-  @modelName: @modelClassName = new @modelClassName();
+  @modelName: @modelClassName = new @modelClassName();  
+  @expandPropertyCode
   editForm!: FormGroup<{
     @editItemCode
   }>;
@@ -84,6 +106,7 @@ export class @modelClassNameEditComponent implements OnInit {
     this.editForm = this.formBuilder.group({
       @editItemBuildCode
     });
+    @expandInitCode
     if (this.@modelNameId) {
       this.get@modelClassName();
     }
@@ -114,7 +137,7 @@ export class @modelClassNameEditComponent implements OnInit {
       this.editForm.patchValue(this.@modelName);
     });
   }
-
+  @expandFunctionCode
   /**
    * 提交表单，保存@modelSummary
    */
@@ -144,5 +167,112 @@ export class @modelClassNameEditComponent implements OnInit {
 }
 `;
     return template;
+  }
+
+  /**
+   * 获取上传文件功能代码
+   */
+  private static getUploadFileFunctionCode(): string {
+    let code = `
+  /*选择文件*/
+  selectUploadFiles(event): void {
+    const file = event.target.files[0];
+    let fileObj = new FileObj();
+    fileObj.fileName = file.name;
+    fileObj.fileSize = file.size;
+    fileObj.fileType = file.extension || "";
+    fileObj.progress = 0;
+    fileObj.progressStr = "";
+    fileObj.file = file;
+    fileObj.fileStatus = file.size > 0 ? 0 : -1;
+    this.uploadFile = fileObj;
+    this.editForm.patchValue({ fileName: fileObj.fileName });
+  }
+  
+  /**
+   * 上传文件前的预处理
+   *
+   * @param orderSeriesObj 订单系列对象
+   * @returns 无返回值
+   */
+  preUploadFile(uploadFile: FileObj): void {
+    // 创建 UploadApply 对象
+    uploadFile.fileStatus = 1;
+    uploadFile.fileStatusStr = "上传中";
+    const uploadApply = new UploadApply();
+    uploadApply.bussinessId = this.@modelName.id;
+    uploadApply.name = uploadFile.fileName;
+    uploadApply.fileType = uploadFile.fileType;
+    uploadApply.fileSize = uploadFile.fileSize;
+    uploadApply.md5 = uploadFile.md5;
+    this.@modelNameSvc.preUploadFile(uploadApply).subscribe((token: StsTokenUpload) => {
+      this.uploadOssFile(token, uploadFile.file);
+    });
+  }
+
+  /*上传文件*/
+  uploadOssFile(token: StsTokenUpload, file: File): void {
+    this.updateUploadStatus(1, "正在上传", 0);
+    let ossAccess = token;
+    let ossClient = new OSS({
+      region: "oss-cn-beijing",
+      accessKeyId: ossAccess.authToken.accessId,
+      accessKeySecret: ossAccess.authToken.accessSecrect,
+      stsToken: ossAccess.authToken.securityToken,
+      accessDir: ossAccess.authToken.accessDir,
+      accessPath: ossAccess.authToken.accessPath,
+      bucket: ossAccess.authToken.bucketName,
+    });
+    ossClient
+      .multipartUpload(ossAccess.authToken.accessPath, file, {
+        progress: (p) => {
+          if (this.uploadFile.fileStatus == 3) {
+            throw new Error("已取消上传");
+          }
+          this.updateProgress(p);
+        },
+      })
+      .then((result) => {
+        this.finishUpload(token);
+      })
+      .catch((err) => {
+        if (this.uploadFile.fileStatus != 3) {
+          this.updateUploadStatus(2, "上传异常", err.message || "上传失败");
+        }
+      });
+  }
+
+  /*取消上传文件*/
+  cancelUpload() {
+    this.updateUploadStatus(3, "已取消上传", "");
+  }
+
+  /*上传状态更新*/
+  updateUploadStatus(status, statusStr, statusNote): void {
+    this.uploadFile.fileStatus = status;
+    this.uploadFile.fileStatusStr = statusStr;
+    this.uploadFile.fileStatusNote = statusNote;
+  }
+
+  /*进度条设置*/
+  updateProgress(p) {
+    let progress = Math.floor(p * 100); // 转换为百分比整数
+    this.uploadFile.progress = progress;
+    this.uploadFile.progressStr = progress.toString() + '%';
+  }
+
+  /*完成上传文件*/
+  finishUpload(token: StsTokenUpload): void {
+    this.@modelNameSvc.finishUpload(token.uploadKey).subscribe((ossFileId: string) => {
+      this.updateUploadStatus(4, "已上传", 100);
+      this.@modelName.ossFileId = ossFileId;
+      if (this.saveMode == 0) {
+        // 保存
+        this.save();
+      }
+    });
+  }  
+  `;
+    return code;
   }
 }

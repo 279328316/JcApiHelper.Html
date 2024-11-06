@@ -2,13 +2,13 @@ import { StringHelper } from '@core/stringhelper';
 import { DisplayType } from '@models/propertyinfo';
 import { TsModel } from '@models/tsmodel';
 
-export class DetailPageLessCreator {
+export class DetailModalLessCreator {
   // 获取Less代码
-  static getDetailPageLessCode(pageBaseModel: TsModel): string {
+  static getDetailModalLessCode(pageBaseModel: TsModel): string {
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
     let modelSummary = pageBaseModel.summary ?? modelName;
-    
+
     let code = `::ng-deep {
 @ngcss
 }`;

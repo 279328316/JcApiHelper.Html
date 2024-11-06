@@ -1,12 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '@services/api.service';
 import { ActivatedRoute } from '@angular/router';
-import { PageTreeNode, TsModel, TsPi, TsResult } from '@models/tsmodel';
+import { PageTreeNode, TsModel, TsResult } from '@models/tsmodel';
+import {
+  BooleanDisplayType,
+  DateDisplayType,
+  DisplayType,
+  EnumDisplayType,
+  NumberDisplayType,
+  TsPi,
+} from '@models/propertyinfo';
 import { Util } from '@core/util';
 import { StringHelper } from '@core/stringhelper';
 import { NzFormatEmitEvent, NzTreeNode } from 'ng-zorro-antd/tree';
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
 import { PageHelper } from '@core/PageHelper/pagehelper';
+import { CodeCreator } from '@core/PageHelper/codecreator';
 
 @Component({
   selector: 'app-codeviewer',
@@ -107,15 +116,18 @@ export class CodeViewerComponent implements OnInit {
     if (!this.pageBaseModel) {
       return;
     }
-    this.setModelPiList(this.pageBaseModel);
-    let filterNodes = this.rootNode.children;
-    if (filterNodes.filter((a) => a.key == this.pageBaseModel.id).length > 0) {
-      let existsNode = filterNodes.filter((a) => a.key == this.pageBaseModel.id)[0];
+    try {
+      this.setModelPiList(this.pageBaseModel);
       let pageNode = PageHelper.generatePageNode(this.pageBaseModel);
-      existsNode.children = pageNode.children;
-    } else {
-      let pageNode = PageHelper.generatePageNode(this.pageBaseModel);
-      this.rootNode.children.push(pageNode);
+      let filterNodes = this.rootNode.children;
+      if (filterNodes.filter((a) => a.key == this.pageBaseModel.id).length > 0) {
+        let existsNode = filterNodes.filter((a) => a.key == this.pageBaseModel.id)[0];
+        existsNode.children = pageNode.children;
+      } else {
+        this.rootNode.children.push(pageNode);
+      }
+    } catch (error) {
+      Util.showErrorMessageBox(error);
     }
   }
 
@@ -126,23 +138,28 @@ export class CodeViewerComponent implements OnInit {
       if (piList.filter((a) => a.isQuery === true).length <= 0) {
         piList.forEach((a) => {
           a.isQuery = true;
+          let displayType = CodeCreator.getPiQueryDisplayType(a);
+          a.queryDisplayType = displayType;
         });
       }
       if (piList.filter((a) => a.isList === true).length <= 0) {
         piList.forEach((a) => {
           a.isList = true;
           a.isListSort = true;
+          a.listDisplayType = CodeCreator.getPiListDisplayType(a);
         });
       }
       if (piList.filter((a) => a.isEdit === true).length <= 0) {
         piList.forEach((a) => {
           a.isEdit = true;
           a.isRequire = true;
+          a.editDisplayType = CodeCreator.getPiEditDisplayType(a);
         });
       }
       if (piList.filter((a) => a.isDetail === true).length <= 0) {
         piList.forEach((a) => {
           a.isDetail = true;
+          a.detailDisplayType = CodeCreator.getPiDetailDisplayType(a);
         });
       }
     }
