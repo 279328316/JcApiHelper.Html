@@ -29,6 +29,7 @@ export class TsPi {
   tsType: string; // Ts参数类型
   summary: string; // Summary
   isEnum = false; // 是否枚举
+  isKeyvalueItem = false; // 是否KeyvalueItem项
 
   isQuery = false; // 是否查询参数
   queryDisplayType = DisplayType.Input; // 查询显示类型

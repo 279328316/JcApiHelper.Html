@@ -8,6 +8,7 @@ import {
   StringDisplayType,
   TsPi,
 } from '@models/propertyinfo';
+import { PageType, TsModel } from '@models/tsmodel';
 
 export class CodeCreator {
   // 获取枚举属性初始化代码
@@ -31,10 +32,158 @@ export class CodeCreator {
     return code;
   }
 
+  // 获取KeyvalueItem属性初始化代码
+  public static getKeyvalueItemPiInitCode(pi: TsPi): string {
+    let piName = StringHelper.firstToLower(pi.name);
+    let piClassName = pi.name;
+    let piSummary = pi.summary;
+    let code = `
+  /**
+   * 初始化@piSummary列表
+   */
+  init@piClassNames(): void {
+    this.keyvalueItemSvc.getKeyValueItemByCode("@piClassName").subscribe((items: KeyValueItem[]) => {
+      // this.@piNameItems = items;
+    });
+  }`;
+    code = code
+      .replace(/@piSummary/g, piSummary)
+      .replace(/@piName/g, piName)
+      .replace(/@piClassName/g, piClassName);
+    return code;
+  }
+
+  // 获取添加Function代码
+  public static getAddFunctionCode(pageBaseModel: TsModel): string {
+    let modelName = StringHelper.firstToLower(pageBaseModel.name);
+    let modelClassName = pageBaseModel.name;
+    let modelSummary = pageBaseModel.summary ?? modelName;
+    let code = '';
+    if (pageBaseModel.editPageType == PageType.Page) {
+      code = `
+  /*添加@modelSummary*/
+  add@modelClassName(): void {
+    Util.goTo("/@modelNameedit/add");
+  }`;
+    } else {
+      code = `
+  /*添加@modelSummary*/
+  add@modelClassName(): void {
+    let @modelName = new @modelClassName();
+    this.edit@modelClassName(@modelName);
+  }`;
+    }
+    code = code
+      .replace(/@modelName/g, modelName)
+      .replace(/@modelClassName/g, modelClassName)
+      .replace(/@modelSummary/g, modelSummary);
+    return code;
+  }
+
+  // 获取编辑Function代码
+  public static getEditFunctionCode(pageBaseModel: TsModel): string {
+    let modelName = StringHelper.firstToLower(pageBaseModel.name);
+    let modelClassName = pageBaseModel.name;
+    let modelSummary = pageBaseModel.summary ?? modelName;
+    let code = '';
+    if (pageBaseModel.editPageType == PageType.Page) {
+      code = `
+  /*编辑@modelSummary*/
+  edit@modelClassName(@modelName: @modelClassName): void {
+    Util.goTo("/@modelNameedit/edit/" + @modelName.id);
+  }`;
+    } else {
+      code = `
+  /*编辑@modelSummary*/
+  edit@modelClassName(@modelName: @modelClassName): void {
+    let title = @modelName.id ? "编辑@modelSummary" : "添加@modelSummary";
+    const modal: NzModalRef = this.modalSvc.create({
+      nzTitle: title,
+      nzWidth: 720,
+      nzContent: @modelClassNameEditModalComponent,
+      nzData: { @modelName: @modelName },
+      nzCentered: true,
+      nzMaskClosable: false,
+      nzNoAnimation: true,
+      nzOkText: null,
+      nzCancelText: null,
+    });
+    modal.afterClose.subscribe((result) => {
+      if (result) {
+        this.query@modelClassNameList(true);
+      }
+    });
+  }`;
+    }
+    code = code
+      .replace(/@modelName/g, modelName)
+      .replace(/@modelClassName/g, modelClassName)
+      .replace(/@modelSummary/g, modelSummary);
+    return code;
+  }
+
+  // 获取View详情Function代码
+  public static getViewDetailFunctionCode(pageBaseModel: TsModel): string {
+    let modelName = StringHelper.firstToLower(pageBaseModel.name);
+    let modelClassName = pageBaseModel.name;
+    let modelSummary = pageBaseModel.summary ?? modelName;
+    let code = '';
+    if (pageBaseModel.editPageType == PageType.Page) {
+      code = `
+  /*查看@modelSummary详情*/
+  view@modelClassName(@modelName: @modelClassName): void {
+    Util.goTo("/systemmanage/@modelNamedetail/" + @modelName.id);
+    //this.view@modelClassNameModal(@modelName);
+  }`;
+    } else {
+      code = `
+  /*查看@modelSummary详情*/
+  view@modelClassName(@modelName: @modelClassName): void {
+    this.modalSvc.create({
+      nzTitle: "查看@modelSummary",
+      nzWidth: 720,
+      nzContent: @modelClassNameDetailModalComponent,
+      nzData: { @modelNameId: @modelName.id },
+      nzCentered: true,
+      nzMaskClosable: false,
+      nzNoAnimation: true,
+      nzOkText: null,
+      nzCancelText: null,
+    });
+  }`;
+    }
+    code = code
+      .replace(/@modelName/g, modelName)
+      .replace(/@modelClassName/g, modelClassName)
+      .replace(/@modelSummary/g, modelSummary);
+    return code;
+  }
+
+  // 获取KeyvalueItem属性初始化代码
+  public static geteditCode(pi: TsModel): string {
+    let piName = StringHelper.firstToLower(pi.name);
+    let piClassName = pi.name;
+    let piSummary = pi.summary;
+    let code = `
+  /**
+   * 初始化@piSummary列表
+   */
+  init@piClassNames(): void {
+    this.keyvalueItemSvc.getKeyValueItemByCode("@piClassName").subscribe((items: KeyValueItem[]) => {
+      // this.@piNameItems = items;
+    });
+  }`;
+    code = code
+      .replace(/@piSummary/g, piSummary)
+      .replace(/@piName/g, piName)
+      .replace(/@piClassName/g, piClassName);
+    return code;
+  }
+
   // 获取查询框显示类型
   public static getPiQueryDisplayType(pi: TsPi): DisplayType {
     let displayType = DisplayType.Input;
-    if (pi.isEnum) {
+    if (pi.isEnum || pi.isKeyvalueItem) {
       displayType = EnumDisplayType.defaultQueryType;
     } else if (pi.tsType === 'Date') {
       displayType = DateDisplayType.defaultQueryType;
@@ -53,7 +202,7 @@ export class CodeCreator {
   // 获取Table List 显示类型
   public static getPiListDisplayType(pi: TsPi): DisplayType {
     let displayType = DisplayType.Text;
-    if (pi.isEnum) {
+    if (pi.isEnum || pi.isKeyvalueItem) {
       displayType = EnumDisplayType.defaultListType;
     } else if (pi.tsType == 'Date') {
       displayType = DateDisplayType.defaultListType;
@@ -72,7 +221,7 @@ export class CodeCreator {
   // 获取编辑显示类型
   public static getPiEditDisplayType(pi: TsPi): DisplayType {
     let displayType = DisplayType.Input;
-    if (pi.isEnum) {
+    if (pi.isEnum || pi.isKeyvalueItem) {
       displayType = EnumDisplayType.defaultEditType;
     } else if (pi.tsType == 'Date') {
       displayType = DateDisplayType.defaultEditType;
@@ -91,7 +240,7 @@ export class CodeCreator {
   // 获取详情页显示类型
   public static getPiDetailDisplayType(pi: TsPi): DisplayType {
     let displayType = DisplayType.Text;
-    if (pi.isEnum) {
+    if (pi.isEnum || pi.isKeyvalueItem) {
       displayType = EnumDisplayType.defaultDisplayType;
     } else if (pi.tsType == 'Date') {
       displayType = DateDisplayType.defaultDisplayType;
@@ -110,7 +259,7 @@ export class CodeCreator {
   // 获取查询框显示类型
   public static getPiQueryDisplayTypeList(pi: TsPi): DisplayType[] {
     let displayTypeList: DisplayType[] = [DisplayType.Input];
-    if (pi.isEnum) {
+    if (pi.isEnum || pi.isKeyvalueItem) {
       displayTypeList = EnumDisplayType.getQueryType();
     } else if (pi.tsType == 'Date') {
       displayTypeList = DateDisplayType.getQueryType();
@@ -129,7 +278,7 @@ export class CodeCreator {
   // 获取Table List 显示类型
   public static getPiListDisplayTypeList(pi: TsPi): DisplayType[] {
     let displayTypeList: DisplayType[] = [DisplayType.Text];
-    if (pi.isEnum) {
+    if (pi.isEnum || pi.isKeyvalueItem) {
       displayTypeList = EnumDisplayType.getDisplayType();
     } else if (pi.tsType == 'Date') {
       displayTypeList = DateDisplayType.getDisplayType();
@@ -148,7 +297,7 @@ export class CodeCreator {
   // 获取编辑显示类型
   public static getPiEditDisplayTypeList(pi: TsPi): DisplayType[] {
     let displayTypeList: DisplayType[] = [DisplayType.Input];
-    if (pi.isEnum) {
+    if (pi.isEnum || pi.isKeyvalueItem) {
       displayTypeList = EnumDisplayType.getEditType();
     } else if (pi.tsType == 'Date') {
       displayTypeList = DateDisplayType.getEditType();
@@ -167,7 +316,7 @@ export class CodeCreator {
   // 获取详情页显示类型
   public static getPiDetailDisplayTypeList(pi: TsPi): DisplayType[] {
     let displayTypeList: DisplayType[] = [DisplayType.Input];
-    if (pi.isEnum) {
+    if (pi.isEnum || pi.isKeyvalueItem) {
       displayTypeList = EnumDisplayType.getDisplayType();
     } else if (pi.tsType == 'Date') {
       displayTypeList = DateDisplayType.getDisplayType();

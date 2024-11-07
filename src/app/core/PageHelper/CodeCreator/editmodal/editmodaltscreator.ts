@@ -52,12 +52,22 @@ export class EditModalTsCreator {
     let expandFunctionCode = '';
 
     if (editPiList.filter((a) => a.isEnum).length > 0) {
-      let enumPiList = editPiList.filter((a) => a.isEnum);
-      for (let enumPi of enumPiList) {
-        let enumName = StringHelper.firstToLower(enumPi.name);
-        expandPropertyCode += `  ${enumName}s: EnumItem[] = [];`;
-        expandFunctionCode += CodeCreator.getEnumPiInitCode(enumPi);
-        expandInitCode += `\n    this.init${enumPi.name}();`;
+      let piList = editPiList.filter((a) => a.isEnum);
+      for (let pi of piList) {
+        let piName = StringHelper.firstToLower(pi.name);
+        let piClassName = pi.name;
+        expandPropertyCode += `  ${piName}s: EnumItem[] = [];`;
+        expandFunctionCode += CodeCreator.getEnumPiInitCode(pi);
+        expandInitCode += `\n    this.init${piClassName}();`;
+      }
+    } else if (editPiList.filter((a) => a.isKeyvalueItem).length > 0) {
+      let piList = editPiList.filter((a) => a.isKeyvalueItem);
+      for (let pi of piList) {
+        let piName = StringHelper.firstToLower(pi.name);
+        let piClassName = pi.name;
+        expandPropertyCode += `  ${piName}s: KeyvalueItem[] = [];`;
+        expandFunctionCode += CodeCreator.getEnumPiInitCode(pi);
+        expandInitCode += `\n    this.init${piClassName}();`;
       }
     }
     if (editPiList.filter((a) => a.editDisplayType == DisplayType.UploadFile).length > 0) {
@@ -67,7 +77,7 @@ export class EditModalTsCreator {
 
     code = template
       .replace(/@expandPropertyCode/g, expandPropertyCode)
-      .replace(/@expandInitCode/g, expandPropertyCode)
+      .replace(/@expandInitCode/g, expandInitCode)
       .replace(/@expandFunctionCode/g, expandFunctionCode)
       .replace(/@editItemCode/g, editItemCode)
       .replace(/@editItemBuildCode/g, editItemBuildCode)
@@ -120,24 +130,6 @@ export class @modelClassNameEditComponent implements OnInit {
     if (this.@modelNameId) {
       this.get@modelClassName();
     }
-  }
-
-  /**
-   * 初始化enumItems
-   */
-  initEnumItems(): void {
-    this.enumSvc.getEnumItem("Code").subscribe((items: EnumItem[]) => {
-      //this.enumItems = items;
-    });
-  }
-
-  /**
-   * 初始化KeyValueItems
-   */
-  initKeyValueItems(): void {
-    this.keyvalueItemSvc.getKeyValueItemByCode("Code").subscribe((items: KeyValueItem[]) => {
-      // this.keyvalueItems = items;
-    });
   }
 
   /*获取@modelSummary*/

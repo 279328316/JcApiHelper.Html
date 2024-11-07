@@ -1,7 +1,9 @@
+import { CodeCreator } from '@core/PageHelper/codecreator';
 import { StringHelper } from '@core/stringhelper';
 import { TsModel } from '@models/tsmodel';
 
 export class DetailPageTsCreator {
+
   // 获取列表页面的component代码
   static getDetailPageTsCode(pageBaseModel: TsModel): string {
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
@@ -11,38 +13,15 @@ export class DetailPageTsCreator {
     let code = '';
     let template = DetailPageTsCreator.getTsTemplate();
 
-    let editPiList = pageBaseModel.piList.filter((pi) => pi.isDetail);
-    let editItemCode = '';
-    let editItemBuildCode = '';
-    for (let pi of editPiList) {
-      let piName = StringHelper.firstToLower(pi.name);
-      let piType = pi.tsType;
-      let isRequire = pi.isRequire;
-      let piDefaultValue = "''";
-      switch (piType) {
-        case 'string':
-          piDefaultValue = "''";
-          break;
-        case 'number':
-          piDefaultValue = '0';
-          break;
-        case 'boolean':
-          piDefaultValue = 'false';
-          break;
-        case 'date':
-          piDefaultValue = 'null';
-          break;
-        default:
-          piDefaultValue = 'null';
-          break;
-      }
-      editItemCode += `    ${piName}: FormControl<${piType}>;`;
-      editItemBuildCode += `      ${piName}: [${piDefaultValue}, ${isRequire ? 'Validators.required' : ''}],`;
-    }
+    let expandPropertyCode = '';
+    let expandInitCode = '';
+    let expandFunctionCode = '';
+    expandFunctionCode += CodeCreator.getEditFunctionCode(pageBaseModel);
 
     code = template
-      .replace(/@editItemCode/g, editItemCode)
-      .replace(/@editItemBuildCode/g, editItemBuildCode)
+      .replace(/@expandPropertyCode/g, expandPropertyCode)
+      .replace(/@expandInitCode/g, expandInitCode)
+      .replace(/@expandFunctionCode/g, expandFunctionCode)
       .replace(/@modelName/g, modelName)
       .replace(/@modelClassName/g, modelClassName)
       .replace(/@modelSummary/g, modelSummary);
@@ -66,6 +45,7 @@ import { @modelClassNameEditModalComponent } from "../@modelNameeditmodal/@model
 export class @modelClassNameDetailComponent implements OnInit {
   @modelNameId: string;
   @modelName: @modelClassName = new @modelClassName();
+  @expandPropertyCode
 
   constructor(
     private route: ActivatedRoute,
@@ -79,6 +59,7 @@ export class @modelClassNameDetailComponent implements OnInit {
     if (this.@modelNameId) {
       this.get@modelClassName();
     }
+    @expandInitCode
   }
 
   /*获取@modelSummary*/
@@ -87,41 +68,14 @@ export class @modelClassNameDetailComponent implements OnInit {
       this.@modelName = @modelName;
     });
   }
-
-  /*编辑@modelSummary*/
-  edit@modelClassName(): void {
-    Util.goTo("/@modelNameedit/edit/" + this.@modelNameId);
-    // this.edit@modelClassNameModal();
-  }
-
-  /*编辑@modelSummary*/
-  edit@modelClassNameModal(): void {
-    let title = "编辑@modelSummary";
-    const modal: NzModalRef = this.modalSvc.create({
-      nzTitle: title,
-      nzWidth: 720,
-      nzContent: @modelClassNameEditModalComponent,
-      nzData: { @modelName: this.@modelName },
-      nzCentered: true,
-      nzMaskClosable: false,
-      nzNoAnimation: true,
-      nzOkText: null,
-      nzCancelText: null,
-    });
-    // Return a result when closed
-    modal.afterClose.subscribe((result) => {
-      if (result) {
-        this.get@modelClassName();
-      }
-    });
-  }
+  @expandFunctionCode
 
   /*删除@modelSummary*/
   delete@modelClassName(): void {
     Util.showConfirmBox('确认要删除@modelSummary' + this.@modelName.name + '?').subscribe((res) => {
       if (res) {
         this.@modelNameSvc.delete@modelClassName(this.@modelNameId).subscribe(() => {
-          Util.goTo("/systemmanage/@modelNamelist");
+          Util.goTo("/@modelNamelist");
         });
       }
     });

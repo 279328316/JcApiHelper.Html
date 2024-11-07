@@ -18,17 +18,30 @@ export class ListPageTsCreator {
 
     let queryPiList = pageBaseModel.piList.filter((pi) => pi.isQuery);
     if (queryPiList.filter((a) => a.isEnum).length > 0) {
-      let enumPiList = queryPiList.filter((a) => a.isEnum);
-      for (let enumPi of enumPiList) {
-        let enumName = StringHelper.firstToLower(enumPi.name);
-        expandPropertyCode += `  ${enumName}s: EnumItem[] = [];`;
-        expandFunctionCode += CodeCreator.getEnumPiInitCode(enumPi);
-        expandInitCode += `\n    this.init${enumPi.name}();`;
+      let piList = queryPiList.filter((a) => a.isEnum);
+      for (let pi of piList) {
+        let piName = StringHelper.firstToLower(pi.name);
+        let piClassName = pi.name;
+        expandPropertyCode += `  ${piName}s: EnumItem[] = [];`;
+        expandFunctionCode += CodeCreator.getEnumPiInitCode(pi);
+        expandInitCode += `\n    this.init${piClassName}();`;
+      }
+    } else if (queryPiList.filter((a) => a.isKeyvalueItem).length > 0) {
+      let piList = queryPiList.filter((a) => a.isKeyvalueItem);
+      for (let pi of piList) {
+        let piName = StringHelper.firstToLower(pi.name);
+        let piClassName = pi.name;
+        expandPropertyCode += `  ${piName}s: KeyvalueItem[] = [];`;
+        expandFunctionCode += CodeCreator.getEnumPiInitCode(pi);
+        expandInitCode += `\n    this.init${piClassName}();`;
       }
     }
+    expandFunctionCode += CodeCreator.getAddFunctionCode(pageBaseModel);
+    expandFunctionCode += CodeCreator.getEditFunctionCode(pageBaseModel);
+    expandFunctionCode += CodeCreator.getViewDetailFunctionCode(pageBaseModel);
     code = template
       .replace(/@expandPropertyCode/g, expandPropertyCode)
-      .replace(/@expandInitCode/g, expandPropertyCode)
+      .replace(/@expandInitCode/g, expandInitCode)
       .replace(/@expandFunctionCode/g, expandFunctionCode)
       .replace(/@modelName/g, modelName)
       .replace(/@modelClassName/g, modelClassName)
@@ -75,27 +88,7 @@ export class @modelClassNameListComponent implements OnInit {
     @expandInitCode
     this.query@modelClassNameList();
   }
-
-  @expandFunctionCode
   
-  /**
-   * 初始化enumItems
-   */
-  initEnumItems(): void {
-    this.enumSvc.getEnumItem("Code").subscribe((items: EnumItem[]) => {
-      //this.enumItems = items;
-    });
-  }
-
-  /**
-   * 初始化KeyValueItems
-   */
-  initKeyValueItems(): void {
-    this.keyvalueItemSvc.getKeyValueItemByCode("Code").subscribe((items: KeyValueItem[]) => {
-      // this.keyvalueItems = items;
-    });
-  }
-
   /**
    * 查询参数变化时的回调函数
    *
@@ -144,24 +137,7 @@ export class @modelClassNameListComponent implements OnInit {
       },
     });
   }
-
-  /*添加@modelSummary*/
-  add@modelClassName(): void {
-    Util.goTo("/systemmanage/@modelNameedit/add");
-    //this.add@modelClassNameModal();
-  }
-
-  /*编辑@modelSummary*/
-  edit@modelClassName(@modelName: @modelClassName): void {
-    Util.goTo("/systemmanage/@modelNameedit/edit/" + @modelName.id);
-    //this.edit@modelClassNameModal(@modelName);
-  }
-
-  /*查看@modelSummary详情*/
-  view@modelClassName(@modelName: @modelClassName): void {
-    Util.goTo("/systemmanage/@modelNamedetail/" + @modelName.id);
-    //this.view@modelClassNameModal(@modelName);
-  }
+  @expandFunctionCode
 
   /*删除@modelSummary*/
   delete@modelClassName(@modelName: @modelClassName): void {
@@ -171,48 +147,6 @@ export class @modelClassNameListComponent implements OnInit {
           this.query@modelClassNameList();
         });
       }
-    });
-  }
-
-  /*添加@modelSummary*/
-  add@modelClassNameModal(): void {
-    let @modelName = new @modelClassName();
-    this.edit@modelClassNameModal(@modelName);
-  }
-
-  /*编辑@modelSummary*/
-  edit@modelClassNameModal(@modelName: @modelClassName): void {
-    let title = @modelName.id ? "编辑@modelSummary" : "添加@modelSummary";
-    const modal: NzModalRef = this.modalSvc.create({
-      nzTitle: title,
-      nzWidth: 720,
-      nzContent: @modelClassNameEditModalComponent,
-      nzData: { @modelName: @modelName },
-      nzCentered: true,
-      nzMaskClosable: false,
-      nzNoAnimation: true,
-      nzOkText: null,
-      nzCancelText: null,
-    });
-    modal.afterClose.subscribe((result) => {
-      if (result) {
-        this.query@modelClassNameList(true);
-      }
-    });
-  }
-
-  /*查看@modelSummary详情*/
-  view@modelClassNameModal(@modelName: @modelClassName): void {
-    this.modalSvc.create({
-      nzTitle: "查看@modelSummary",
-      nzWidth: 720,
-      nzContent: @modelClassNameDetailModalComponent,
-      nzData: { @modelNameId: @modelName.id },
-      nzCentered: true,
-      nzMaskClosable: false,
-      nzNoAnimation: true,
-      nzOkText: null,
-      nzCancelText: null,
     });
   }
 }`;

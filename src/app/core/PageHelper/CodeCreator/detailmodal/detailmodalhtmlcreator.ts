@@ -15,7 +15,7 @@ export class DetailModalHtmlCreator {
 <div class="tac mt50">
     <button nz-button class="w100 mr30" [nzType]="'primary'" (click)="edit@modelClassName()">编辑</button>
     <button nz-button class="w100 mr30" [nzType]="'primary'" nzGhost nzDanger (click)="delete@modelClassName()">删除</button>
-    <button nz-button class="w80" [nzType]="'primary'" nzGhost (click)="back()">返回</button>
+    <button nz-button class="w80" [nzType]="'primary'" nzGhost (click)="cancel()">返回</button>
 </div>`;
     let detailCode = this.getDetailCode(pageBaseModel);
     htmlCode = htmlTemplate
