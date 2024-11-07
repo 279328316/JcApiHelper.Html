@@ -40,7 +40,16 @@
               "src/assets/common.css",
               "src/assets/base.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/prismjs/prism.js",
+              "node_modules/prismjs/components/prism-less.min.js",
+              "node_modules/prismjs/components/prism-typescript.min.js",
+              "node_modules/prismjs/components/prism-csharp.min.js",
+              "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.min.js",
+              "node_modules/prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js",
+              "node_modules/prettier/plugins/html.js",
+              "node_modules/prettier/plugins/typescript.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -54,12 +63,12 @@
                 {
                   "type": "initial",
                   "maximumWarning": "5MB",
-                  "maximumError": "5MB"
+                  "maximumError": "10MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kB",
-                  "maximumError": "4kB"
+                  "maximumWarning": "10kB",
+                  "maximumError": "40kB"
                 }
               ],
               "outputHashing": "all"

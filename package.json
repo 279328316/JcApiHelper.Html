@@ -19,6 +19,7 @@
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
     "@types/prettier": "^2.7.3",
+    "@types/prismjs": "^1.26.5",
     "ng-zorro-antd": "^18.1.0",
     "ngx-clipboard": "^16.0.0",
     "prettier": "^3.3.3",
