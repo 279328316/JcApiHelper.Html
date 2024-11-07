@@ -222,8 +222,6 @@ export class StringDisplayType {
   static getQueryType(): DisplayType[] {
     let list: DisplayType[] = [];
     list.push(DisplayType.Input); // 输入框
-    list.push(DisplayType.UploadFile); // 文件上传
-    list.push(DisplayType.TextArea); // 多行文本框
     return list;
   }
 

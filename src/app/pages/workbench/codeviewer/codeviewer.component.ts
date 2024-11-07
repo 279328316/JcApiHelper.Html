@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '@services/api.service';
 import { ActivatedRoute } from '@angular/router';
-import { PageTreeNode, TsModel, TsResult } from '@models/tsmodel';
+import { PageTreeNode, PageType, TsModel, TsResult } from '@models/tsmodel';
 import {
   BooleanDisplayType,
   DateDisplayType,
@@ -12,22 +12,27 @@ import {
 } from '@models/propertyinfo';
 import { Util } from '@core/util';
 import { StringHelper } from '@core/stringhelper';
-import { NzFormatEmitEvent, NzTreeNode } from 'ng-zorro-antd/tree';
+import { NzFormatEmitEvent, NzTreeComponent, NzTreeNode, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown';
 import { PageHelper } from '@core/PageHelper/pagehelper';
 import { CodeCreator } from '@core/PageHelper/codecreator';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { CodeGenerateConfigComponent } from '../codegenerateconfig/codegenerateconfig.component';
 
 @Component({
   selector: 'app-codeviewer',
   templateUrl: './codeviewer.component.html',
   styleUrls: ['./codeviewer.component.less'],
 })
-export class CodeViewerComponent implements OnInit {
+export class CodeViewerComponent implements OnInit, AfterViewInit {
+  @ViewChild('nzTree', { static: false }) nzTree!: NzTreeComponent;
   itemId: string;
   itemType: string;
   tsServiceType = '1';
   tsModelViewType = '1';
   isShowPageQueryModel = true;
+
+  isAfterViewInit: boolean = false;
 
   tsResult: TsResult;
   tsModelList: TsModel[] = [];
@@ -45,14 +50,16 @@ export class CodeViewerComponent implements OnInit {
   isCtrlDown: boolean = false;
   isShiftDown: boolean = false;
 
-  rootNode: PageTreeNode = <PageTreeNode>{
+  rootNode: NzTreeNode;
+
+  rootNodeOptions: NzTreeNodeOptions = <NzTreeNodeOptions>{
     title: 'pages',
     key: 'pages',
     expanded: true,
     children: [],
   };
 
-  pageNodes: PageTreeNode[] = [this.rootNode];
+  pageNodes: NzTreeNodeOptions[] = [this.rootNodeOptions];
   activatedNode?: NzTreeNode;
 
   pageCode = '';
@@ -62,6 +69,7 @@ export class CodeViewerComponent implements OnInit {
   constructor(
     private routerParams: ActivatedRoute,
     private nzContextMenuService: NzContextMenuService,
+    private modalSvc: NzModalService,
     private apiSvc: ApiService
   ) {
     const tsServiceType = localStorage.getItem('tsServiceType');
@@ -79,9 +87,11 @@ export class CodeViewerComponent implements OnInit {
   ngOnInit() {
     this.itemId = this.routerParams.snapshot.paramMap.get('itemId');
     this.itemType = this.routerParams.snapshot.paramMap.get('itemType');
-    if (this.itemId && this.itemType) {
-      this.getTsModel();
-    }
+  }
+
+  ngAfterViewInit(): void {
+    this.isAfterViewInit = true;
+    this.getTsModel();
   }
 
   /*获取TsModel*/
@@ -98,33 +108,79 @@ export class CodeViewerComponent implements OnInit {
           this.pageBaseModel = this.pageModelList[0];
         }
         if (this.pageBaseModel) {
-          this.generatePages();
+          this.autoGeneratePages();
         }
       }
     });
   }
 
+  autoGeneratePages() {
+    // tsModel 加载后,才会去加载nzTree
+    let timer = setInterval(() => {
+      if (this.isAfterViewInit && this.nzTree) {
+        clearInterval(timer);
+        this.rootNode = this.nzTree.getTreeNodeByKey(this.rootNodeOptions.key);
+        this.generatePages(true);
+      }
+    }, 100);
+  }
+
   // BaseModelChange
   pageBaseModelChange(value: TsModel): void {
     if (value) {
-      //this.generatePages();
     }
   }
 
   // 生成页面代码
-  generatePages() {
+  generatePages(isAuto = false) {
     if (!this.pageBaseModel) {
       return;
     }
+    this.setModelPiList(this.pageBaseModel);
+    if (!isAuto) {
+      let title = 'Pages Generate Config for ' + this.pageBaseModel.name;
+      const modal: NzModalRef = this.modalSvc.create({
+        nzTitle: title,
+        nzWidth: 1360,
+        nzContent: CodeGenerateConfigComponent,
+        nzData: { configModel: this.pageBaseModel },
+        nzCentered: true,
+        nzDraggable: true,
+        nzMaskClosable: false,
+        nzNoAnimation: true,
+        nzFooter: null,
+        nzOkText: null,
+        nzCancelText: null,
+      });
+      modal.afterClose.subscribe((result) => {
+        if (result) {
+          localStorage.setItem('generateConfig' + this.pageBaseModel.id, JSON.stringify(this.pageBaseModel));
+          this.doGeneratePages();
+        }
+      });
+    } else {
+      this.doGeneratePages();
+    }
+  }
+
+  // 生成页面代码
+  doGeneratePages() {
+    if (!this.pageBaseModel || !this.rootNode) {
+      return;
+    }
     try {
-      this.setModelPiList(this.pageBaseModel);
+      let rootNodeChildren = this.rootNode.getChildren();
+      let existsNode = rootNodeChildren.find((a) => a.key === this.pageBaseModel.id.toLowerCase());
+      let index = rootNodeChildren.findIndex((a) => a.key === existsNode?.key);
+      if (existsNode) {
+        existsNode.remove();
+      }
       let pageNode = PageHelper.generatePageNode(this.pageBaseModel);
-      let filterNodes = this.rootNode.children;
-      if (filterNodes.filter((a) => a.key == this.pageBaseModel.id).length > 0) {
-        let existsNode = filterNodes.filter((a) => a.key == this.pageBaseModel.id)[0];
-        existsNode.children = pageNode.children;
+      let treeNodeOptions: NzTreeNodeOptions = pageNode as NzTreeNodeOptions;
+      if (index != -1) {
+        this.rootNode.addChildren([treeNodeOptions], index);
       } else {
-        this.rootNode.children.push(pageNode);
+        this.rootNode.addChildren([treeNodeOptions]);
       }
     } catch (error) {
       Util.showErrorMessageBox(error);
@@ -133,35 +189,66 @@ export class CodeViewerComponent implements OnInit {
 
   // 设置参数列表
   setModelPiList(pageBaseModel: TsModel) {
+    this.loadConfigFromStorage(pageBaseModel);
+
     let piList = pageBaseModel?.piList;
+    if (!pageBaseModel.editPageType) {
+      pageBaseModel.editPageType = PageType.Page;
+    }
+    if (!pageBaseModel.detailPageType) {
+      pageBaseModel.detailPageType = PageType.Page;
+    }
     if (piList) {
       if (piList.filter((a) => a.isQuery === true).length <= 0) {
         piList.forEach((a) => {
           a.isQuery = true;
-          let displayType = CodeCreator.getPiQueryDisplayType(a);
-          a.queryDisplayType = displayType;
         });
       }
       if (piList.filter((a) => a.isList === true).length <= 0) {
         piList.forEach((a) => {
           a.isList = true;
           a.isListSort = true;
-          a.listDisplayType = CodeCreator.getPiListDisplayType(a);
         });
       }
       if (piList.filter((a) => a.isEdit === true).length <= 0) {
         piList.forEach((a) => {
           a.isEdit = true;
           a.isRequire = true;
-          a.editDisplayType = CodeCreator.getPiEditDisplayType(a);
         });
       }
       if (piList.filter((a) => a.isDetail === true).length <= 0) {
         piList.forEach((a) => {
           a.isDetail = true;
-          a.detailDisplayType = CodeCreator.getPiDetailDisplayType(a);
         });
       }
+    }
+  }
+
+  loadConfigFromStorage(pageBaseModel: TsModel) {
+    let storageConfigStr = localStorage.getItem('generateConfig' + this.pageBaseModel?.id);
+    let storageConfig = JSON.parse(storageConfigStr) as TsModel;
+    if (storageConfig) {
+      pageBaseModel.editPageType = storageConfig.editPageType;
+      pageBaseModel.detailPageType = storageConfig.detailPageType;
+
+      let piList = pageBaseModel.piList;
+      let storagePiList = storageConfig.piList;
+      piList?.forEach((a) => {
+        let storagePi = storagePiList.filter((b) => b.name === a.name)[0];
+        if (storagePi && storagePi.tsType === a.tsType) {
+          a.isKeyvalueItem = storagePi.isKeyvalueItem;
+          a.isQuery = storagePi.isQuery;
+          a.queryDisplayType = storagePi.queryDisplayType;
+          a.isList = storagePi.isList;
+          a.isListSort = storagePi.isListSort;
+          a.listDisplayType = storagePi.listDisplayType;
+          a.isEdit = storagePi.isEdit;
+          a.isRequire = storagePi.isRequire;
+          a.editDisplayType = storagePi.editDisplayType;
+          a.isDetail = storagePi.isDetail;
+          a.detailDisplayType = storagePi.detailDisplayType;
+        }
+      });
     }
   }
 

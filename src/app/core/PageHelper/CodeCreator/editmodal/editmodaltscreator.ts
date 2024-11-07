@@ -50,22 +50,21 @@ export class EditModalTsCreator {
     let expandPropertyCode = '';
     let expandInitCode = '';
     let expandFunctionCode = '';
-
-    if (editPiList.filter((a) => a.isEnum).length > 0) {
+    if (editPiList.filter((a) => a.isKeyvalueItem).length > 0) {
+      let piList = editPiList.filter((a) => a.isKeyvalueItem);
+      for (let pi of piList) {
+        let piName = StringHelper.firstToLower(pi.name);
+        let piClassName = pi.name;
+        expandPropertyCode += `\n  ${piName}s: KeyvalueItem[] = [];`;
+        expandFunctionCode += CodeCreator.getKeyvalueItemPiInitCode(pi);
+        expandInitCode += `\n    this.init${piClassName}();`;
+      }
+    } else if (editPiList.filter((a) => a.isEnum).length > 0) {
       let piList = editPiList.filter((a) => a.isEnum);
       for (let pi of piList) {
         let piName = StringHelper.firstToLower(pi.name);
         let piClassName = pi.name;
         expandPropertyCode += `  ${piName}s: EnumItem[] = [];`;
-        expandFunctionCode += CodeCreator.getEnumPiInitCode(pi);
-        expandInitCode += `\n    this.init${piClassName}();`;
-      }
-    } else if (editPiList.filter((a) => a.isKeyvalueItem).length > 0) {
-      let piList = editPiList.filter((a) => a.isKeyvalueItem);
-      for (let pi of piList) {
-        let piName = StringHelper.firstToLower(pi.name);
-        let piClassName = pi.name;
-        expandPropertyCode += `  ${piName}s: KeyvalueItem[] = [];`;
         expandFunctionCode += CodeCreator.getEnumPiInitCode(pi);
         expandInitCode += `\n    this.init${piClassName}();`;
       }

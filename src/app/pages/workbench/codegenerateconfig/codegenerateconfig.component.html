@@ -1,0 +1,97 @@
+<div class="ml20">
+  <div>
+    <nz-table class="configTable" nzShowPagination="false" nzBordered nzSize="small" [nzData]='config.piList'
+      [nzScroll]="{ y: '400px' }">
+      <thead>
+        <tr>
+          <th [nzWidth]="'150px'">summary</th>
+          <th [nzWidth]="'120px'">name</th>
+          <th [nzWidth]="'70px'">type</th>
+          <th [nzWidth]="'60px'" class="tac"><span title="enumItem 数据源来自enumItem">enum</span></th>
+          <th [nzWidth]="'60px'" class="tac"><span title="keyvalueItem 数据源来自KeyvalueItem">keyval</span></th>
+          <th [nzWidth]="'60px'" class="tac">query</th>
+          <th [nzWidth]="'100px'">queryDisplay</th>
+          <th [nzWidth]="'60px'" class="tac">list</th>
+          <th [nzWidth]="'140px'">listDisplay</th>
+          <th [nzWidth]="'60px'" class="tac">edit</th>
+          <th [nzWidth]="'180px'">editDisplay</th>
+          <th [nzWidth]="'60px'" class="tac">detail</th>
+          <th [nzWidth]="'100px'">detailDisplay</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (pi of config.piList; track $index) {
+        <tr>
+          <td>
+            <span [title]="pi.summary">{{pi.summary}}</span>
+          </td>
+          <td>
+            <span [title]="pi.name">{{pi.name}}</span>
+          </td>
+          <td>{{pi.tsType}}</td>
+          <td class="tac">
+            <label nz-checkbox [(ngModel)]="pi.isEnum"></label>
+          </td>
+          <td class="tac">
+            <label nz-checkbox [(ngModel)]="pi.isKeyvalueItem"></label>
+          </td>
+          <td class="tac">
+            <label nz-checkbox [(ngModel)]="pi.isQuery"></label>
+          </td>
+          <td>
+            <a *ngIf="pi.isQuery" (click)="setDisplayType(pi,'query')">{{pi.queryDisplayType}}</a>
+          </td>
+          <td class="tac">
+            <label nz-checkbox [(ngModel)]="pi.isList"></label>
+          </td>
+          <td>
+            <a *ngIf="pi.isList" (click)="setDisplayType(pi,'list')">
+              <span>{{pi.listDisplayType}}</span>
+              <span class="ml10" *ngIf="pi.isListSort">
+                <nz-tag nzColor="cyan">{{pi.isListSort ? 'Sortable':''}}</nz-tag>
+              </span>
+            </a>
+          </td>
+          <td class="tac">
+            <label nz-checkbox [(ngModel)]="pi.isEdit"></label>
+          </td>
+          <td>
+            <a *ngIf="pi.isEdit" (click)="setDisplayType(pi,'edit')">
+              <span>{{pi.editDisplayType}}</span>
+              <span class="ml10" *ngIf="pi.isRequire">
+                <nz-tag nzColor="magenta">{{pi.isRequire ? 'Require':''}}</nz-tag>
+              </span>
+            </a>
+          </td>
+          <td class="tac">
+            <label nz-checkbox [(ngModel)]="pi.isDetail"></label>
+          </td>
+          <td>
+            <a *ngIf="pi.isDetail" (click)="setDisplayType(pi,'detail')">{{pi.detailDisplayType}}</a>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </nz-table>
+  </div>
+  <div class="mt20">
+    <span>
+      <span class="mr10">编辑页面：</span>
+      <nz-radio-group [(ngModel)]="config.editPageType">
+        <label nz-radio [nzValue]="'Page'">Page</label>
+        <label nz-radio [nzValue]="'Modal'">Modal</label>
+      </nz-radio-group>
+    </span>
+    <span class="ml50">
+      <span class="mr10">详情页面：</span>
+      <nz-radio-group [(ngModel)]="config.detailPageType">
+        <label nz-radio [nzValue]="'Page'">Page</label>
+        <label nz-radio [nzValue]="'Modal'">Modal</label>
+      </nz-radio-group>
+    </span>
+  </div>
+</div>
+<div class="tac mt50 mb35">
+  <button nz-button class="w100 mr50" [nzType]="'primary'" (click)="generate()">生成</button>
+  <button nz-button class="w100" [nzType]="'primary'" nzGhost (click)="cancel()">返回</button>
+</div>

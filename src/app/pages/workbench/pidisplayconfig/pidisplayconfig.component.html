@@ -1,0 +1,20 @@
+<nz-card class="mb20">
+  <div>
+    <div class="mb10">Display Type</div>
+    <nz-radio-group [(ngModel)]="piDisplayType">
+      @for (item of displayTypeList; track $index) {
+      <div>
+        <label nz-radio [nzValue]="item">{{item}}</label>
+      </div>
+      }
+    </nz-radio-group>
+    <div>
+      <label nz-checkbox class="mt20" [(ngModel)]="isSort" *ngIf="display=='list'">Sortable</label>
+      <label nz-checkbox class="mt20" [(ngModel)]="isRequire" *ngIf="display=='edit'">Require</label>
+    </div>
+  </div>
+  <div class="tac mt50">
+    <button nz-button class="w80 mr50" [nzType]="'primary'" nzSize="small" (click)="save()">确定</button>
+    <button nz-button class="w80" [nzType]="'primary'" nzGhost nzSize="small" (click)="cancel()">取消</button>
+  </div>
+</nz-card>

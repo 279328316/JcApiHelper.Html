@@ -17,21 +17,21 @@ export class ListPageTsCreator {
     let expandFunctionCode = '';
 
     let queryPiList = pageBaseModel.piList.filter((pi) => pi.isQuery);
-    if (queryPiList.filter((a) => a.isEnum).length > 0) {
-      let piList = queryPiList.filter((a) => a.isEnum);
-      for (let pi of piList) {
-        let piName = StringHelper.firstToLower(pi.name);
-        let piClassName = pi.name;
-        expandPropertyCode += `  ${piName}s: EnumItem[] = [];`;
-        expandFunctionCode += CodeCreator.getEnumPiInitCode(pi);
-        expandInitCode += `\n    this.init${piClassName}();`;
-      }
-    } else if (queryPiList.filter((a) => a.isKeyvalueItem).length > 0) {
+    if (queryPiList.filter((a) => a.isKeyvalueItem).length > 0) {
       let piList = queryPiList.filter((a) => a.isKeyvalueItem);
       for (let pi of piList) {
         let piName = StringHelper.firstToLower(pi.name);
         let piClassName = pi.name;
-        expandPropertyCode += `  ${piName}s: KeyvalueItem[] = [];`;
+        expandPropertyCode += `\n  ${piName}s: KeyvalueItem[] = [];`;
+        expandFunctionCode += CodeCreator.getKeyvalueItemPiInitCode(pi);
+        expandInitCode += `\n    this.init${piClassName}();`;
+      }
+    } else if (queryPiList.filter((a) => a.isEnum).length > 0) {
+      let piList = queryPiList.filter((a) => a.isEnum);
+      for (let pi of piList) {
+        let piName = StringHelper.firstToLower(pi.name);
+        let piClassName = pi.name;
+        expandPropertyCode += `\n  ${piName}s: EnumItem[] = [];`;
         expandFunctionCode += CodeCreator.getEnumPiInitCode(pi);
         expandInitCode += `\n    this.init${piClassName}();`;
       }

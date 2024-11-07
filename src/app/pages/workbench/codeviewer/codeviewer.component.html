@@ -89,13 +89,14 @@
                       <nz-option [nzLabel]="model.name" [nzValue]="model"></nz-option>
                       }
                     </nz-select>
-                    <button nz-button nzType="primary" class="ml30 w100" (click)="generatePages()">Generate</button>
+                    <button nz-button nzType="primary" class="ml30 w100"
+                      (click)="generatePages()">Generate</button>
                   </div>
                 </div>
                 <div nz-row nzGutter="32" class="mt10">
                   <div nz-col nzSpan="6" style="overflow-x: hidden;overflow-y: auto;">
                     <div class="h420 w350">
-                      <nz-tree nzBlockNode [nzData]="pageNodes" (nzClick)="activeNode($event)"
+                      <nz-tree #nzTree nzBlockNode [nzData]="pageNodes" (nzClick)="activeNode($event)"
                         (nzDblClick)="openFolder($event)" [nzTreeTemplate]="nzTreeTemplate"></nz-tree>
                       <ng-template #nzTreeTemplate let-node let-origin="origin">
                         @if (!node.isLeaf) {
