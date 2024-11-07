@@ -1,21 +1,21 @@
-import { Component, OnInit } from "@angular/core";
-import { Area, Controller } from "@models/api";
-import { ApiService } from "@services/api.service";
-import { NzTableSize } from "ng-zorro-antd/table";
+import { Component, OnInit } from '@angular/core';
+import { Area, Controller } from '@models/api';
+import { ApiService } from '@services/api.service';
+import { NzTableSize } from 'ng-zorro-antd/table';
 
 @Component({
-  selector: "app-workbench",
-  templateUrl: "./workbench.component.html",
-  styleUrls: ["./workbench.component.less"],
+  selector: 'app-workbench',
+  templateUrl: './workbench.component.html',
+  styleUrls: ['./workbench.component.less'],
 })
 export class WorkbenchComponent implements OnInit {
   //for修复 nz-affix控件 reusetab情况下,返回后宽度为0bug
   showControllerList: boolean = true; //显示ControllerList
 
   isDisplayAllMenuSelected: boolean = true;
-  tagcolor: string[] = ["cyan", "geekblue", "blue", "purple"];
-  actionTableSize: NzTableSize = "middle";
-  searchText: string = ""; //Controller 过滤条件
+  tagcolor: string[] = ['cyan', 'geekblue', 'blue', 'purple'];
+  actionTableSize: NzTableSize = 'middle';
+  searchText: string = ''; //Controller 过滤条件
   controllerList: Controller[] = []; //实际显示ControllerList
   selectedController: Controller[] = [];
   queryAmount: number = 3;
@@ -27,8 +27,8 @@ export class WorkbenchComponent implements OnInit {
   isAreaSelectIndeterminate: boolean = false;
 
   constructor(private apiSvc: ApiService) {
-    let actionTableSize = localStorage.getItem("actionTableSize");
-    this.actionTableSize = (actionTableSize ? actionTableSize : "middle") as NzTableSize;
+    let actionTableSize = localStorage.getItem('actionTableSize');
+    this.actionTableSize = (actionTableSize ? actionTableSize : 'middle') as NzTableSize;
   }
 
   ngOnInit() {
@@ -60,7 +60,7 @@ export class WorkbenchComponent implements OnInit {
 
   /*初始化ControllerList*/
   initControllerList() {
-    this.searchText = "";
+    this.searchText = '';
     this.isDisplayAllMenuSelected = false;
     this.controllerList = [];
     this.apiSvc.getControllerList().subscribe((controllerList: Controller[]) => {
@@ -83,8 +83,6 @@ export class WorkbenchComponent implements OnInit {
     }
 
     curIndex += i + 1;
-    console.log("curIndex:", curIndex);
-
     this.apiSvc.getControllerListByIds(ids).subscribe({
       next: (result: Controller[]) => {
         result.forEach((rc) => {
@@ -96,7 +94,7 @@ export class WorkbenchComponent implements OnInit {
         });
       },
       error: (error) => {
-        console.log("error:", error);
+        console.log('error:', error);
         if (curIndex < this.controllerList.length) {
           this.initControllerDetail(curIndex);
         }
@@ -118,7 +116,7 @@ export class WorkbenchComponent implements OnInit {
         if (this.areaList.filter((area) => area.areaName == controller.areaName).length <= 0) {
           let area: Area = {
             areaName: controller.areaName,
-            displayName: controller.areaName ? controller.areaName : "None",
+            displayName: controller.areaName ? controller.areaName : 'None',
             isSelected: false,
           };
           this.areaList.push(area);
@@ -187,6 +185,6 @@ export class WorkbenchComponent implements OnInit {
 
   /*actionTableSize改变*/
   actionTableSizeChanged() {
-    localStorage.setItem("actionTableSize", this.actionTableSize);
+    localStorage.setItem('actionTableSize', this.actionTableSize);
   }
 }
