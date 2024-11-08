@@ -98,7 +98,6 @@ export class ListPageHtmlCreator {
     let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
     let piName = StringHelper.firstToLower(pi.name);
     let piSummary = !pi.summary ? piName : pi.summary;
-    console.log(piName, 'piSummary:', piSummary);
     if (pi.queryDisplayType == DisplayType.RadioGroup) {
       queryCodeTemplate = `<div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="10" [nzLg]="10">
                         <nz-form-item>

@@ -125,7 +125,6 @@ export class @modelClassNameListComponent implements OnInit {
     if (isReload) {
       this.queryObj.pageIndex = 1;
     }
-    console.log(this.queryObj);
     this.@modelNameSvc.query@modelClassNameList(this.queryObj).subscribe({
       next: (pgResult: PageResult<@modelClassName>) => {
         this.@modelNameList = pgResult.rows;

@@ -163,7 +163,6 @@ export class WorkbenchComponent implements OnInit {
   onSelectController(controller: Controller) {
     this.selectedController = [];
     this.selectedController.push(controller);
-    console.log(controller);
     this.controllerList.forEach((a) => {
       if (a != controller) {
         a.isSelected = false;
