@@ -7,7 +7,7 @@ export class DetailPageHtmlCreator {
   static getDetailPageHtmlCode(pageBaseModel: TsModel): string {
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
-    let modelSummary = pageBaseModel.summary ?? modelName;
+    let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
     let htmlCode = '';
     let htmlTemplate = `<nz-page-header>
     <nz-page-header-subtitle>应用详情--{{app.name}}</nz-page-header-subtitle>
@@ -68,7 +68,7 @@ export class DetailPageHtmlCreator {
     let itemCodeTemplate = '';
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let piName = StringHelper.firstToLower(pi.name);
-    let piSummary = pi.summary ?? piName;
+    let piSummary = !pi.summary ? piName : pi.summary;
     if (pi.detailDisplayType == DisplayType.Text) {
       if (pi.tsType == 'Date') {
         itemCodeTemplate = `

@@ -7,7 +7,7 @@ export class ListPageHtmlCreator {
   static getListPageHtmlCode(pageBaseModel: TsModel): string {
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
-    let modelSummary = pageBaseModel.summary ?? modelName;
+    let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
     let htmlCode = '';
     let htmlTemplate = `<div>
     <nz-page-header class="contentPageHeader">
@@ -39,7 +39,7 @@ export class ListPageHtmlCreator {
   private static getQueryFormCode(pageBaseModel: TsModel): string {
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
-    let modelSummary = pageBaseModel.summary ?? modelName;
+    let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
     let queryFormCode = '';
     let queryFormTemplate = `<form nz-form>
             <div class="pt24">@queryItemCode
@@ -95,10 +95,10 @@ export class ListPageHtmlCreator {
     let queryCodeTemplate = '';
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
-    let modelSummary = pageBaseModel.summary ?? modelName;
+    let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
     let piName = StringHelper.firstToLower(pi.name);
-    let piSummary = pi.summary ?? piName;
-
+    let piSummary = !pi.summary ? piName : pi.summary;
+    console.log(piName, 'piSummary:', piSummary);
     if (pi.queryDisplayType == DisplayType.RadioGroup) {
       queryCodeTemplate = `<div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="10" [nzLg]="10">
                         <nz-form-item>
@@ -204,7 +204,7 @@ export class ListPageHtmlCreator {
   private static getTableListCode(pageBaseModel: TsModel): string {
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
-    let modelSummary = pageBaseModel.summary ?? modelName;
+    let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
     let tableListCode = `<nz-table #@modelName nzSize='default' [nzFrontPagination]='false' nzShowSizeChanger [nzData]='@modelNameList'
           [nzLoading]='loading' [nzTotal]="totalCount" [nzShowTotal]="totalTemplate"
           [nzPageIndex]="queryObj.pageIndex" [nzPageSize]="queryObj.pageSize"
@@ -228,7 +228,7 @@ export class ListPageHtmlCreator {
     let tbodyListCode = '';
     for (let pi of piList) {
       let piName = StringHelper.firstToLower(pi.name);
-      let piSummary = pi.summary ?? piName;
+      let piSummary = !pi.summary ? piName : pi.summary;
       let isSort = pi.isListSort;
       let theadCode = `
                 <th nz-th${isSort ? ' [nzSortFn]="true" nzColumnKey="@piName"' : ''}>@piSummary</th>`;

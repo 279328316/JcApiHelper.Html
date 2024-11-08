@@ -6,7 +6,7 @@ export class EditPageLessCreator {
   static getEditPageLessCode(pageBaseModel: TsModel): string {
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
-    let modelSummary = pageBaseModel.summary ?? modelName;
+    let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
 
     let code = '';
     return code;

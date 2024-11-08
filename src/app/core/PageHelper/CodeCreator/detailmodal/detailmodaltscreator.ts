@@ -7,7 +7,7 @@ export class DetailModalTsCreator {
   static getDetailModalTsCode(pageBaseModel: TsModel): string {
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
-    let modelSummary = pageBaseModel.summary ?? modelName;
+    let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
 
     let code = '';
     let template = DetailModalTsCreator.getTsTemplate();

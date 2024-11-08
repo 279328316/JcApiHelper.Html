@@ -12,7 +12,7 @@ export class EditModalHtmlCreator {
   static getEditModalHtmlCode(pageBaseModel: TsModel): string {
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
-    let modelSummary = pageBaseModel.summary ?? modelName;
+    let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
     let htmlCode = '';
     let htmlTemplate = `<nz-card nzBordered="false" [nzSize]="'small'">
     @editFormCode
@@ -29,7 +29,7 @@ export class EditModalHtmlCreator {
   private static getEditFormCode(pageBaseModel: TsModel): string {
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
-    let modelSummary = pageBaseModel.summary ?? modelName;
+    let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
     let editFormCode = '';
     let editFormTemplate = `<nz-form [formGroup]="editForm" nzLayout="vertical">@editItemCode
         <div nz-row class="mt35">
@@ -60,9 +60,9 @@ export class EditModalHtmlCreator {
     let editCodeTemplate = '';
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
-    let modelSummary = pageBaseModel.summary ?? modelName;
+    let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
     let piName = StringHelper.firstToLower(pi.name);
-    let piSummary = pi.summary ?? piName;
+    let piSummary = !pi.summary ? piName : pi.summary;
     let isRequire = pi.isRequire ?? piName;
 
     if (pi.editDisplayType == DisplayType.Select) {

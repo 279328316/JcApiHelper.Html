@@ -27,7 +27,7 @@ export class CodeGenerateConfigComponent implements OnInit {
   }
 
   // 设置显示类型列表
-  checkPiDisplayTypeList(config: TsModel) {    
+  checkPiDisplayTypeList(config: TsModel) {
     if (!config.editPageType) {
       config.editPageType = PageType.Page;
     }
@@ -40,16 +40,18 @@ export class CodeGenerateConfigComponent implements OnInit {
       let editDisplayTypeList = CodeCreator.getPiEditDisplayTypeList(pi);
       let detailDisplayTypeList = CodeCreator.getPiDetailDisplayTypeList(pi);
 
-      if (queryDisplayTypeList.filter((a) => a == pi.queryDisplayType).length == 0) {
+      if (!pi.queryDisplayType || queryDisplayTypeList.filter((a) => a == pi.queryDisplayType).length == 0) {
         pi.queryDisplayType = CodeCreator.getPiQueryDisplayType(pi);
       }
-      if (listDisplayTypeList.filter((a) => a == pi.listDisplayType).length == 0) {
+      if (!pi.listDisplayType || listDisplayTypeList.filter((a) => a == pi.listDisplayType).length == 0) {
         pi.listDisplayType = CodeCreator.getPiListDisplayType(pi);
+        pi.isListSort = true;
       }
-      if (editDisplayTypeList.filter((a) => a == pi.editDisplayType).length == 0) {
+      if (!pi.editDisplayType || editDisplayTypeList.filter((a) => a == pi.editDisplayType).length == 0) {
         pi.editDisplayType = CodeCreator.getPiEditDisplayType(pi);
+        pi.isRequire = true;
       }
-      if (detailDisplayTypeList.filter((a) => a == pi.detailDisplayType).length == 0) {
+      if (!pi.detailDisplayType || detailDisplayTypeList.filter((a) => a == pi.detailDisplayType).length == 0) {
         pi.detailDisplayType = CodeCreator.getPiDetailDisplayType(pi);
       }
     });

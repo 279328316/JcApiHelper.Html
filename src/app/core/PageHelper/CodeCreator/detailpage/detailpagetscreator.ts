@@ -3,12 +3,11 @@ import { StringHelper } from '@core/stringhelper';
 import { TsModel } from '@models/tsmodel';
 
 export class DetailPageTsCreator {
-
   // 获取列表页面的component代码
   static getDetailPageTsCode(pageBaseModel: TsModel): string {
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
-    let modelSummary = pageBaseModel.summary ?? modelName;
+    let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
 
     let code = '';
     let template = DetailPageTsCreator.getTsTemplate();

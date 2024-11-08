@@ -7,7 +7,7 @@ export class EditPageHtmlCreator {
   static getEditPageHtmlCode(pageBaseModel: TsModel): string {
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
-    let modelSummary = pageBaseModel.summary ?? modelName;
+    let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
     let htmlCode = '';
     let htmlTemplate = `<nz-page-header>
     <nz-page-header-subtitle>{{@modelNameId ? '编辑@modelSummary':'新增@modelSummary'}}</nz-page-header-subtitle>
@@ -29,7 +29,7 @@ export class EditPageHtmlCreator {
   private static getEditFormCode(pageBaseModel: TsModel): string {
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
-    let modelSummary = pageBaseModel.summary ?? modelName;
+    let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
     let editFormCode = '';
     let editFormTemplate = `<nz-form [formGroup]="editForm" nzLayout="vertical">@editItemCode
         <div nz-row class="mt35">
@@ -60,9 +60,9 @@ export class EditPageHtmlCreator {
     let editCodeTemplate = '';
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
-    let modelSummary = pageBaseModel.summary ?? modelName;
+    let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
     let piName = StringHelper.firstToLower(pi.name);
-    let piSummary = pi.summary ?? piName;
+    let piSummary = !pi.summary ? piName : pi.summary;
     let isRequire = pi.isRequire ?? piName;
 
     if (pi.editDisplayType == DisplayType.Select) {

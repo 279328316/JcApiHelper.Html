@@ -15,7 +15,7 @@ export class CodeCreator {
   public static getEnumPiInitCode(pi: TsPi): string {
     let piName = StringHelper.firstToLower(pi.name);
     let piClassName = pi.name;
-    let piSummary = pi.summary;
+    let piSummary = !pi.summary ? piName : pi.summary;
     let code = `
   /**
    * 初始化@piSummary
@@ -36,7 +36,7 @@ export class CodeCreator {
   public static getKeyvalueItemPiInitCode(pi: TsPi): string {
     let piName = StringHelper.firstToLower(pi.name);
     let piClassName = pi.name;
-    let piSummary = pi.summary;
+    let piSummary = !pi.summary ? piName : pi.summary;
     let code = `
   /**
    * 初始化@piSummary列表
@@ -57,7 +57,7 @@ export class CodeCreator {
   public static getAddFunctionCode(pageBaseModel: TsModel): string {
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
-    let modelSummary = pageBaseModel.summary ?? modelName;
+    let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
     let code = '';
     if (pageBaseModel.editPageType == PageType.Page) {
       code = `
@@ -84,7 +84,7 @@ export class CodeCreator {
   public static getEditFunctionCode(pageBaseModel: TsModel): string {
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
-    let modelSummary = pageBaseModel.summary ?? modelName;
+    let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
     let code = '';
     if (pageBaseModel.editPageType == PageType.Page) {
       code = `
@@ -126,7 +126,7 @@ export class CodeCreator {
   public static getViewDetailFunctionCode(pageBaseModel: TsModel): string {
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
-    let modelSummary = pageBaseModel.summary ?? modelName;
+    let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
     let code = '';
     if (pageBaseModel.editPageType == PageType.Page) {
       code = `
@@ -163,7 +163,7 @@ export class CodeCreator {
   public static geteditCode(pi: TsModel): string {
     let piName = StringHelper.firstToLower(pi.name);
     let piClassName = pi.name;
-    let piSummary = pi.summary;
+    let piSummary = !pi.summary ? piName : pi.summary;
     let code = `
   /**
    * 初始化@piSummary列表

@@ -7,7 +7,7 @@ export class DetailModalHtmlCreator {
   static getDetailModalHtmlCode(pageBaseModel: TsModel): string {
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
-    let modelSummary = pageBaseModel.summary ?? modelName;
+    let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
     let htmlCode = '';
     let htmlTemplate = `
 <div class="ml20">@detailCode
@@ -51,7 +51,7 @@ export class DetailModalHtmlCreator {
     let itemCodeTemplate = '';
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let piName = StringHelper.firstToLower(pi.name);
-    let piSummary = pi.summary ?? piName;
+    let piSummary = !pi.summary ? piName : pi.summary;
     if (pi.detailDisplayType == DisplayType.Text) {
       if (pi.tsType == 'Date') {
         itemCodeTemplate = `

@@ -7,14 +7,14 @@ export class DetailModalLessCreator {
   static getDetailModalLessCode(pageBaseModel: TsModel): string {
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
-    let modelSummary = pageBaseModel.summary ?? modelName;
+    let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
 
     let code = `::ng-deep {
 @ngcss
 }`;
     let ngcss = '';
     let piList = pageBaseModel.piList;
-    if (piList.filter((pi) => pi.isList && pi.listDisplayType == DisplayType.Switch).length > 0) {
+    if (piList.filter((pi) => pi.isDetail && pi.detailDisplayType == DisplayType.Switch).length > 0) {
       ngcss += `
   .ant-switch-loading,
   .ant-switch-disabled {
@@ -23,7 +23,7 @@ export class DetailModalLessCreator {
   }
 `;
     }
-    if (piList.filter((pi) => pi.isList && pi.listDisplayType == DisplayType.Checkbox).length > 0) {
+    if (piList.filter((pi) => pi.isDetail && pi.detailDisplayType == DisplayType.Checkbox).length > 0) {
       ngcss += `
   .ant-checkbox-disabled .ant-checkbox-inner {
     background-color: #fff !important;

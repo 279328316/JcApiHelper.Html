@@ -7,7 +7,7 @@ export class ListPageLessCreator {
   static getListPageLessCode(pageBaseModel: TsModel): string {
     let modelName = StringHelper.firstToLower(pageBaseModel.name);
     let modelClassName = pageBaseModel.name;
-    let modelSummary = pageBaseModel.summary ?? modelName;
+    let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
 
     let code = `::ng-deep {
 @ngcss
