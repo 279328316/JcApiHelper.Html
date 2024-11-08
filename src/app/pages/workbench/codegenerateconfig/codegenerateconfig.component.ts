@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '@services/api.service';
 import { ActivatedRoute } from '@angular/router';
-import { TsModel } from '@models/tsmodel';
+import { PageType, TsModel } from '@models/tsmodel';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { TsPi } from '@models/propertyinfo';
 import { CodeCreator } from '@core/PageHelper/codecreator';
@@ -27,7 +27,13 @@ export class CodeGenerateConfigComponent implements OnInit {
   }
 
   // 设置显示类型列表
-  checkPiDisplayTypeList(config: TsModel) {
+  checkPiDisplayTypeList(config: TsModel) {    
+    if (!config.editPageType) {
+      config.editPageType = PageType.Page;
+    }
+    if (!config.detailPageType) {
+      config.detailPageType = PageType.Page;
+    }
     config.piList.forEach((pi) => {
       let queryDisplayTypeList = CodeCreator.getPiQueryDisplayTypeList(pi);
       let listDisplayTypeList = CodeCreator.getPiListDisplayTypeList(pi);

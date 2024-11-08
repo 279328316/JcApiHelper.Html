@@ -35,9 +35,13 @@
                       <div class="mt10 mb20 pr56" *ngFor="let tsModel of tsResult.tsModelList">
                         <div>
                           <div class="pl5">
-                            <label class="f-size16" style="color:#1890ff;">
+                            <label class="f-size16 color-primary">
                               {{tsModel.name}}
                             </label>
+                            <label *ngIf="tsModel.name != tsModel.sourceName" class="f-size16 ml10 color-darkgray">
+                              ({{tsModel.sourceName}})
+                            </label>
+                            <nz-tag *ngIf="tsModel.isEnum" nzColor="cyan" class="ml10">IsEnum</nz-tag>
                             <label class="ml10" style="max-width: 60%;" title="{{tsModel.summary}}">
                               {{tsModel.summary}}
                             </label>
@@ -83,14 +87,22 @@
                   <label class="f-size18 w80">Ts Pages</label>
                   <div class="lineblock ml50">
                     <label>Base Model</label>
-                    <nz-select nzPlaceHolder="select base model for pages" class="w200 ml20" [(ngModel)]="pageBaseModel"
+                    <nz-select nzPlaceHolder="select base model for pages" class="w300 ml20" [(ngModel)]="pageBaseModel"
                       (ngModelChange)="pageBaseModelChange($event)" [nzShowArrow]="true">
                       @for (model of pageModelList; track model.id) {
-                      <nz-option [nzLabel]="model.name" [nzValue]="model"></nz-option>
+                      <nz-option [nzLabel]="model.name" [nzValue]="model" nzCustomContent>
+                        <span>
+                          <span>
+                            {{model.name}}
+                          </span>
+                          <span *ngIf="model.name != model.sourceName" class="ml10 color-darkgray">
+                            {{model.sourceName}}
+                          </span>
+                        </span>
+                      </nz-option>
                       }
                     </nz-select>
-                    <button nz-button nzType="primary" class="ml30 w100"
-                      (click)="generatePages()">Generate</button>
+                    <button nz-button nzType="primary" class="ml30 w100" (click)="generatePages()">Generate</button>
                   </div>
                 </div>
                 <div nz-row nzGutter="32" class="mt10">

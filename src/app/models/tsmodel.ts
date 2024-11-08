@@ -19,7 +19,9 @@ export enum PageType {
 /*TsModel*/
 export class TsModel {
   id: string; // PTypeId
-  name: string; // 参数名
+  name: string; // 对象名称
+  sourceName: string; // 来源对象名称
+  isEnum: boolean; // 是否枚举
   summary: string; // Summary
   piList: TsPi[]; // 类属性列表
   editPageType: PageType; // 编辑显示类型

@@ -99,7 +99,7 @@ export class CodeViewerComponent implements OnInit, AfterViewInit {
     this.apiSvc.GetTsModel(this.itemId, this.itemType).subscribe((tsResult: TsResult) => {
       this.tsResult = tsResult;
       this.tsModelList = this.tsResult.tsModelList;
-      this.pageModelList = this.tsModelList?.filter((x) => x.name.indexOf('<') < 0);
+      this.pageModelList = this.tsModelList?.filter((x) => !x.isEnum && x.name.indexOf('<') < 0);
       if (this.pageModelList?.length > 0) {
         let filterModels = this.tsModelList.filter((x) => x.name.toLowerCase() === this.tsResult.name.toLowerCase());
         if (filterModels.length > 0) {
@@ -135,8 +135,8 @@ export class CodeViewerComponent implements OnInit, AfterViewInit {
   generatePages(isAuto = false) {
     if (!this.pageBaseModel) {
       return;
-    }
-    this.setModelPiList(this.pageBaseModel);
+    }    
+    this.loadConfigFromStorage(this.pageBaseModel);
     if (!isAuto) {
       let title = 'Pages Generate Config for ' + this.pageBaseModel.name;
       const modal: NzModalRef = this.modalSvc.create({
@@ -184,43 +184,6 @@ export class CodeViewerComponent implements OnInit, AfterViewInit {
       }
     } catch (error) {
       Util.showErrorMessageBox(error);
-    }
-  }
-
-  // 设置参数列表
-  setModelPiList(pageBaseModel: TsModel) {
-    this.loadConfigFromStorage(pageBaseModel);
-
-    let piList = pageBaseModel?.piList;
-    if (!pageBaseModel.editPageType) {
-      pageBaseModel.editPageType = PageType.Page;
-    }
-    if (!pageBaseModel.detailPageType) {
-      pageBaseModel.detailPageType = PageType.Page;
-    }
-    if (piList) {
-      if (piList.filter((a) => a.isQuery === true).length <= 0) {
-        piList.forEach((a) => {
-          a.isQuery = true;
-        });
-      }
-      if (piList.filter((a) => a.isList === true).length <= 0) {
-        piList.forEach((a) => {
-          a.isList = true;
-          a.isListSort = true;
-        });
-      }
-      if (piList.filter((a) => a.isEdit === true).length <= 0) {
-        piList.forEach((a) => {
-          a.isEdit = true;
-          a.isRequire = true;
-        });
-      }
-      if (piList.filter((a) => a.isDetail === true).length <= 0) {
-        piList.forEach((a) => {
-          a.isDetail = true;
-        });
-      }
     }
   }
 
