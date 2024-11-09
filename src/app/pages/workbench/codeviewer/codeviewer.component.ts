@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '@services/api.service';
 import { ActivatedRoute } from '@angular/router';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 import { PageTreeNode, PageType, TsModel, TsResult } from '@models/tsmodel';
 import {
   BooleanDisplayType,
@@ -18,6 +20,7 @@ import { PageHelper } from '@core/PageHelper/pagehelper';
 import { CodeCreator } from '@core/PageHelper/codecreator';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { CodeGenerateConfigComponent } from '../codegenerateconfig/codegenerateconfig.component';
+import { DateHelper } from '@core/datehelper';
 
 @Component({
   selector: 'app-codeviewer',
@@ -30,11 +33,10 @@ export class CodeViewerComponent implements OnInit, AfterViewInit {
   itemType: string;
   tsServiceType = '1';
   tsModelViewType = '1';
-  isShowPageQueryModel = true;
 
   isAfterViewInit: boolean = false;
 
-  tsResult: TsResult;
+  tsResult: TsResult = new TsResult();
   tsModelList: TsModel[] = [];
   pageModelList: TsModel[] = [];
 
@@ -55,6 +57,7 @@ export class CodeViewerComponent implements OnInit, AfterViewInit {
   rootNodeOptions: NzTreeNodeOptions = <NzTreeNodeOptions>{
     title: 'pages',
     key: 'pages',
+    isLeaf: false,
     expanded: true,
     children: [],
   };
@@ -77,11 +80,6 @@ export class CodeViewerComponent implements OnInit, AfterViewInit {
 
     const tsModelViewType = localStorage.getItem('tsModelViewType');
     this.tsModelViewType = tsModelViewType ? tsModelViewType : '1';
-
-    const isShowPageQueryModel = localStorage.getItem('isShowPageQueryModel');
-    if (isShowPageQueryModel === 'false') {
-      this.isShowPageQueryModel = false;
-    }
   }
 
   ngOnInit() {
@@ -91,6 +89,7 @@ export class CodeViewerComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.isAfterViewInit = true;
+    this.rootNode = this.nzTree.getTreeNodeByKey(this.rootNodeOptions.key);
     this.getTsModel();
   }
 
@@ -108,21 +107,10 @@ export class CodeViewerComponent implements OnInit, AfterViewInit {
           this.pageBaseModel = this.pageModelList[0];
         }
         if (this.pageBaseModel) {
-          this.autoGeneratePages();
+          this.generatePages(true);
         }
       }
     });
-  }
-
-  autoGeneratePages() {
-    // tsModel 加载后,才会去加载nzTree
-    let timer = setInterval(() => {
-      if (this.isAfterViewInit && this.nzTree) {
-        clearInterval(timer);
-        this.rootNode = this.nzTree.getTreeNodeByKey(this.rootNodeOptions.key);
-        this.generatePages(true);
-      }
-    }, 100);
   }
 
   // BaseModelChange
@@ -135,7 +123,7 @@ export class CodeViewerComponent implements OnInit, AfterViewInit {
   generatePages(isAuto = false) {
     if (!this.pageBaseModel) {
       return;
-    }    
+    }
     this.loadConfigFromStorage(this.pageBaseModel);
     if (!isAuto) {
       let title = 'Pages Generate Config for ' + this.pageBaseModel.name;
@@ -246,10 +234,6 @@ export class CodeViewerComponent implements OnInit, AfterViewInit {
     this.nzContextMenuService.create($event, menu);
   }
 
-  selectDropdown(): void {
-    // do something
-  }
-
   /*选择Model 属性*/
   selectPi(tsModel: TsModel, pi: TsPi, index: number) {
     this.tsResult.tsModelList.forEach((a) => {
@@ -332,7 +316,7 @@ export class CodeViewerComponent implements OnInit, AfterViewInit {
 
   /* type参数排序 */
   typeSortFn(a: any, b: any, sortOrder: string) {
-    return a['typeName'].localeCompare(b['typeName']);
+    return a['tsType'].localeCompare(b['tsType']);
   }
 
   /*查看Lambda Code*/
@@ -402,11 +386,6 @@ export class CodeViewerComponent implements OnInit, AfterViewInit {
     localStorage.setItem('tsModelViewType', this.tsModelViewType);
   }
 
-  /*isShowPageQueryModel变化*/
-  isShowPageQueryModelChanged() {
-    localStorage.setItem('isShowPageQueryModel', this.isShowPageQueryModel.toString());
-  }
-
   /*使用服务类型变化*/
   tsServiceTypeChanged() {
     localStorage.setItem('tsServiceType', this.tsServiceType);
@@ -463,6 +442,51 @@ export class CodeViewerComponent implements OnInit, AfterViewInit {
     }
     //console.log('onKeyUp this.isShiftDown:',this.isShiftDown);
     //console.log('onKeyUp this.isCtrlDown:',this.isCtrlDown);
+  }
+
+  /*导出代码*/
+  exportTsCode() {
+    if (!this.rootNode) {
+      return;
+    }
+    if (!this.tsResult?.tsCode) {
+      return;
+    }
+    const zip: JSZip = new JSZip();
+    let folderName =
+      'Code_' + this.tsResult.controllerName + '_' + DateHelper.formatDate(new Date(), 'yyyyMMddhhmmss');
+    let rootFolder = zip.folder(folderName);
+    // 生成文件
+    if (this.tsResult.tsCode?.tsModelCode) {
+      let modelFolder = rootFolder.folder('models');
+      let modelFileName = this.tsResult.controllerName.toLowerCase() + '.model.ts';
+      modelFolder.file(modelFileName, this.tsResult.tsCode.tsModelCode);
+    }
+    // 生成文件
+    if (this.tsResult.tsCode?.tsServiceCode) {
+      let serviceFolder = rootFolder.folder('services');
+      let serviceFileName = this.tsResult.controllerName.toLowerCase() + '.service.ts';
+      serviceFolder.file(serviceFileName, this.tsResult.tsCode.tsServiceCode);
+    }
+    this.addTreeNodeToZip(rootFolder, this.rootNode);
+    // 生成ZIP文件
+    zip.generateAsync({ type: 'blob' }).then((blob) => {
+      // 使用FileSaver.js的saveAs方法来保存文件
+      saveAs(blob, folderName + '.zip');
+    });
+  }
+
+  /*将Pages生成zip文件*/
+  addTreeNodeToZip(zip: JSZip, node: NzTreeNode) {
+    let originNode = node.origin as PageTreeNode;
+    if (originNode.isLeaf) {
+      zip.file(originNode.title, originNode.code);
+    } else {
+      let folder = zip.folder(originNode.title);
+      node.getChildren().forEach((childNode) => {
+        this.addTreeNodeToZip(folder, childNode);
+      });
+    }
   }
 
   /*返回 使用浏览器后退功能*/

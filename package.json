@@ -20,6 +20,8 @@
     "@angular/router": "^18.2.0",
     "@types/prettier": "^2.7.3",
     "@types/prismjs": "^1.26.5",
+    "file-saver": "^2.0.5",
+    "jszip": "^3.10.1",
     "ng-zorro-antd": "^18.1.0",
     "ngx-clipboard": "^16.0.0",
     "prettier": "^3.3.3",

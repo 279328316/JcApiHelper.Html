@@ -17,8 +17,14 @@
       </div>
       <div>
         <nz-card class="mt10 minh500" [nzSize]="'small'">
-          <nz-tabset [nzSize]="'small'" [nzAnimated]='false'>
-            <nz-tab nzTitle="Models" *ngIf="tsModelList?.length>0">
+          <ng-template #extraTemplate>
+            <button nz-button nzType="link" (click)="exportTsCode()">
+              <span nz-icon nzType="export"></span>
+              Export
+            </button>
+          </ng-template>
+          <nz-tabset [nzSize]="'small'" [nzAnimated]='false' [nzTabBarExtraContent]="extraTemplate">
+            <nz-tab nzTitle="Models">
               <div>
                 <div class="lh40">
                   <label class="f-size18 w80">Ts Models</label>
@@ -81,7 +87,7 @@
                 </div>
               </div>
             </nz-tab>
-            <nz-tab nzTitle="Pages" *ngIf="tsModelList?.length>0">
+            <nz-tab nzTitle="Pages">
               <div>
                 <div class="lh40">
                   <label class="f-size18 w80">Ts Pages</label>
@@ -145,7 +151,7 @@
                 </div>
               </div>
             </nz-tab>
-            <nz-tab nzTitle="Services" *ngIf="tsResult?.tsCode?.tsServiceCode">
+            <nz-tab nzTitle="Services">
               <div>
                 <div class="lh40">
                   <label class="f-size18 w100">Api Services</label>
@@ -158,10 +164,10 @@
                 </div>
                 <div>
                   @if(tsServiceType == '1'){
-                  <app-syntax-highlight [title]="'Typescript'" [code]="tsResult?.tsCode.tsServiceCode"
+                  <app-syntax-highlight [title]="'Typescript'" [code]="tsResult.tsCode?.tsServiceCode"
                     [language]="'typescript'"></app-syntax-highlight>
                   }@else {
-                  <app-syntax-highlight [title]="'C#'" [code]="tsResult?.tsCode.apiCode"
+                  <app-syntax-highlight [title]="'C#'" [code]="tsResult.tsCode?.apiCode"
                     [language]="'csharp'"></app-syntax-highlight>
                   }
                 </div>

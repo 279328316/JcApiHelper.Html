@@ -6,6 +6,7 @@ import { TsPi } from './propertyinfo';
 export class TsResult {
   id: string; // 结果对象Id ControllerId,ActionId,PTypeId
   name: string; // 结果对象名 ControllerName,ActionName,PTypeName
+  controllerName: string; // controllerName
   summary: string; // summary 描述备注
   tsModelList: TsModel[]; // 类属性列表
   tsCode: TsCode; // TsService

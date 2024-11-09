@@ -4,8 +4,8 @@
 
 export const environment = {
   //SERVER_URL: "https://debugapp.sinounion.com/Api/",
-  //SERVER_URL: "https://jccore.cn/",
-  SERVER_URL: 'http://10.10.9.165:5000/ApiHelper/',
+  SERVER_URL: 'https://jccore.cn/ApiHelper/',
+  //SERVER_URL: 'http://10.10.9.165:5000/ApiHelper/',
   production: false,
 };
 
