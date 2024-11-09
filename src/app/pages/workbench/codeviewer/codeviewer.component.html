@@ -6,9 +6,9 @@
           <div class="lh40">
             <label class="f-size20">
               Ts For {{itemType|titlecase}}
-              <span class="color-lightblue">{{tsResult?.name}}</span>
+              <span class="color-lightblue">{{tsResult.name}}</span>
             </label>
-            <span class="f-size16 ml30" *ngIf="tsResult?.summary">{{tsResult.summary}}</span>
+            <span class="f-size16 ml30" *ngIf="tsResult.summary">{{tsResult.summary}}</span>
           </div>
         </div>
         <div nz-col nzSpan="4" class="lh40 valign-bottom">
@@ -81,7 +81,7 @@
                     </nz-card>
                   </div>
                   <div *ngIf="tsModelViewType=='2'">
-                    <app-syntax-highlight [title]="'Typescript'" [code]="tsResult?.tsCode.tsModelCode"
+                    <app-syntax-highlight [title]="'Typescript'" [code]="tsResult.tsCode?.tsModelCode"
                       [language]="'typescript'"></app-syntax-highlight>
                   </div>
                 </div>
