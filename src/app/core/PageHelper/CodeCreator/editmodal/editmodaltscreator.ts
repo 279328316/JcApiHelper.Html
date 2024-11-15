@@ -103,15 +103,12 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './@modelNameedit.component.less',
 })
 export class @modelClassNameEditComponent implements OnInit {
-  action: string;
   @modelNameId: string;
   @modelName: @modelClassName = new @modelClassName();
   @expandPropertyCode
   editForm!: FormGroup<{
     @editItemCode
   }>;
-
-  loading = false;
 
   constructor(
     private route: ActivatedRoute,
