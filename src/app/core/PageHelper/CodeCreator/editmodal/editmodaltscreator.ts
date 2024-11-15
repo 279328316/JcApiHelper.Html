@@ -119,7 +119,7 @@ export class @modelClassNameEditComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.@modelNameId = this.route.snapshot.params['id'];    
+    this.@modelNameId = this.modal.getConfig().nzData.@modelNameId;  
     this.editForm = this.formBuilder.group({
       @editItemBuildCode
     });

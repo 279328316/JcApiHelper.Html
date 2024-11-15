@@ -70,8 +70,7 @@ export class CodeCreator {
       code = `
   /*添加@modelSummary*/
   add@modelClassName(): void {
-    let @modelName = new @modelClassName();
-    this.edit@modelClassName(@modelName);
+    this.edit@modelClassName();
   }`;
     }
     code = code
@@ -96,13 +95,13 @@ export class CodeCreator {
     } else {
       code = `
   /*编辑@modelSummary*/
-  edit@modelClassName(@modelName: @modelClassName): void {
-    let title = @modelName.id ? "编辑@modelSummary" : "添加@modelSummary";
+  edit@modelClassName(@modelName: @modelClassName = null): void {
+    let title = @modelName?.id ? "编辑@modelSummary" : "添加@modelSummary";
     const modal: NzModalRef = this.modalSvc.create({
       nzTitle: title,
       nzWidth: 720,
       nzContent: @modelClassNameEditModalComponent,
-      nzData: { @modelName: @modelName },
+      nzData: { @modelNameId: @modelName?.id },
       nzCentered: true,
       nzMaskClosable: false,
       nzNoAnimation: true,
