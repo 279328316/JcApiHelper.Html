@@ -47,8 +47,9 @@ export class EditPageTsCreator {
     if (editPiList.filter((a) => a.isKeyvalueItem).length > 0) {
       let piList = editPiList.filter((a) => a.isKeyvalueItem);
       for (let pi of piList) {
-        let piName = StringHelper.firstToLower(pi.name);
-        let piClassName = pi.name;
+        // 如果以id结尾，则去掉id
+        let piClassName = pi.name.endsWith('Id') ? pi.name.substring(0, pi.name.length - 2) : pi.name;
+        let piName = StringHelper.firstToLower(piClassName);
         expandPropertyCode += `\n  ${piName}s: KeyvalueItem[] = [];`;
         expandFunctionCode += CodeCreator.getKeyvalueItemPiInitCode(pi);
         expandInitCode += `\n    this.init${piClassName}();`;

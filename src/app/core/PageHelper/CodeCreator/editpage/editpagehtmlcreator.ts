@@ -1,6 +1,7 @@
 import { StringHelper } from '@core/stringhelper';
 import { DisplayType, TsPi } from '@models/propertyinfo';
 import { TsModel } from '@models/tsmodel';
+import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 
 export class EditPageHtmlCreator {
   // 获取列表页面的html代码
@@ -62,6 +63,7 @@ export class EditPageHtmlCreator {
     let modelClassName = pageBaseModel.name;
     let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
     let piName = StringHelper.firstToLower(pi.name);
+    let piListName = piName.endsWith('Id') ? piName.substring(0, piName.length - 2) : piName;
     let piSummary = !pi.summary ? piName : pi.summary;
     let isRequire = pi.isRequire ?? piName;
 
@@ -73,8 +75,8 @@ export class EditPageHtmlCreator {
                     <nz-form-label nzRequired class="w100 mr5">@piSummary</nz-form-label>
                     <nz-form-control ${isRequire ? 'nzErrorTip="请选择@piSummary"' : ''}>
                         <nz-select formControlName="@piName" nzAllowClear nzPlaceHolder="-- 请 选 择 --">
-                            <nz-option *ngFor="let @piName of @piNames" [nzValue]="@piName.value"
-                                [nzLabel]="@piName.displayName"></nz-option>
+                            <nz-option *ngFor="let @piListName of @piListNames" [nzValue]="@piListName.value"
+                                [nzLabel]="@piListName.displayName"></nz-option>
                         </nz-select>
                     </nz-form-control>
                 </nz-form-item>
@@ -88,7 +90,7 @@ export class EditPageHtmlCreator {
                     <nz-form-label class="w100 mr5">@piSummary</nz-form-label>
                     <nz-form-control>
                         <nz-radio-group formControlName="@piName">
-                            <label nz-radio *ngFor="let @piName of @piNames" [nzValue]="@piName.value">{{@piName.displayName}}</label>
+                            <label nz-radio *ngFor="let @piListName of @piListNames" [nzValue]="@piListName.value">{{@piListName.displayName}}</label>
                         </nz-radio-group>
                     </nz-form-control>
                 </nz-form-item>
@@ -225,6 +227,7 @@ export class EditPageHtmlCreator {
     editCode = editCodeTemplate
       .replace(/@modelClassName/g, modelClassName)
       .replace(/@piName/g, piName)
+      .replace(/@piListName/g, piListName)
       .replace(/@piSummary/g, piSummary);
     return editCode;
   }

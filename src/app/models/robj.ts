@@ -10,6 +10,13 @@ export class RCode {
   static systemError: number = 4000;
 }
 
+export enum RCodeMsg {
+  success = 1000,
+  reLogin = 2000,
+  error = 3000,
+  systemError = 4000
+}
+
 export class Robj<T> {
   code: number;
   result: T;

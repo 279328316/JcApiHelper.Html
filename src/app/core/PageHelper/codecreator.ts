@@ -34,8 +34,9 @@ export class CodeCreator {
 
   // 获取KeyvalueItem属性初始化代码
   public static getKeyvalueItemPiInitCode(pi: TsPi): string {
-    let piName = StringHelper.firstToLower(pi.name);
-    let piClassName = pi.name;
+    // 如果以id结尾，则去掉id
+    let piClassName = pi.name.endsWith('Id') ? pi.name.substring(0, pi.name.length - 2) : pi.name;
+    let piName = StringHelper.firstToLower(piClassName);
     let piSummary = !pi.summary ? piName : pi.summary;
     let code = `
   /**
@@ -156,27 +157,6 @@ export class CodeCreator {
       .replace(/@modelName/g, modelName)
       .replace(/@modelClassName/g, modelClassName)
       .replace(/@modelSummary/g, modelSummary);
-    return code;
-  }
-
-  // 获取KeyvalueItem属性初始化代码
-  public static geteditCode(pi: TsModel): string {
-    let piName = StringHelper.firstToLower(pi.name);
-    let piClassName = pi.name;
-    let piSummary = !pi.summary ? piName : pi.summary;
-    let code = `
-  /**
-   * 初始化@piSummary列表
-   */
-  init@piClassNames(): void {
-    this.keyvalueItemSvc.getKeyValueItemByCode("@piClassName").subscribe((items: KeyValueItem[]) => {
-      // this.@piNameItems = items;
-    });
-  }`;
-    code = code
-      .replace(/@piSummary/g, piSummary)
-      .replace(/@piName/g, piName)
-      .replace(/@piClassName/g, piClassName);
     return code;
   }
 

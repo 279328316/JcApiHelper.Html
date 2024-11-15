@@ -97,6 +97,7 @@ export class ListPageHtmlCreator {
     let modelClassName = pageBaseModel.name;
     let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
     let piName = StringHelper.firstToLower(pi.name);
+    let piListName = piName.endsWith('Id') ? piName.substring(0, piName.length - 2) : piName;
     let piSummary = !pi.summary ? piName : pi.summary;
     if (pi.queryDisplayType == DisplayType.RadioGroup) {
       queryCodeTemplate = `<div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="10" [nzLg]="10">
@@ -106,7 +107,7 @@ export class ListPageHtmlCreator {
                                 <nz-radio-group name="@piName" [(ngModel)]="queryObj.@piName"
                                     (ngModelChange)="query@modelClassNameList(true)">
                                     <label nz-radio [nzValue]="null">全部</label>
-                                    <label nz-radio *ngFor="let @piName of @piNames" [nzValue]="@piName.value">{{@piName.displayName}}</label>
+                                    <label nz-radio *ngFor="let @piListName of @piListNames" [nzValue]="@piListName.value">{{@piListName.displayName}}</label>
                                 </nz-radio-group>
                             </nz-form-control>
                         </nz-form-item>
@@ -117,8 +118,8 @@ export class ListPageHtmlCreator {
                             <nz-form-label class="w80">@piSummary</nz-form-label>
                             <nz-form-control>
                                 <nz-select name="@piName" [(ngModel)]="queryObj.@piName" nzAllowClear nzPlaceHolder="-- 请 选 择 --">
-                                    <nz-option *ngFor="let @piName of @piNames" [nzValue]="@piName.value"
-                                        [nzLabel]="@piName.displayName"></nz-option>
+                                    <nz-option *ngFor="let @piListName of @piListNames" [nzValue]="@piListName.value"
+                                        [nzLabel]="@piListName.displayName"></nz-option>
                                 </nz-select>
                             </nz-form-control>
                         </nz-form-item>
@@ -195,6 +196,7 @@ export class ListPageHtmlCreator {
     queryCode = queryCodeTemplate
       .replace(/@modelClassName/g, modelClassName)
       .replace(/@piName/g, piName)
+      .replace(/@piListName/g, piListName)
       .replace(/@piSummary/g, piSummary);
     return queryCode;
   }
