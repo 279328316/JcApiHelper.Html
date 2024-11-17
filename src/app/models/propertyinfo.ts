@@ -222,6 +222,8 @@ export class StringDisplayType {
   static getQueryType(): DisplayType[] {
     let list: DisplayType[] = [];
     list.push(DisplayType.Input); // 输入框
+    list.push(DisplayType.Select); // 下拉框
+    list.push(DisplayType.RadioGroup); // Radio组合
     return list;
   }
 
@@ -231,6 +233,8 @@ export class StringDisplayType {
   static getEditType(): DisplayType[] {
     let list: DisplayType[] = [];
     list.push(DisplayType.Input); // 输入框
+    list.push(DisplayType.Select); // 下拉框
+    list.push(DisplayType.RadioGroup); // Radio组合
     list.push(DisplayType.UploadFile); // 文件上传
     list.push(DisplayType.TextArea); // 多行文本框
     return list;

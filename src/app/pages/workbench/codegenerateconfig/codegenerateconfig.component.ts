@@ -34,27 +34,34 @@ export class CodeGenerateConfigComponent implements OnInit {
     if (!config.detailPageType) {
       config.detailPageType = PageType.Page;
     }
-    config.piList.forEach((pi) => {
-      let queryDisplayTypeList = CodeCreator.getPiQueryDisplayTypeList(pi);
-      let listDisplayTypeList = CodeCreator.getPiListDisplayTypeList(pi);
-      let editDisplayTypeList = CodeCreator.getPiEditDisplayTypeList(pi);
-      let detailDisplayTypeList = CodeCreator.getPiDetailDisplayTypeList(pi);
-
-      if (!pi.queryDisplayType || queryDisplayTypeList.filter((a) => a == pi.queryDisplayType).length == 0) {
-        pi.queryDisplayType = CodeCreator.getPiQueryDisplayType(pi);
-      }
-      if (!pi.listDisplayType || listDisplayTypeList.filter((a) => a == pi.listDisplayType).length == 0) {
-        pi.listDisplayType = CodeCreator.getPiListDisplayType(pi);
-        pi.isListSort = true;
-      }
-      if (!pi.editDisplayType || editDisplayTypeList.filter((a) => a == pi.editDisplayType).length == 0) {
-        pi.editDisplayType = CodeCreator.getPiEditDisplayType(pi);
-        pi.isRequire = true;
-      }
-      if (!pi.detailDisplayType || detailDisplayTypeList.filter((a) => a == pi.detailDisplayType).length == 0) {
-        pi.detailDisplayType = CodeCreator.getPiDetailDisplayType(pi);
-      }
+    config.piList.forEach(pi => {
+      this.checkPiDisplayType(pi);
     });
+  }
+
+  /**
+   * 检查并更新PI（页面元素）的显示类型
+   */
+  checkPiDisplayType(pi: TsPi) {
+    let queryDisplayTypeList = CodeCreator.getPiQueryDisplayTypeList(pi);
+    let listDisplayTypeList = CodeCreator.getPiListDisplayTypeList(pi);
+    let editDisplayTypeList = CodeCreator.getPiEditDisplayTypeList(pi);
+    let detailDisplayTypeList = CodeCreator.getPiDetailDisplayTypeList(pi);
+
+    if (!pi.queryDisplayType || queryDisplayTypeList.filter((a) => a == pi.queryDisplayType).length == 0) {
+      pi.queryDisplayType = CodeCreator.getPiQueryDisplayType(pi);
+    }
+    if (!pi.listDisplayType || listDisplayTypeList.filter((a) => a == pi.listDisplayType).length == 0) {
+      pi.listDisplayType = CodeCreator.getPiListDisplayType(pi);
+      pi.isListSort = true;
+    }
+    if (!pi.editDisplayType || editDisplayTypeList.filter((a) => a == pi.editDisplayType).length == 0) {
+      pi.editDisplayType = CodeCreator.getPiEditDisplayType(pi);
+      pi.isRequire = true;
+    }
+    if (!pi.detailDisplayType || detailDisplayTypeList.filter((a) => a == pi.detailDisplayType).length == 0) {
+      pi.detailDisplayType = CodeCreator.getPiDetailDisplayType(pi);
+    }
   }
 
   // 设置显示类型列表

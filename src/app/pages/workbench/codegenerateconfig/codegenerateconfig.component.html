@@ -4,8 +4,8 @@
       [nzScroll]="{ y: '400px' }">
       <thead>
         <tr>
-          <th [nzWidth]="'150px'">summary</th>
           <th [nzWidth]="'120px'">name</th>
+          <th [nzWidth]="'150px'">summary</th>
           <th [nzWidth]="'70px'">type</th>
           <th [nzWidth]="'60px'" class="tac"><span title="enumItem 数据源来自enumItem">enum</span></th>
           <th [nzWidth]="'60px'" class="tac"><span title="keyvalueItem 数据源来自KeyvalueItem">keyval</span></th>
@@ -23,17 +23,17 @@
         @for (pi of config.piList; track $index) {
         <tr>
           <td>
-            <span [title]="pi.summary">{{pi.summary}}</span>
+            <span [title]="pi.name">{{pi.name}}</span>
           </td>
           <td>
-            <span [title]="pi.name">{{pi.name}}</span>
+            <span [title]="pi.summary">{{pi.summary}}</span>
           </td>
           <td>{{pi.tsType}}</td>
           <td class="tac">
-            <label nz-checkbox [(ngModel)]="pi.isEnum"></label>
+            <label nz-checkbox [(ngModel)]="pi.isEnum" (ngModelChange)="checkPiDisplayType(pi)"></label>
           </td>
           <td class="tac">
-            <label nz-checkbox [(ngModel)]="pi.isKeyvalueItem"></label>
+            <label nz-checkbox [(ngModel)]="pi.isKeyvalueItem" (ngModelChange)="checkPiDisplayType(pi)"></label>
           </td>
           <td class="tac">
             <label nz-checkbox [(ngModel)]="pi.isQuery"></label>
