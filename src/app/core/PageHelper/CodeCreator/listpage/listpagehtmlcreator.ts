@@ -18,7 +18,20 @@ export class ListPageHtmlCreator {
     </nz-page-header>
     <!--Content-->
     <nz-card [nzSize]="'small'">
-        @queryFormCode
+        <div nz-row [nzGutter]="36">
+            <div nz-col nzSpan="20">
+                @queryFormCode
+            </div>
+            <div nz-col nzSpan="4" class="tar">            
+                <div style="position: absolute;bottom: 24px;">
+                  <button nz-button [nzType]="'primary'" (click)="query@modelClassNameList(true)">查询</button>
+                  <a class="ml10" (click)="isShowMore = !isShowMore">
+                    {{ isShowMore ? '收起' : '高级' }}
+                    <span nz-icon [nzType]="isShowMore ? 'caret-up' : 'caret-down'"></span>
+                  </a>
+                </div>
+            </div>
+        </div>
     </nz-card>
     <nz-card class="mt5">
         @tableListCode
@@ -45,16 +58,6 @@ export class ListPageHtmlCreator {
             <div class="pt24">@queryItemCode
             </div>
             <div *ngIf="isShowMore">@queryMoreItemCode
-            </div>
-            <div nz-row>
-                <div nz-col [nzSpan]="24" class="tar">
-                    <button nz-button [nzType]="'primary'" (click)="query@modelClassNameList(true)">查询</button>
-                    <button nz-button (click)="resetForm()" class="ml20 mr20">重置</button>
-                    <a class="collapse" (click)="isShowMore = !isShowMore">
-                        {{ isShowMore ? '收起' : '高级' }}
-                        <span nz-icon [nzType]="isShowMore ? 'up' : 'down'"></span>
-                    </a>
-                </div>
             </div>
         </form>`;
     let queryPiIndex = 0;
