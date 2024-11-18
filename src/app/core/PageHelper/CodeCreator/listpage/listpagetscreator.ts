@@ -14,35 +14,31 @@ export class ListPageTsCreator {
 
     let expandPropertyCode = '';
     let expandInitCode = '';
+    let expandInitFunctionCode = '';
     let expandFunctionCode = '';
 
     let queryPiList = pageBaseModel.piList.filter((pi) => pi.isQuery);
-    if (queryPiList.filter((a) => a.isKeyvalueItem).length > 0) {
-      let piList = queryPiList.filter((a) => a.isKeyvalueItem);
-      for (let pi of piList) {
-        // 如果以id结尾，则去掉id
-        let piClassName = pi.name.endsWith('Id') ? pi.name.substring(0, pi.name.length - 2) : pi.name;
-        let piName = StringHelper.firstToLower(piClassName);
+    queryPiList.forEach((pi) => {
+      // 如果以id结尾，则去掉id
+      let piClassName = pi.name.endsWith('Id') ? pi.name.substring(0, pi.name.length - 2) : pi.name;
+      let piName = StringHelper.firstToLower(piClassName);
+      if (pi.isKeyvalueItem) {
         expandPropertyCode += `\n  ${piName}s: KeyvalueItem[] = [];`;
-        expandFunctionCode += CodeCreator.getKeyvalueItemPiInitCode(pi);
-        expandInitCode += `\n    this.init${piClassName}();`;
-      }
-    } else if (queryPiList.filter((a) => a.isEnum).length > 0) {
-      let piList = queryPiList.filter((a) => a.isEnum);
-      for (let pi of piList) {
-        let piName = StringHelper.firstToLower(pi.name);
-        let piClassName = pi.name;
+        expandInitFunctionCode += CodeCreator.getKeyvalueItemPiInitCode(pi);
+        expandInitCode += `\n    this.init${piClassName}s();`;
+      } else if (pi.isEnum) {
         expandPropertyCode += `\n  ${piName}s: EnumItem[] = [];`;
-        expandFunctionCode += CodeCreator.getEnumPiInitCode(pi);
-        expandInitCode += `\n    this.init${piClassName}();`;
+        expandInitFunctionCode += CodeCreator.getEnumPiInitCode(pi);
+        expandInitCode += `\n    this.init${piClassName}s();`;
       }
-    }
+    });
     expandFunctionCode += CodeCreator.getAddFunctionCode(pageBaseModel);
     expandFunctionCode += CodeCreator.getEditFunctionCode(pageBaseModel);
     expandFunctionCode += CodeCreator.getViewDetailFunctionCode(pageBaseModel);
     code = template
       .replace(/@expandPropertyCode/g, expandPropertyCode)
       .replace(/@expandInitCode/g, expandInitCode)
+      .replace(/@expandInitFunctionCode/g, expandInitFunctionCode)
       .replace(/@expandFunctionCode/g, expandFunctionCode)
       .replace(/@modelName/g, modelName)
       .replace(/@modelClassName/g, modelClassName)
@@ -72,6 +68,7 @@ import { @modelClassNameDetailModalComponent } from "../@modelNamedetailmodal/@m
 })
 export class @modelClassNameListComponent implements OnInit {
   loading = false;
+  isShowMore = false;
   totalCount: number = 0;
   queryObj: @modelClassNameQueryObj = new @modelClassNameQueryObj();
   @modelNameList: @modelClassName[] = [];  
@@ -82,14 +79,16 @@ export class @modelClassNameListComponent implements OnInit {
     private enumSvc: EnumService,
     private keyvalueItemSvc: KeyValueItemService,
     private @modelNameSvc: @modelClassNameService
-  ) {}
+  ) {
+    this.queryObj = <@modelClassNameQueryObj>{ pageIndex: 1, pageSize: 10 };
+  }
 
   ngOnInit(): void {
     Util.setTitle("@modelSummary管理");    
     @expandInitCode
     this.query@modelClassNameList();
   }
-  
+  @expandInitFunctionCode
   /**
    * 查询参数变化时的回调函数
    *

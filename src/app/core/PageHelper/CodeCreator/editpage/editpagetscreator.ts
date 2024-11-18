@@ -43,27 +43,22 @@ export class EditPageTsCreator {
     }
     let expandPropertyCode = '';
     let expandInitCode = '';
+    let expandInitFunctionCode = '';
     let expandFunctionCode = '';
-    if (editPiList.filter((a) => a.isKeyvalueItem).length > 0) {
-      let piList = editPiList.filter((a) => a.isKeyvalueItem);
-      for (let pi of piList) {
-        // 如果以id结尾，则去掉id
-        let piClassName = pi.name.endsWith('Id') ? pi.name.substring(0, pi.name.length - 2) : pi.name;
-        let piName = StringHelper.firstToLower(piClassName);
+    editPiList.forEach((pi) => {
+      // 如果以id结尾，则去掉id
+      let piClassName = pi.name.endsWith('Id') ? pi.name.substring(0, pi.name.length - 2) : pi.name;
+      let piName = StringHelper.firstToLower(piClassName);
+      if (pi.isKeyvalueItem) {
         expandPropertyCode += `\n  ${piName}s: KeyvalueItem[] = [];`;
-        expandFunctionCode += CodeCreator.getKeyvalueItemPiInitCode(pi);
-        expandInitCode += `\n    this.init${piClassName}();`;
+        expandInitFunctionCode += CodeCreator.getKeyvalueItemPiInitCode(pi);
+        expandInitCode += `\n    this.init${piClassName}s();`;
+      } else if (pi.isEnum) {
+        expandPropertyCode += `\n  ${piName}s: EnumItem[] = [];`;
+        expandInitFunctionCode += CodeCreator.getEnumPiInitCode(pi);
+        expandInitCode += `\n    this.init${piClassName}s();`;
       }
-    } else if (editPiList.filter((a) => a.isEnum).length > 0) {
-      let piList = editPiList.filter((a) => a.isEnum);
-      for (let pi of piList) {
-        let piName = StringHelper.firstToLower(pi.name);
-        let piClassName = pi.name;
-        expandPropertyCode += `  ${piName}s: EnumItem[] = [];`;
-        expandFunctionCode += CodeCreator.getEnumPiInitCode(pi);
-        expandInitCode += `\n    this.init${piClassName}();`;
-      }
-    }
+    });
     if (editPiList.filter((a) => a.editDisplayType == DisplayType.UploadFile).length > 0) {
       expandPropertyCode += ``;
       expandFunctionCode += EditPageTsCreator.getUploadFileFunctionCode();
@@ -71,6 +66,7 @@ export class EditPageTsCreator {
     code = template
       .replace(/@expandPropertyCode/g, expandPropertyCode)
       .replace(/@expandInitCode/g, expandInitCode)
+      .replace(/@expandInitFunctionCode/g, expandInitFunctionCode)
       .replace(/@expandFunctionCode/g, expandFunctionCode)
       .replace(/@editItemCode/g, editItemCode)
       .replace(/@editItemBuildCode/g, editItemBuildCode)
@@ -121,6 +117,8 @@ export class @modelClassNameEditComponent implements OnInit {
       this.get@modelClassName();
     }
   }
+  
+  @expandInitFunctionCode
 
   /*获取@modelSummary*/
   get@modelClassName(): void {
