@@ -24,7 +24,7 @@ export class CodeCreator {
     this.enumSvc.getEnumItem('@piClassName').subscribe((items: EnumItem[]) => {
       this.@piNames = items;
     });
-  }`;
+  }\n`;
     code = code
       .replace(/@piSummary/g, piSummary)
       .replace(/@piName/g, piName)
@@ -44,9 +44,32 @@ export class CodeCreator {
    */
   init@piClassNames(): void {
     this.keyvalueItemSvc.getKeyValueItemByCode("@piClassName").subscribe((items: KeyValueItem[]) => {
-      // this.@piNameItems = items;
+      this.@piNames = items;
     });
-  }`;
+  }\n`;
+    code = code
+      .replace(/@piSummary/g, piSummary)
+      .replace(/@piName/g, piName)
+      .replace(/@piClassName/g, piClassName);
+    return code;
+  }
+
+  // 获取ForeignPi属性初始化代码
+  public static getForeignPiInitCode(pi: TsPi): string {
+    // 如果以id结尾，则去掉id
+    let piClassName = pi.name.endsWith('Id') ? pi.name.substring(0, pi.name.length - 2) : pi.name;
+    let piName = StringHelper.firstToLower(piClassName);
+    let piSummary = !pi.summary ? piName : pi.summary;
+
+    let code = `
+  /**
+   * 初始化@piSummary列表
+   */
+  init@piClassNames(): void {
+    this.@piNameSvc.get@piClassNameList().subscribe((@piNames: @piClassName[]) => {
+      this.@piNames = @piNames;
+    });
+  }\n`;
     code = code
       .replace(/@piSummary/g, piSummary)
       .replace(/@piName/g, piName)
@@ -65,13 +88,13 @@ export class CodeCreator {
   /*添加@modelSummary*/
   add@modelClassName(): void {
     Util.goTo("/@modelNameedit/add");
-  }`;
+  }\n`;
     } else {
       code = `
   /*添加@modelSummary*/
   add@modelClassName(): void {
     this.edit@modelClassName();
-  }`;
+  }\n`;
     }
     code = code
       .replace(/@modelName/g, modelName)
@@ -91,7 +114,7 @@ export class CodeCreator {
   /*编辑@modelSummary*/
   edit@modelClassName(@modelName: @modelClassName): void {
     Util.goTo("/@modelNameedit/edit/" + @modelName.id);
-  }`;
+  }\n`;
     } else {
       code = `
   /*编辑@modelSummary*/
@@ -113,7 +136,7 @@ export class CodeCreator {
         this.query@modelClassNameList(true);
       }
     });
-  }`;
+  }\n`;
     }
     code = code
       .replace(/@modelName/g, modelName)
@@ -134,7 +157,7 @@ export class CodeCreator {
   view@modelClassName(@modelName: @modelClassName): void {
     Util.goTo("/systemmanage/@modelNamedetail/" + @modelName.id);
     //this.view@modelClassNameModal(@modelName);
-  }`;
+  }\n`;
     } else {
       code = `
   /*查看@modelSummary详情*/
@@ -150,7 +173,7 @@ export class CodeCreator {
       nzOkText: null,
       nzCancelText: null,
     });
-  }`;
+  }\n`;
     }
     code = code
       .replace(/@modelName/g, modelName)

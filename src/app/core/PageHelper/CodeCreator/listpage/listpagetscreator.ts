@@ -23,8 +23,13 @@ export class ListPageTsCreator {
       let piClassName = pi.name.endsWith('Id') ? pi.name.substring(0, pi.name.length - 2) : pi.name;
       let piName = StringHelper.firstToLower(piClassName);
       if (pi.isKeyvalueItem) {
-        expandPropertyCode += `\n  ${piName}s: KeyvalueItem[] = [];`;
-        expandInitFunctionCode += CodeCreator.getKeyvalueItemPiInitCode(pi);
+        if (pi.name.endsWith('Id')) {
+          expandPropertyCode += `\n  ${piName}s: ${piClassName}[] = [];`;
+          expandInitFunctionCode += CodeCreator.getForeignPiInitCode(pi);
+        } else {
+          expandPropertyCode += `\n  ${piName}s: KeyvalueItem[] = [];`;
+          expandInitFunctionCode += CodeCreator.getKeyvalueItemPiInitCode(pi);
+        }
         expandInitCode += `\n    this.init${piClassName}s();`;
       } else if (pi.isEnum) {
         expandPropertyCode += `\n  ${piName}s: EnumItem[] = [];`;
@@ -137,7 +142,6 @@ export class @modelClassNameListComponent implements OnInit {
     });
   }
   @expandFunctionCode
-
   /*删除@modelSummary*/
   delete@modelClassName(@modelName: @modelClassName): void {
     Util.showConfirmBox("确认要删除@modelSummary" + @modelName.name + "吗?").subscribe((res) => {

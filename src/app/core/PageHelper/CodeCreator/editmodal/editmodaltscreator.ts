@@ -43,8 +43,8 @@ export class EditModalTsCreator {
           piDefaultValue = 'null';
           break;
       }
-      editItemCode += `    ${piName}: FormControl<${piType}>;`;
-      editItemBuildCode += `      ${piName}: [${piDefaultValue}, ${isRequire ? 'Validators.required' : ''}],`;
+      editItemCode += `\n    ${piName}: FormControl<${piType}>;`;
+      editItemBuildCode += `\n      ${piName}: [${piDefaultValue}, ${isRequire ? 'Validators.required' : ''}],`;
     }
 
     let expandPropertyCode = '';
@@ -56,8 +56,13 @@ export class EditModalTsCreator {
       let piClassName = pi.name.endsWith('Id') ? pi.name.substring(0, pi.name.length - 2) : pi.name;
       let piName = StringHelper.firstToLower(piClassName);
       if (pi.isKeyvalueItem) {
-        expandPropertyCode += `\n  ${piName}s: KeyvalueItem[] = [];`;
-        expandInitFunctionCode += CodeCreator.getKeyvalueItemPiInitCode(pi);
+        if (pi.name.endsWith('Id')) {
+          expandPropertyCode += `\n  ${piName}s: ${piClassName}[] = [];`;
+          expandInitFunctionCode += CodeCreator.getForeignPiInitCode(pi);
+        } else {
+          expandPropertyCode += `\n  ${piName}s: KeyvalueItem[] = [];`;
+          expandInitFunctionCode += CodeCreator.getKeyvalueItemPiInitCode(pi);
+        }
         expandInitCode += `\n    this.init${piClassName}s();`;
       } else if (pi.isEnum) {
         expandPropertyCode += `\n  ${piName}s: EnumItem[] = [];`;
@@ -101,8 +106,7 @@ export class @modelClassNameEditComponent implements OnInit {
   @modelNameId: string;
   @modelName: @modelClassName = new @modelClassName();
   @expandPropertyCode
-  editForm!: FormGroup<{
-    @editItemCode
+  editForm!: FormGroup<{@editItemCode
   }>;
 
   constructor(
@@ -115,17 +119,14 @@ export class @modelClassNameEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.@modelNameId = this.modal.getConfig().nzData.@modelNameId;  
-    this.editForm = this.formBuilder.group({
-      @editItemBuildCode
+    this.editForm = this.formBuilder.group({@editItemBuildCode
     });
     @expandInitCode
     if (this.@modelNameId) {
       this.get@modelClassName();
     }
   }
-
-  @expandInitFunctionCode
-  
+  @expandInitFunctionCode  
   /*获取@modelSummary*/
   get@modelClassName(): void {
     this.@modelNameSvc.get@modelClassNameById(this.@modelNameId).subscribe((@modelName) => {
@@ -134,7 +135,6 @@ export class @modelClassNameEditComponent implements OnInit {
     });
   }
   @expandFunctionCode
-
   /**
    * 提交表单，保存@modelSummary
    */
