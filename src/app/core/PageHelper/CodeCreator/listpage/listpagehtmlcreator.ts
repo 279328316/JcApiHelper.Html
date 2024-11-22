@@ -13,11 +13,11 @@ export class ListPageHtmlCreator {
     <nz-page-header class="contentPageHeader">
         <nz-page-header-subtitle>@modelSummary</nz-page-header-subtitle>
         <nz-page-header-extra>
-            <button nz-button [nzType]="'primary'" (click)="add@modelName()">新增</button>
+            <button nz-button [nzType]="'primary'" nzGhost (click)="add@modelName()">新增</button>
         </nz-page-header-extra>
     </nz-page-header>
     <!--Content-->
-    <nz-card [nzSize]="'small'">
+    <nz-card [nzSize]="'small'" [nzBordered]="true" style="margin-bottom: -24px;">
         <div nz-row [nzGutter]="36">
             <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="20" [nzLg]="20">
                 @queryFormCode
@@ -42,6 +42,7 @@ export class ListPageHtmlCreator {
 
     htmlCode = htmlTemplate
       .replace(/@modelName/g, modelName)
+      .replace(/@modelClassName/g, modelClassName)
       .replace(/@modelSummary/g, modelSummary)
       .replace(/@queryFormCode/g, queryFormCode)
       .replace(/@tableListCode/g, tableListCode);
@@ -66,7 +67,7 @@ export class ListPageHtmlCreator {
     let queryMoreItemCode = '';
     for (let pi of queryPiList) {
       let piCode = this.getQueryItemCode(pageBaseModel, pi);
-      if (queryPiIndex <= 5) {
+      if (queryPiIndex <= 2) {
         if (queryPiIndex % 3 == 0) {
           queryItemCode += `\n                        <div nz-row [nzGutter]="24">`;
         }
@@ -104,7 +105,7 @@ export class ListPageHtmlCreator {
     let piSummary = !pi.summary ? piName : pi.summary;
     if (pi.queryDisplayType == DisplayType.RadioGroup) {
       queryCodeTemplate = `
-                            <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="10" [nzLg]="10">
+                            <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="8">
                                 <nz-form-item>
                                     <nz-form-label class="w80">@piSummary</nz-form-label>
                                     <nz-form-control>
@@ -118,7 +119,7 @@ export class ListPageHtmlCreator {
                             </div>`;
     } else if (pi.queryDisplayType == DisplayType.Select) {
       queryCodeTemplate = `
-                            <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="10" [nzLg]="10">
+                            <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="8">
                                 <nz-form-item>
                                     <nz-form-label class="w80">@piSummary</nz-form-label>
                                     <nz-form-control>
@@ -238,7 +239,7 @@ export class ListPageHtmlCreator {
       let piSummary = !pi.summary ? piName : pi.summary;
       let isSort = pi.isListSort;
       let theadCode = `
-                <th nz-th${isSort ? ' [nzSortFn]="true" nzColumnKey="@piName"' : ''}>@piSummary</th>`;
+                <th nz-th ${isSort ? '[nzSortFn]="true" nzColumnKey="@piName"' : ''}>@piSummary</th>`;
       let tbodyCode = `
                 <td>{{ @modelName.@piName }}</td>`;
       if (pi.listDisplayType == DisplayType.Text) {
@@ -276,12 +277,12 @@ export class ListPageHtmlCreator {
       tbodyListCode += tbodyCode;
     }
     let opHead = `
-                <th nz-th>操作</th>`;
+                <th nz-th [nzWidth]="'150px'">操作</th>`;
     let opBody = `
                 <td>
                     <a (click)="view@modelClassName(@modelName)">查看</a>
                     <a (click)="edit@modelClassName(@modelName)" class="ml10">编辑</a>
-                    <a (click)="delete@modelClassName(@modelName)" class="ml10" [nzType]="'danger'">删除</a>
+                    <a (click)="delete@modelClassName(@modelName)" class="ml10">删除</a>
                 </td>`;
     theadListCode += opHead;
     tbodyListCode += opBody;

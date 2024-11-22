@@ -57,11 +57,11 @@ export class EditPageTsCreator {
           expandPropertyCode += `\n  ${piName}s: KeyvalueItem[] = [];`;
           expandInitFunctionCode += CodeCreator.getKeyvalueItemPiInitCode(pi);
         }
-        expandInitCode += `\n    this.init${piClassName}s();`;
+        expandInitCode += `\n    this.init${piClassName}();`;
       } else if (pi.isEnum) {
         expandPropertyCode += `\n  ${piName}s: EnumItem[] = [];`;
         expandInitFunctionCode += CodeCreator.getEnumPiInitCode(pi);
-        expandInitCode += `\n    this.init${piClassName}s();`;
+        expandInitCode += `\n    this.init${piClassName}();`;
       }
     });
     if (editPiList.filter((a) => a.editDisplayType == DisplayType.UploadFile).length > 0) {

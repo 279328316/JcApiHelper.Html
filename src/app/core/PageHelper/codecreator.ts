@@ -42,7 +42,7 @@ export class CodeCreator {
   /**
    * 初始化@piSummary列表
    */
-  init@piClassNames(): void {
+  init@piClassName(): void {
     this.keyvalueItemSvc.getKeyValueItemByCode("@piClassName").subscribe((items: KeyValueItem[]) => {
       this.@piNames = items;
     });
@@ -65,7 +65,7 @@ export class CodeCreator {
   /**
    * 初始化@piSummary列表
    */
-  init@piClassNames(): void {
+  init@piClassName(): void {
     this.@piNameSvc.get@piClassNameList().subscribe((@piNames: @piClassName[]) => {
       this.@piNames = @piNames;
     });

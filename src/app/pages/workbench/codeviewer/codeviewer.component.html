@@ -97,7 +97,7 @@
                       (ngModelChange)="pageBaseModelChange($event)" [nzShowArrow]="true">
                       @for (model of pageModelList; track model.id) {
                       <nz-option [nzLabel]="model.name" [nzValue]="model" nzCustomContent>
-                        <span>
+                        <span title="{{model.name}}  {{model.sourceName}}">
                           <span>
                             {{model.name}}
                           </span>
