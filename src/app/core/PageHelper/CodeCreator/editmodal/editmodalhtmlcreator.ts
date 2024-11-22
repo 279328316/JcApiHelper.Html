@@ -215,7 +215,7 @@ export class EditModalHtmlCreator {
         <div nz-row>
             <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="12">
                 <nz-form-item>
-                    <nz-form-label class="w100 mr5">@piName</nz-form-label>
+                    <nz-form-label class="w100 mr5">@piSummary</nz-form-label>
                     <nz-form-control ${isRequire ? 'nzErrorTip="请输入@piSummary"' : ''}>
                         <input nz-input formControlName="@piName" placeholder="请输入@piSummary" />
                     </nz-form-control>

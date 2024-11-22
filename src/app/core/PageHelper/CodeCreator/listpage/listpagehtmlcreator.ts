@@ -164,7 +164,7 @@ export class ListPageHtmlCreator {
       queryCodeTemplate = `
                             <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="8">
                                 <nz-form-item>
-                                    <nz-form-label class="w80">@piName</nz-form-label>
+                                    <nz-form-label class="w80">@piSummary</nz-form-label>
                                     <nz-form-control>
                                         <nz-input-group [nzSuffix]="inputClearTpl">
                                             <input nz-input name="@piName" type="number" [(ngModel)]="queryObj.@piName"
@@ -183,7 +183,7 @@ export class ListPageHtmlCreator {
       queryCodeTemplate = `
                             <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8" [nzLg]="8">
                                 <nz-form-item>
-                                    <nz-form-label class="w80">@piName</nz-form-label>
+                                    <nz-form-label class="w80">@piSummary</nz-form-label>
                                     <nz-form-control>
                                         <nz-input-group [nzSuffix]="inputClearTpl">
                                             <input nz-input name="@piName" [(ngModel)]="queryObj.@piName"
