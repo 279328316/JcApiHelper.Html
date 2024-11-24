@@ -459,7 +459,7 @@ export class CodeViewerComponent implements OnInit, AfterViewInit {
     // 生成文件
     if (this.tsResult.tsCode?.tsModelCode) {
       let modelFolder = rootFolder.folder('models');
-      let modelFileName = this.tsResult.controllerName.toLowerCase() + '.model.ts';
+      let modelFileName = this.tsResult.controllerName.toLowerCase() + '.ts';
       modelFolder.file(modelFileName, this.tsResult.tsCode.tsModelCode);
     }
     // 生成文件
