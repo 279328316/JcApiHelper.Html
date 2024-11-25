@@ -76,6 +76,7 @@ export class EditPageTsCreator {
       .replace(/@editItemCode/g, editItemCode)
       .replace(/@editItemBuildCode/g, editItemBuildCode)
       .replace(/@modelName/g, modelName)
+      .replace(/@modelLowerName/g, modelName.toLowerCase())
       .replace(/@modelClassName/g, modelClassName)
       .replace(/@modelSummary/g, modelSummary);
     return code;
@@ -91,9 +92,9 @@ import { EnumItem } from '@models/enumitem';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-@modelNameeditpage',
-  templateUrl: './@modelNameedit.component.html',
-  styleUrl: './@modelNameedit.component.less',
+  selector: 'app-@modelLowerNameeditpage',
+  templateUrl: './@modelLowerNameedit.component.html',
+  styleUrl: './@modelLowerNameedit.component.less',
 })
 export class @modelClassNameEditComponent implements OnInit {
   @modelNameId: string;

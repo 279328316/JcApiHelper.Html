@@ -22,6 +22,7 @@ export class DetailPageTsCreator {
       .replace(/@expandInitCode/g, expandInitCode)
       .replace(/@expandFunctionCode/g, expandFunctionCode)
       .replace(/@modelName/g, modelName)
+      .replace(/@modelLowerName/g, modelName.toLowerCase())
       .replace(/@modelClassName/g, modelClassName)
       .replace(/@modelSummary/g, modelSummary);
     return code;
@@ -37,9 +38,9 @@ import { @modelClassNameService } from "@services/@modelNameservice";
 import { @modelClassNameEditModalComponent } from "../@modelNameeditmodal/@modelNameedit.component";
 
 @Component({
-  selector: "app-@modelNamedetail",
-  templateUrl: "./@modelNamedetail.component.html",
-  styleUrl: "./@modelNamedetail.component.less",
+  selector: "app-@modelLowerNamedetail",
+  templateUrl: "./@modelLowerNamedetail.component.html",
+  styleUrl: "./@modelLowerNamedetail.component.less",
 })
 export class @modelClassNameDetailComponent implements OnInit {
   @modelNameId: string;

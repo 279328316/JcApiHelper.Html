@@ -46,6 +46,7 @@ export class ListPageTsCreator {
       .replace(/@expandInitFunctionCode/g, expandInitFunctionCode)
       .replace(/@expandFunctionCode/g, expandFunctionCode)
       .replace(/@modelName/g, modelName)
+      .replace(/@modelLowerName/g, modelName.toLowerCase())
       .replace(/@modelClassName/g, modelClassName)
       .replace(/@modelSummary/g, modelSummary);
     return code;
@@ -67,9 +68,9 @@ import { @modelClassNameEditModalComponent } from "../@modelNameeditmodal/@model
 import { @modelClassNameDetailModalComponent } from "../@modelNamedetailmodal/@modelNamedetailmodal.component";
 
 @Component({
-  selector: "@modelName-@modelNamelist",
-  templateUrl: "./@modelNamelist.component.html",
-  styleUrl: "./@modelNamelist.component.less",
+  selector: "app-@modelLowerNamelist",
+  templateUrl: "./@modelLowerNamelist.component.html",
+  styleUrl: "./@modelLowerNamelist.component.less",
 })
 export class @modelClassNameListComponent implements OnInit {
   loading = false;
