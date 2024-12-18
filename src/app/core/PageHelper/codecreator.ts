@@ -112,8 +112,8 @@ export class CodeCreator {
     if (pageBaseModel.editPageType == PageType.Page) {
       code = `
   /*编辑@modelSummary*/
-  edit@modelClassName(@modelName: @modelClassName): void {
-    Util.goTo("/@modelNameedit/edit/" + @modelName.id);
+  edit@modelClassName(): void {
+    Util.goTo("/@modelNameedit/edit/" + this.@modelName.id);
   }\n`;
     } else {
       code = `
@@ -154,8 +154,8 @@ export class CodeCreator {
     if (pageBaseModel.editPageType == PageType.Page) {
       code = `
   /*查看@modelSummary详情*/
-  view@modelClassName(@modelName: @modelClassName): void {
-    Util.goTo("/systemmanage/@modelNamedetail/" + @modelName.id);
+  view@modelClassName(): void {
+    Util.goTo("/systemmanage/@modelNamedetail/" + this.@modelName.id);
     //this.view@modelClassNameModal(@modelName);
   }\n`;
     } else {

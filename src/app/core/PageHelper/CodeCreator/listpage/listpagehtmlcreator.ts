@@ -13,7 +13,7 @@ export class ListPageHtmlCreator {
     <nz-page-header class="contentPageHeader">
         <nz-page-header-subtitle>@modelSummary</nz-page-header-subtitle>
         <nz-page-header-extra>
-            <button nz-button [nzType]="'primary'" nzGhost (click)="add@modelName()">新增</button>
+            <button nz-button [nzType]="'primary'" nzGhost (click)="add@modelClassName()">新增</button>
         </nz-page-header-extra>
     </nz-page-header>
     <!--Content-->

@@ -34,7 +34,7 @@ import { ActivatedRoute } from "@angular/router";
 import { NzModalRef, NzModalService } from "ng-zorro-antd/modal";
 import { Util } from "@core/util";
 import { @modelClassName } from "@models/@modelName";
-import { @modelClassNameService } from "@services/@modelNameservice";
+import { @modelClassNameService } from "@services/@modelName.service";
 import { @modelClassNameEditModalComponent } from "../@modelNameeditmodal/@modelNameedit.component";
 
 @Component({
@@ -50,8 +50,7 @@ export class @modelClassNameDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private modalSvc: NzModalService,
-    private @modelNameSvc: @modelClassNameService,
-    private @modelNameVersionSvc: @modelClassNameVersionService
+    private @modelNameSvc: @modelClassNameService
   ) {}
 
   ngOnInit() {
@@ -64,7 +63,7 @@ export class @modelClassNameDetailComponent implements OnInit {
 
   /*获取@modelSummary*/
   get@modelClassName(): void {
-    this.@modelNameSvc.get@modelClassNameById(this.@modelNameId).subscribe((@modelName) => {
+    this.@modelNameSvc.get@modelClassName(this.@modelNameId).subscribe((@modelName) => {
       this.@modelName = @modelName;
     });
   }

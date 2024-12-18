@@ -16,8 +16,7 @@ export class EditPageHtmlCreator {
 <!--Content-->
 <nz-card nzBordered="false">
     @editFormCode
-</nz-card>
-</div>`;
+</nz-card>`;
     let editFormCode = this.getEditFormCode(pageBaseModel);
     htmlCode = htmlTemplate
       .replace(/@modelName/g, modelName)

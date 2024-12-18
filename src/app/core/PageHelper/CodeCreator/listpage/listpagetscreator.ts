@@ -1,6 +1,7 @@
 import { StringHelper } from '@core/stringhelper';
 import { TsModel } from '@models/tsmodel';
 import { CodeCreator } from '../../codecreator';
+import { DisplayType } from '@models/propertyinfo';
 
 export class ListPageTsCreator {
   // 获取列表页面的component代码
@@ -22,19 +23,21 @@ export class ListPageTsCreator {
       // 如果以id结尾，则去掉id
       let piClassName = pi.name.endsWith('Id') ? pi.name.substring(0, pi.name.length - 2) : pi.name;
       let piName = StringHelper.firstToLower(piClassName);
-      if (pi.isKeyvalueItem) {
+
+      if (pi.queryDisplayType == DisplayType.Select || pi.queryDisplayType == DisplayType.RadioGroup) {
         if (pi.name.endsWith('Id')) {
           expandPropertyCode += `\n  ${piName}s: ${piClassName}[] = [];`;
           expandInitFunctionCode += CodeCreator.getForeignPiInitCode(pi);
+          expandInitCode += `\n    this.init${piClassName}();`;
+        } else if (pi.isEnum) {
+          expandPropertyCode += `\n  ${piName}s: EnumItem[] = [];`;
+          expandInitFunctionCode += CodeCreator.getEnumPiInitCode(pi);
+          expandInitCode += `\n    this.init${piClassName}();`;
         } else {
           expandPropertyCode += `\n  ${piName}s: KeyvalueItem[] = [];`;
           expandInitFunctionCode += CodeCreator.getKeyvalueItemPiInitCode(pi);
+          expandInitCode += `\n    this.init${piClassName}();`;
         }
-        expandInitCode += `\n    this.init${piClassName}();`;
-      } else if (pi.isEnum) {
-        expandPropertyCode += `\n  ${piName}s: EnumItem[] = [];`;
-        expandInitFunctionCode += CodeCreator.getEnumPiInitCode(pi);
-        expandInitCode += `\n    this.init${piClassName}();`;
       }
     });
     expandFunctionCode += CodeCreator.getAddFunctionCode(pageBaseModel);

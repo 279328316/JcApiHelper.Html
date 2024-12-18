@@ -10,10 +10,10 @@ export class DetailPageHtmlCreator {
     let modelSummary = !pageBaseModel.summary ? modelName : pageBaseModel.summary;
     let htmlCode = '';
     let htmlTemplate = `<nz-page-header>
-    <nz-page-header-subtitle>应用详情--{{app.name}}</nz-page-header-subtitle>
+    <nz-page-header-subtitle>应用详情--{{@modelName.name}}</nz-page-header-subtitle>
     <nz-page-header-extra>
-        <button nz-button class="w100 mr30" [nzType]="'primary'" (click)="detailApp()">编辑</button>
-        <button nz-button class="w100 mr30" [nzType]="'primary'" nzGhost nzDanger (click)="deleteApp()">删除</button>
+        <button nz-button class="w100 mr30" [nzType]="'primary'" (click)="edit@modelClassName()">编辑</button>
+        <button nz-button class="w100 mr30" [nzType]="'primary'" nzGhost nzDanger (click)="delete@modelClassName()">删除</button>
         <button nz-button class="w80 mr30" [nzType]="'primary'" nzGhost (click)="back()">返回</button>
         <button nz-button nzType="primary" nzGhost nz-dropdown [nzDropdownMenu]="menu" nzDropdownTrigger="click">
             ...
@@ -38,6 +38,7 @@ export class DetailPageHtmlCreator {
     let detailCode = this.getDetailCode(pageBaseModel);
     htmlCode = htmlTemplate
       .replace(/@modelName/g, modelName)
+      .replace(/@modelClassName/g, modelClassName)
       .replace(/@modelSummary/g, modelSummary)
       .replace(/@detailCode/g, detailCode);
     return htmlCode;
